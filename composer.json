@@ -1,2 +1,27 @@
 {
+  "name": "haspadar/atelier",
+  "type": "library",
+  "description": "A new face for any sites",
+  "keywords": ["atelier"],
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.1",
+    "monolog/monolog": "2.x-dev",
+    "sergeytsalkov/meekrodb": "9999999-dev",
+    "lavary/crunz": "3.1.x-dev",
+    "bramus/monolog-colored-line-formatter": "dev-master",
+    "bramus/router": "dev-master",
+    "league/plates": "v3.x-dev",
+    "vlucas/phpdotenv": "5.4.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Atelier\\": "src/",
+      "Test\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "10.0.x-dev"
+  }
 }
