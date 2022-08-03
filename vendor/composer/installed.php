@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '08eb00a3a0b14f11a8d1b0941e787a2a37d167c9',
+        'reference' => '5efbb1910653974a259107356649a383caefdfc3',
         'name' => 'haspadar/atelier',
         'dev' => true,
     ),
@@ -92,7 +92,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '08eb00a3a0b14f11a8d1b0941e787a2a37d167c9',
+            'reference' => '5efbb1910653974a259107356649a383caefdfc3',
             'dev_requirement' => false,
         ),
         'lavary/crunz' => array(
@@ -159,6 +159,15 @@
             'reference' => '3d81e4309d2a927abbe66df935f4bb60082805ad',
             'dev_requirement' => false,
         ),
+        'paragonie/constant_time_encoding' => array(
+            'pretty_version' => 'v2.6.3',
+            'version' => '2.6.3.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../paragonie/constant_time_encoding',
+            'aliases' => array(),
+            'reference' => '58c3f47f650c94ec05a151692652a868995d2938',
+            'dev_requirement' => false,
+        ),
         'phar-io/manifest' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
@@ -188,6 +197,17 @@
                 0 => '1.8.x-dev',
             ),
             'reference' => '39bb9365314853cab68ac1c6e1952cad03f74cbc',
+            'dev_requirement' => false,
+        ),
+        'phpseclib/phpseclib' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpseclib/phpseclib',
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
+            'reference' => 'b0e034ff9d2b59452ab3046e78b0ecba54717f04',
             'dev_requirement' => false,
         ),
         'phpunit/php-code-coverage' => array(

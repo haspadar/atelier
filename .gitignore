@@ -1,0 +1,6 @@
+configs/.env
+/public/adminer.php
+vendor/*
+public/.DS_Store
+.DS_Store
+logs/*
