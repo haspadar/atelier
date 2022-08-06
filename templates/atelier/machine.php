@@ -50,7 +50,7 @@ $machine = $this->data['machine'];
                     </td>
                     <td>
                         <span class="badge badge-primary">
-                            <?=$project->getType()?>
+                            <?=$project->getTypeName()?>
                         </span>
 
                     </td>

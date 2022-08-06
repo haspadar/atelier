@@ -6,4 +6,5 @@ if (!is_file($autoloadFile)) {
     exit;
 }
 
+date_default_timezone_set('Europe/Minsk');
 require_once $autoloadFile;

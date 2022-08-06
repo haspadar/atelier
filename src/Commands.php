@@ -2,6 +2,8 @@
 
 namespace Atelier;
 
+use Atelier\Command\ExtractCommit;
+use Atelier\Model\Reports;
 use Atelier\Project\ProjectType;
 
 class Commands
@@ -12,53 +14,69 @@ class Commands
     public static function getCommands(): array
     {
         return array_map(
-            fn(array $command) => new Command($command),
+            fn(array $command) => self::createCommand($command),
             (new Model\Commands())->getAll()
         );
     }
 
-    public static function runSmokes()
+    public static function paltoRun(Command $command)
     {
-        self::runForEveryPalto('runSmoke');
+        self::run($command, Projects::getPaltoProjects());
     }
 
-    public static function updateProjects()
-    {
-        self::runForEveryPalto('updateProject');
-    }
-
-    public static function extractMigrations()
-    {
-        self::runForEveryPalto('extractMigration');
-    }
-
-    public static function extractCommits()
-    {
-        self::runForEveryPalto('extractCommit');
-    }
-
-    private static function runForEveryPalto(string $methodName)
-    {
-        self::runForEveryType(ProjectType::PALTO, $methodName);
-    }
-
-    private static function runForEveryType(ProjectType $type, string $methodName)
+    /**
+     * @param Command $command
+     * @param Project[] $projects
+     * @return void
+     */
+    public static function run(Command $command, array $projects): ?Report
     {
         declare(ticks = 10) {
-            $run = new Run($methodName);
+            $run = new Run();
             register_tick_function([$run, 'ping']);
-            foreach (Garage::getMachines() as $machine) {
-                $ssh = $machine->createSsh();
+            foreach ($projects as $project) {
+                $ssh = $project->getMachine()->createSsh();
                 if (!$ssh->getError()) {
-                    foreach ($machine->getProjects($type) as $project) {
-                        $project->$methodName($ssh);
-                    }
+                    $report = \Atelier\Reports::add($command, $project, $run);
+                    $response = $command->run($project);
+                    $report->finish($response);
                 } else {
-                    Logger::error($machine->getHost() . ': ' . $ssh->getError());
+                    Logger::error($project->getMachine()->getHost() . ': ' . $ssh->getError());
                 }
             }
 
             $run->finish();
         }
+
+        return $report ?? null;
+    }
+
+    public static function getProjectCommands(Project $project)
+    {
+        return array_map(
+            fn ($command) => self::createCommand($command),
+            (new Model\Commands())->getTypeAll($project->getTypeId())
+        );
+    }
+
+    public static function getCommand(int $id): Command
+    {
+        $command = (new Model\Commands())->getById($id);
+
+        return self::createCommand($command);
+    }
+
+    public static function getCommandByName(string $name): Command
+    {
+        $command = (new Model\Commands())->getByName($name);
+
+        return self::createCommand($command);
+    }
+
+    public static function createCommand(array $command): Command
+    {
+        $className = 'Atelier\\Command\\' . ucfirst($command['name']);
+
+        return new $className($command);
     }
 }

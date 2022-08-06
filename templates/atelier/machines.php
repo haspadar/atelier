@@ -19,7 +19,7 @@
     foreach ($this->data['machines'] as $machine) :?>
         <tr>
             <td>
-                <a href="/garage/<?=$machine->getId()?>" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right" title="<?=$machine->getIp()?>">
+                <a href="/machines/<?=$machine->getId()?>" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right" title="<?=$machine->getIp()?>">
                     <?=$machine->getHost()?>
                 </a>
             </td>
@@ -28,7 +28,7 @@
             </td>
             <td>
                 <?php if ($projects = $machine->getProjects()) :?>
-                    <a href="/garage/<?=$machine->getId()?>" class="text-decoration-none">
+                    <a href="/machines/<?=$machine->getId()?>" class="text-decoration-none">
                         <?=count($projects)?> <?=\Atelier\Plural::get(count($projects), 'проект', 'проекта', 'проектов')?>
                     </a>
                 <?php else :?>

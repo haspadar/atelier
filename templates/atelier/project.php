@@ -15,12 +15,12 @@ $project = $this->data['project'];
     <dt>Тип</dt>
     <dd>
         <span class="badge badge-primary">
-            <?=$project->getType()?>
+            <?=$project->getTypeName()?>
         </span>
     </dd>
     <dt>Машина</dt>
     <dd>
-        <a href="/garage/<?=$project->getMachine()->getId()?>">
+        <a href="/machines/<?=$project->getMachine()->getId()?>">
             <span class="badge badge-dark">
                 <?=$project->getMachine()->getHost()?>
             </span>
@@ -57,19 +57,22 @@ $project = $this->data['project'];
                 'tooltip' => $project->getSmokeLastReport()
             ]
         ] : [];?>
-        <?php foreach ($commands as $command) :?>
+        <?php foreach ($this->data['commands'] as $command) :?>
             <tr>
                 <td>
-                    <a href="javascript:void(0);" class="run-project-command text-nowrap" title="Запустить" data-bs-toggle="tooltip" data-id="<?=$project->getId()?>" data-command="<?=$command['name']?>">
+                    <a href="javascript:void(0);" class="run-project-command text-nowrap" title="Запустить" data-bs-toggle="tooltip" data-id="<?=$project->getId()?>" data-command="<?=$command->getName()?>">
                         <i class="bi bi-play run-icon"></i>
                         <div class="spinner-border spinner-border-sm loading-icon d-none"></div>
-                        <?=$command['name']?>
+                        <?=$command->getName()?>
                     </a>
                     <div class="text-danger small error"></div>
-                    <div class="text-success small success"></div>
                 </td>
-                <td><?=$command['comment']?></td>
-                <td class="small text-muted text-truncate" style="max-width: 200px;" title="<?=$command['tooltip'] ?? ''?>" data-bs-toggle="tooltip"><?=$command['log']?></td>
+                <td><?=$command->getComment()?></td>
+                <?php /** @var $report ?\Atelier\Report */?>
+                <?php $report = $this->data['last_reports'][$command->getId()] ?? null;?>
+                <td class="small text-muted text-truncate" style="max-width: 200px;" title="<?=$report?->getTimeReportHtml()?>" data-bs-html="true" data-bs-toggle="tooltip">
+                    <?=$report?->getShortResponse()?>
+                </td>
             </tr>
         <?php endforeach;?>
     </tbody>

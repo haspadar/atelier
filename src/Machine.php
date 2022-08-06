@@ -162,9 +162,9 @@ class Machine
     /**
      * @return Project[]
      */
-    public function getProjects(?ProjectType $type = null): array
+    public function getProjects(?int $typeId = null): array
     {
-        return \Atelier\Projects::getProjects($this->getId(), $type);
+        return \Atelier\Projects::getProjects($this->getId(), $typeId);
     }
 
     /**

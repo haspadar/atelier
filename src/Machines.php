@@ -2,10 +2,7 @@
 
 namespace Atelier;
 
-use Atelier\Model\Machines;
-use Mole\Project;
-
-class Garage
+class Machines
 {
     public const ROTATOR_MACHINES = 'ROTATOR_MACHINES';
 
@@ -32,7 +29,7 @@ class Garage
      */
     public static function getMachines(): array
     {
-        return array_map(fn($machine) => new Machine($machine), (new Machines())->getAll());
+        return array_map(fn($machine) => new Machine($machine), (new \Atelier\Model\Machines())->getAll());
     }
 
 //    /**
@@ -86,7 +83,7 @@ class Garage
 
     public static function getMachine(int $id): Machine
     {
-        return new Machine((new Machines())->getById($id));
+        return new Machine((new \Atelier\Model\Machines())->getById($id));
     }
 
     public function getOptionProjects(string $option): array
@@ -102,17 +99,6 @@ class Garage
         return $projectsNames;
     }
 
-    public function forEveryProject(callable $projectLogic, bool $isPaltoOnly = false)
-    {
-        $this->track(function () use ($projectLogic, $isPaltoOnly) {
-            foreach ($this->machines as $machineKey => $machine) {
-                $logMessage = 'Machine ' . $machine->getHost() . ' (' . ($machineKey + 1) . '/' . count($this->machines) . ')';
-                Logger::garageInfo($logMessage);
-                $machine->forEveryProject($projectLogic, $isPaltoOnly);
-            }
-        });
-    }
-
     public function track(callable $logic)
     {
         $executionTime = new ExecutionTime();
@@ -120,10 +106,5 @@ class Garage
         $logic();
         $executionTime->end();
         Logger::warning('Changed on ' . count($this->machines) . ' machines for ' . $executionTime->get());
-    }
-
-    private function promptMachineSudoPassword(): string
-    {
-        return $this->machines[0]->promptPassword();
     }
 }

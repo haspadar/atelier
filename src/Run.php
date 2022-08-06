@@ -10,7 +10,7 @@ class Run
 
     private int $runId;
 
-    public function __construct(string $commandName = '', ?int $projectId = null) {
+    public function __construct() {
         $memory = memory_get_usage(true);
         $this->runId = (new RunLog())->add([
             'start_time' => (new \DateTime())->format('Y-m-d H:i:s'),
@@ -19,16 +19,19 @@ class Run
             'is_cli' => $this->isCli() ? 1 : 0,
             'script' => $this->getScriptWithParameters(),
             'pid' => $this->getPid() ?: 0,
-            'command_name' => $commandName,
-            'project_id' => $projectId,
             'memory' => $memory,
             'memory_human' => $this->getMemoryHuman($memory)
         ]);
     }
 
+    public function getId(): int
+    {
+        return $this->runId;
+    }
+
     public function ping()
     {
-        if (!$this->pingTime || (new \DateTime())->getTimestamp() - $this->pingTime->getTimestamp() >= 10) {
+        if (!$this->pingTime || (new \DateTime())->getTimestamp() - $this->pingTime->getTimestamp() >= 5) {
             $this->pingTime = new \DateTime();
             $memory = memory_get_usage(true);
             Logger::debug('Run ping at ' . $this->pingTime->format('H:i:s') . ', memory ' . $this->getMemoryHuman($memory));

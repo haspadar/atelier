@@ -2,13 +2,19 @@
 
 namespace Atelier;
 
+use Atelier\Model\ProjectTypes;
 use Atelier\Project\ProjectType;
 
 class Projects
 {
-    public static function getProjects(int $machineId = 0, ?ProjectType $type = null): array
+    /**
+     * @param int $machineId
+     * @param int|null $typeId
+     * @return Project[]
+     */
+    public static function getProjects(int $machineId = 0, ?int $typeId = null): array
     {
-        return array_map(fn(array $project) => new Project($project), (new Model\Projects())->getAll($machineId, $type?->name));
+        return array_map(fn(array $project) => new Project($project), (new Model\Projects())->getAll($machineId, $typeId));
     }
 
     public static function getProject(int $id): Project
@@ -53,5 +59,46 @@ class Projects
         }
 
         return $files;
+    }
+
+    public static function getUndefinedProjects(): array
+    {
+        return self::getProjects(0, self::getUndefinedTypeId());
+    }
+
+    public static function getPaltoProjects(): array
+    {
+        return self::getProjects(0, self::getPaltoTypeId());
+    }
+
+    public static function getRotatorProjects(): array
+    {
+        return self::getProjects(0, self::getRotatorTypeId());
+    }
+
+    public static function getUndefinedTypeId(): int
+    {
+        return (new ProjectTypes())->getUndefinedTypeId();
+    }
+
+    public static function getRotatorTypeId(): int
+    {
+        return (new ProjectTypes())->getRotatorTypeId();
+    }
+
+    public static function getPaltoTypeId(): int
+    {
+        return (new ProjectTypes())->getPaltoTypeId();
+    }
+
+    public static function getGroupedProjects(): array
+    {
+        $projects = self::getProjects();
+        $grouped = [];
+        foreach ($projects as $project) {
+            $grouped[$project->getTypeName()][] = $project;
+        }
+
+        return $grouped;
     }
 }

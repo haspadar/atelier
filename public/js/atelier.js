@@ -14,14 +14,12 @@ $(function () {
         let command = $(this).data('command');
         let $parentRow = $(this).parents('tr');
         let $error = $parentRow.find('.error');
-        let $success = $parentRow.find('.success');
         let $report = $('.report');
         let $loadingIcon = $parentRow.find('.loading-icon')
         let $runIcon = $parentRow.find('.run-icon');
         $runIcon.addClass('d-none')
         $loadingIcon.removeClass('d-none')
         $error.text('');
-        $success.text('');
         $report.addClass('d-none');
         $.ajax({
             url: '/project-command/' + projectId + '/' + command,
@@ -32,11 +30,11 @@ $(function () {
                 $loadingIcon.addClass('d-none')
                 $runIcon.removeClass('d-none')
                 if (resp.success) {
-                    $success.text('Команда отработала')
                     $report.html(resp.response).removeClass('d-none');
+                    $parentRow.parent('tbody').find('.response-link').html('');
                     $parentRow.find('td:nth-child(3)')
                         .removeAttr('data-bs-original-title')
-                        .html('<a href="#response" class="text-muted">Ответ...</a>');
+                        .html('<a href="#response" class="text-success response-link">Команда отработала</a>');
                 } else {
                     $error.text(resp.error);
                 }
@@ -48,12 +46,12 @@ $(function () {
     $('.delete-machine-projects').on('click', function () {
         let machineId = $(this).data('id');
         $.ajax({
-            url: '/garage/' + machineId,
+            url: '/machines/' + machineId,
             dataType: "json",
             type: 'DELETE',
             data: {},
             success: function () {
-                document.location = '/garage';
+                document.location = '/machines';
             }
         });
 

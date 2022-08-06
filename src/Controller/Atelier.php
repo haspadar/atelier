@@ -2,19 +2,20 @@
 
 namespace Atelier\Controller;
 
+use Atelier\Command;
 use Atelier\Commands;
 use Atelier\Debug;
 use Atelier\Directory;
 use Atelier\Filter;
 use Atelier\Flash;
-use Atelier\Garage;
+use Atelier\Machines;
 use Atelier\Project\ProjectType;
 use Atelier\Projects;
-use Atelier\Run;
+use Atelier\Reports;
 use League\Plates\Engine;
 use Atelier\Url;
 use League\Plates\Extension\Asset;
-use phpseclib3\Crypt\PublicKeyLoader;
+use Palto\Ads;
 
 class Atelier
 {
@@ -38,7 +39,7 @@ class Atelier
 
     public function showMachine(int $id)
     {
-        $machine = Garage::getMachine($id);
+        $machine = Machines::getMachine($id);
         $this->templatesEngine->addData([
             'title' => 'Машина "' . $machine->getHost(),
             'machine' => $machine
@@ -55,18 +56,40 @@ class Atelier
         echo $this->templatesEngine->make('commands');
     }
 
-    public function showGarage()
+    public function showMachines()
     {
         $this->templatesEngine->addData([
-            'title' => 'Гараж',
-            'machines' => Garage::getMachines()
+            'title' => 'Машины',
+            'machines' => Machines::getMachines()
         ]);
-        echo $this->templatesEngine->make('garage');
+        echo $this->templatesEngine->make('machines');
+    }
+
+    public function showReports()
+    {
+        $pageNumber = $this->getQueryParam('page', 1);
+        $limit = 25;
+        $offset = ($pageNumber - 1) * $limit;
+        $this->templatesEngine->addData([
+            'title' => 'Репорты',
+            'reports' => Reports::getReports($limit, $offset)
+        ]);
+        echo $this->templatesEngine->make('reports');
+    }
+
+    public function showReport(int $id)
+    {
+        $report = Reports::getReport($id);
+        $this->templatesEngine->addData([
+            'title' => 'Репорт ' . $report->getId(),
+            'report' => $report
+        ]);
+        echo $this->templatesEngine->make('report');
     }
 
     public function auth(int $machineId): void
     {
-        $machine = Garage::getMachine($machineId);
+        $machine = Machines::getMachine($machineId);
         $ssh = $machine->createSsh(
             $this->getPutParam('login'),
             $this->getPutParam('password')
@@ -81,23 +104,14 @@ class Atelier
     public function runProjectCommand(int $projectId, string $commandName): void
     {
         $project = Projects::getProject($projectId);
-        if (method_exists($project, $commandName)) {
-            $run = new Run($commandName, $project->getId());
-            $ssh = $project->getMachine()->createSsh(
-                'km',
-                PublicKeyLoader::load(file_get_contents('/Users/haspadar/.ssh/id_rsa_km'))
-            );
-            $response = $project->$commandName($ssh);
-            $run->finish();
-            $this->showJsonResponse(['success' => true, 'response' => nl2br($response)]);
-        } else {
-            $this->showJsonResponse(['error' => 'Команда "' . $commandName . '" не найдена']);
-        }
+        $command = Commands::getCommandByName($commandName);
+        $report = Commands::run($command, [$project]);
+        $this->showJsonResponse(['success' => true, 'response' => nl2br($report->getResponse())]);
     }
 
     public function scanProjects(int $machineId): void
     {
-        $machine = Garage::getMachine($machineId);
+        $machine = Machines::getMachine($machineId);
         $ssh = $machine->createSsh(
             $this->getPutParam('login'),
             $this->getPutParam('password')
@@ -121,9 +135,9 @@ class Atelier
 
     public function deleteMachineProjects(int $machineId)
     {
-        $machine = Garage::getMachine($machineId);
+        $machine = Machines::getMachine($machineId);
         $machine->deleteProjects($machineId);
-        Flash::addSuccess('Проекты на машине <a href="/garage/' . $machine->getId() . '">' . $machine->getHost() . '</a> удалены');
+        Flash::addSuccess('Проекты на машине <a href="/machines/' . $machine->getId() . '">' . $machine->getHost() . '</a> удалены');
         $this->showJsonResponse(['success' => true]);
     }
 
@@ -131,16 +145,19 @@ class Atelier
     {
         $project = Projects::getProject($id);
         Projects::deleteProject($id);
-        Flash::addWarning('Проект "' . $project->getName() . '" удалён на машине <a href="/garage/' . $project->getMachine()->getId() . '">' . $project->getMachine()->getHost() . '</a>');
+        Flash::addWarning('Проект "' . $project->getName() . '" удалён на машине <a href="/machines/' . $project->getMachine()->getId() . '">' . $project->getMachine()->getHost() . '</a>');
         $this->showJsonResponse(['success' => true]);
     }
 
     public function showProject(int $id)
     {
         $project = Projects::getProject($id);
+        $commands = Commands::getProjectCommands($project);
         $this->templatesEngine->addData([
             'title' => 'Проект "' . $project->getName() . '"',
-            'project' => $project
+            'project' => $project,
+            'commands' => $commands,
+            'last_reports' => Reports::getProjectLastReports($project, $commands)
         ]);
         echo $this->templatesEngine->make('project');
     }
@@ -149,17 +166,7 @@ class Atelier
     {
         $this->templatesEngine->addData([
             'title' => 'Проекты',
-            'palto' => Projects::getProjects(0, ProjectType::PALTO),
-            'rotator' => Projects::getProjects(0, ProjectType::ROTATOR),
-            'undefined' => Projects::getProjects(0, ProjectType::UNDEFINED),
-//            'description' => $this->replaceHtml($page->getDescription()),
-//            'h1' => $this->replaceHtml($page->getH1()),
-//            'regions' => !is_numeric($limit) || intval($limit) > 0
-//                ? Regions::getLiveRegions(null, intval($limit))
-//                : [],
-//            'live_categories' => \Palto\Categories::getLiveCategories(null, $this->region),
-//            'breadcrumbs' => [],
-//            'page' => $page
+            'grouped_projects' => Projects::getGroupedProjects()
         ]);
         echo $this->templatesEngine->make('projects');
     }
@@ -204,9 +211,9 @@ class Atelier
         return '';
     }
 
-    private function getQueryParam(string $name): string
+    private function getQueryParam(string $name, string $default): string
     {
-        $unfiltered = $_GET[$name] ?? '';
+        $unfiltered = $_GET[$name] ?? $default;
 
         return Filter::get($unfiltered);
     }
