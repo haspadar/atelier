@@ -101,4 +101,12 @@ class Projects
 
         return $grouped;
     }
+
+    public static function getTypes(): array
+    {
+        return array_map(
+            fn($type) => new \Atelier\ProjectType($type),
+            (new ProjectTypes())->getAll()
+        );
+    }
 }

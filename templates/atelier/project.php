@@ -29,6 +29,7 @@ $project = $this->data['project'];
 
 </dl>
 
+<h2>Последние репорты</h2>
 <table class="table table-striped">
     <thead>
     <tr>

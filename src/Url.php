@@ -2,6 +2,8 @@
 
 namespace Atelier;
 
+use Monolog\Handler\ZendMonitorHandler;
+
 class Url
 {
     /**
@@ -80,7 +82,11 @@ class Url
     {
         $parameters = $this->getQueryParameters();
         foreach ($replaces as $key => $value) {
-            $parameters[$key] = $value;
+            if (is_null($value) && isset($parameters[$key])) {
+                unset($parameters[$key]);
+            } else {
+                $parameters[$key] = $value;
+            }
         }
 
         $url = $this->getPath() . ($parameters ? '?' . http_build_query($parameters) : '');

@@ -58,9 +58,14 @@ class Atelier
         $pageNumber = $this->getQueryParam('page', 1);
         $limit = 25;
         $offset = ($pageNumber - 1) * $limit;
+        $projectTypeId = intval($this->getQueryParam('project_type_id', 0));
+        $period = $this->getQueryParam('period');
         $this->templatesEngine->addData([
             'title' => 'Репорты',
-            'reports' => Reports::getReports($limit, $offset)
+            'reports' => Reports::getReports($projectTypeId, $period, $limit, $offset),
+            'project_types' => Projects::getTypes(),
+            'project_type_id' => $projectTypeId,
+            'period' => $period
         ]);
         echo $this->templatesEngine->make('reports');
     }
@@ -241,7 +246,7 @@ class Atelier
         return '';
     }
 
-    private function getQueryParam(string $name, string $default): string
+    private function getQueryParam(string $name, string $default = ''): string
     {
         $unfiltered = $_GET[$name] ?? $default;
 

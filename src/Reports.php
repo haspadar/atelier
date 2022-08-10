@@ -47,11 +47,11 @@ class Reports
      * @param int $offset
      * @return Report[]
      */
-    public static function getReports(int $limit, int $offset): array
+    public static function getReports(int $projectTypeId, string $period, int $limit, int $offset): array
     {
         return array_map(
             fn(array $report) => new Report($report),
-            (new \Atelier\Model\Reports())->getAll($limit, $offset)
+            (new \Atelier\Model\Reports())->getAll($projectTypeId, $period, $limit, $offset)
         );
     }
 
