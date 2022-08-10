@@ -6,16 +6,21 @@ use Atelier\Command\ExtractCommit;
 use Atelier\Model\Reports;
 use Atelier\Project\ProjectType;
 
-class Commands
+class RunLogs
 {
+    public static function getRunLog(int $id): RunLog
+    {
+        return new RunLog((new Model\RunLogs())->getById($id));
+    }
+
     /**
      * @return Command[]
      */
-    public static function getCommands(): array
+    public static function getRunLogs(): array
     {
         return array_map(
-            fn(array $command) => self::createCommand($command),
-            (new Model\Commands())->getAll()
+            fn(array $runLog) => new RunLog($runLog),
+            (new Model\RunLogs())->getAll()
         );
     }
 
@@ -31,7 +36,7 @@ class Commands
      */
     public static function run(Command $command, array $projects): ?Report
     {
-        declare(ticks = 10) {
+        declare(ticks=10) {
             $run = new Run();
             register_tick_function([$run, 'ping']);
             foreach ($projects as $project) {
@@ -54,7 +59,7 @@ class Commands
     public static function getProjectCommands(Project $project)
     {
         return array_map(
-            fn ($command) => self::createCommand($command),
+            fn($command) => self::createCommand($command),
             (new Model\Commands())->getTypeAll($project->getType()->getId())
         );
     }

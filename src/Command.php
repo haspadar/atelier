@@ -2,15 +2,25 @@
 
 namespace Atelier;
 
+use Atelier\Model\CommandTypes;
+
 abstract class Command
 {
     private array $command;
+    /**
+     * @var ProjectType[]
+     */
+    private array $projectTypes;
 
     public function __construct()
     {
         $classNameParts = explode('\\', get_class($this));
         $shortClassName = $classNameParts[count($classNameParts) - 1];
         $this->command = (new \Atelier\Model\Commands())->getByName(lcfirst($shortClassName));
+        $this->projectTypes = array_map(
+            fn(array $type) => new ProjectType($type),
+            (new CommandTypes())->getCommandTypes($this->command['id'])
+        );
     }
 
     abstract public function run(Project $project): string;
@@ -36,6 +46,14 @@ abstract class Command
     public function getRunTime(): ?\DateTime
     {
         return $this->command['run_time'];
+    }
+
+    /**
+     * @return ProjectType[]
+     */
+    public function getProjectTypes(): array
+    {
+        return $this->projectTypes;
     }
 
     public function getLog(): string

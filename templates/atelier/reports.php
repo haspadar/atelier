@@ -34,7 +34,7 @@
                 </a>
             </td>
             <td class="small">
-                <?=$report->getShortResponse(50)?>
+                <?=$report->getShortResponse()?>
             </td>
             <td class="text-muted small" data-bs-toggle="tooltip" title="<?php if ($report->getFinishTime()) :?>За <?=\Atelier\Time::diffInGenitive($report->getStartTime(), $report->getFinishTime())?><?php else :?>Не отработала до конца<?php endif?>">
                 <?=\Atelier\Time::timeHuman($report->getStartTime())?>

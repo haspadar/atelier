@@ -2,7 +2,7 @@
 
 namespace Atelier;
 
-use Atelier\Model\RunLog;
+use Atelier\Model\RunLogs;
 
 class Run
 {
@@ -12,7 +12,7 @@ class Run
 
     public function __construct() {
         $memory = memory_get_usage(true);
-        $this->runId = (new RunLog())->add([
+        $this->runId = (new RunLogs())->add([
             'start_time' => (new \DateTime())->format('Y-m-d H:i:s'),
             'user' => $this->getUser(),
             'is_cron' => $this->isCron() ? 1 : 0,
@@ -35,7 +35,7 @@ class Run
             $this->pingTime = new \DateTime();
             $memory = memory_get_usage(true);
             Logger::debug('Run ping at ' . $this->pingTime->format('H:i:s') . ', memory ' . $this->getMemoryHuman($memory));
-            (new RunLog())->update([
+            (new RunLogs())->update([
                 'ping_time' => $this->pingTime->format('Y-m-d H:i:s'),
                 'memory' => $memory,
                 'memory_human' => $this->getMemoryHuman($memory)
@@ -46,7 +46,7 @@ class Run
     public function finish()
     {
         $finishTime = new \DateTime();
-        (new RunLog())->update([
+        (new RunLogs())->update([
             'finish_time' => $finishTime->format('Y-m-d H:i:s')
         ], $this->runId);
         Logger::debug('Run finished at ' . $finishTime->format('H:i:s'));

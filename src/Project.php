@@ -2,6 +2,7 @@
 
 namespace Atelier;
 
+use Atelier\Model\ProjectTypes;
 use Atelier\Project\ProjectType;
 use DateTime;
 
@@ -9,10 +10,12 @@ class Project
 {
 
     private Machine $machine;
+    private \Atelier\ProjectType $projectType;
 
     public function __construct(private array $project)
     {
         $this->machine = Machines::getMachine($project['machine_id']);
+        $this->projectType = new \Atelier\ProjectType((new ProjectTypes())->getById($this->project['type_id']));
     }
 
     public function getMachine(): Machine
@@ -35,9 +38,9 @@ class Project
         return str_replace('/var/www/', '', $this->getPath());
     }
 
-    public function getTypeId(): int
+    public function getType(): \Atelier\ProjectType
     {
-        return $this->project['type_id'];
+        return $this->projectType;
     }
 
     public function getTypeName(): string

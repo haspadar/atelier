@@ -34,7 +34,13 @@
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/projects'])) : ?>active<?php endif; ?>" href="/projects">Проекты</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/commands'])) : ?>active<?php endif; ?>" href="/commands">Команды</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/reports'])) : ?>active<?php endif; ?>" href="/reports">Репорты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/run-logs'])) : ?>active<?php endif; ?>" href="/run-logs">Запуски</a>
             </li>
         </ul>
         <!--        <ul class="list-unstyled ps-0">-->

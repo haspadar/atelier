@@ -34,9 +34,11 @@ $report = $this->data['report'];
     <dd class="small text-muted">
         <?=\Atelier\Time::timeHuman($report->getFinishTime())?>
     </dd>
-    <dt>Run Log</dt>
+    <dt>Запуск</dt>
     <dd>
-        <?=$report->getRunLogId()?>
+        <a href="/run-logs/<?=$report->getRunLogId()?>">
+            <?=$report->getRunLogId()?>
+        </a>
     </dd>
 
     <dt>Ответ</dt>

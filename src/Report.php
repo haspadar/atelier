@@ -33,7 +33,7 @@ class Report
         return $this->project;
     }
 
-    public function getShortResponse(int $length = 135): string
+    public function getShortResponse(int $length = 50): string
     {
         return Filter::shortText(self::getResponse(), $length);
     }

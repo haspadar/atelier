@@ -7,8 +7,8 @@ use Atelier\Command; ?>
     <thead>
     <tr>
         <th>Команда</th>
-        <th>Начало запуска</th>
-        <th>Конец запуска</th>
+        <th>Комментарий</th>
+        <th>Типы проектов</th>
     </tr>
     </thead>
     <tbody>
@@ -26,10 +26,14 @@ use Atelier\Command; ?>
                 </a>
             </td>
             <td>
-                <?=$command->getRunTime()?->format('d.m.Y H:i:s')?>
+                <?=$command->getComment()?>
             </td>
             <td>
-                <?=$command->getFinishTime()?->format('d.m.Y H:i:s')?>
+                <?php foreach ($command->getProjectTypes() as $projectType) :?>
+                    <span class="badge badge-primary">
+                        <?=$projectType->getName()?>
+                    </span>
+                <?php endforeach;?>
             </td>
         </tr>
 

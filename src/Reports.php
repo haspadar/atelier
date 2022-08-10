@@ -34,7 +34,9 @@ class Reports
     {
         $reports = [];
         foreach ($commands as $command) {
-            $reports[$command->getId()] = new Report((new Model\Reports())->getLast($project->getId(), $command->getId()));
+            if ($last = (new Model\Reports())->getLast($project->getId(), $command->getId())) {
+                $reports[$command->getId()] = new Report($last);
+            }
         }
 
         return $reports;
@@ -50,6 +52,14 @@ class Reports
         return array_map(
             fn(array $report) => new Report($report),
             (new \Atelier\Model\Reports())->getAll($limit, $offset)
+        );
+    }
+
+    public static function getCommandReports(int $commandId, int $limit, int $offset): array
+    {
+        return array_map(
+            fn(array $report) => new Report($report),
+            (new \Atelier\Model\Reports())->getCommandAll($commandId, $limit, $offset)
         );
     }
 }

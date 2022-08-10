@@ -2,20 +2,17 @@
 
 namespace Atelier\Controller;
 
-use Atelier\Command;
 use Atelier\Commands;
-use Atelier\Debug;
 use Atelier\Directory;
 use Atelier\Filter;
 use Atelier\Flash;
 use Atelier\Machines;
-use Atelier\Project\ProjectType;
 use Atelier\Projects;
 use Atelier\Reports;
+use Atelier\RunLogs;
 use League\Plates\Engine;
 use Atelier\Url;
 use League\Plates\Extension\Asset;
-use Palto\Ads;
 
 class Atelier
 {
@@ -47,15 +44,6 @@ class Atelier
         echo $this->templatesEngine->make('machine');
     }
 
-    public function showCommands()
-    {
-        $this->templatesEngine->addData([
-            'title' => 'Команды',
-            'commands' => Commands::getCommands()
-        ]);
-        echo $this->templatesEngine->make('commands');
-    }
-
     public function showMachines()
     {
         $this->templatesEngine->addData([
@@ -75,6 +63,48 @@ class Atelier
             'reports' => Reports::getReports($limit, $offset)
         ]);
         echo $this->templatesEngine->make('reports');
+    }
+
+    public function showCommands()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Команды',
+            'commands' => Commands::getCommands()
+        ]);
+        echo $this->templatesEngine->make('commands');
+    }
+
+    public function showRunLogs()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Запуски',
+            'run_logs' => RunLogs::getRunLogs()
+        ]);
+        echo $this->templatesEngine->make('run-logs');
+    }
+
+    public function showRunLog(int $id)
+    {
+        $runLog = RunLogs::getRunLog($id);
+        $this->templatesEngine->addData([
+            'title' => 'Запуск ' . $runLog->getId(),
+            'run_log' => $runLog
+        ]);
+        echo $this->templatesEngine->make('run-log');
+    }
+
+    public function showCommand(int $id)
+    {
+        $command = Commands::getCommand($id);
+        $pageNumber = $this->getQueryParam('page', 1);
+        $limit = 25;
+        $offset = ($pageNumber - 1) * $limit;
+        $this->templatesEngine->addData([
+            'title' => 'Команда "' . $command->getName() . '"',
+            'command' => $command,
+            'reports' => Reports::getCommandReports($command->getId(), $limit, $offset)
+        ]);
+        echo $this->templatesEngine->make('command');
     }
 
     public function showReport(int $id)

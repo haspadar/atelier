@@ -19,10 +19,14 @@ try {
     $router->get('/machines/{id}', '\Atelier\Controller\Atelier@showMachine');
     $router->get('/reports', '\Atelier\Controller\Atelier@showReports');
     $router->get('/reports/{id}', '\Atelier\Controller\Atelier@showReport');
+    $router->get('/commands', '\Atelier\Controller\Atelier@showCommands');
+    $router->get('/commands/{id}', '\Atelier\Controller\Atelier@showCommand');
     $router->delete('/machines/{id}', '\Atelier\Controller\Atelier@deleteMachineProjects');
     $router->put('/scan-projects/{id}', '\Atelier\Controller\Atelier@scanProjects');
     $router->post('/auth/{id}', '\Atelier\Controller\Atelier@auth');
     $router->put('/project-command/{id}/{command}', '\Atelier\Controller\Atelier@runProjectCommand');
+    $router->get('/run-logs', '\Atelier\Controller\Atelier@showRunLogs');
+    $router->get('/run-logs/{id}', '\Atelier\Controller\Atelier@showRunLog');
     $router->run();
 
 } catch (Exception $e) {
