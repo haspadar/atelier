@@ -14,7 +14,8 @@
     "league/plates": "v3.x-dev",
     "vlucas/phpdotenv": "5.4.x-dev",
     "phpseclib/phpseclib": "dev-master",
-    "ext-posix": "*"
+    "ext-posix": "*",
+    "league/climate": "dev-master"
   },
   "autoload": {
     "psr-4": {

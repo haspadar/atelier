@@ -25,6 +25,15 @@ class Directory
         return self::getRootDirectory() . '/configs';
     }
 
+    public static function getLogsDirectories(): array
+    {
+        $directories = self::getFilesWithDirectories(self::getLogsDirectory());
+
+        return array_filter($directories, function (string $directory) {
+            return is_dir(self::getLogsDirectory() . '/' . $directory);
+        });
+    }
+
     public static function getLogsDirectory(): string
     {
         return self::getRootDirectory() . '/logs';

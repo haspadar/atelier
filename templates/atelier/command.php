@@ -20,6 +20,7 @@ $command = $this->data['command'];
     <thead>
         <th>ID</th>
         <th>Проект</th>
+        <th>Запуск</th>
         <th>Ответ</th>
         <th>Время начала</th>
     </thead>
@@ -40,6 +41,12 @@ $command = $this->data['command'];
                     <a href="/projects/<?=$report->getProject()->getId()?>">
                         <?=$report->getProject()->getName()?>
                     </a>
+                </td>
+                <td>
+                    <a href="/run-logs/<?=$report->getRunLogId()?>">
+                        <?=$report->getRunLogId()?>
+                    </a>
+
                 </td>
                 <td>
                     <?=$report->getShortResponse()?>

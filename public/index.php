@@ -27,6 +27,13 @@ try {
     $router->put('/project-command/{id}/{command}', '\Atelier\Controller\Atelier@runProjectCommand');
     $router->get('/run-logs', '\Atelier\Controller\Atelier@showRunLogs');
     $router->get('/run-logs/{id}', '\Atelier\Controller\Atelier@showRunLog');
+
+    $router->get("/info-logs-directories", '\Atelier\Controller\Atelier@showInfoLogsDirectories');
+    $router->get("/error-logs-directories", '\Atelier\Controller\Atelier@showErrorLogsDirectories');
+    $router->get("/info-logs/{name}", '\Atelier\Controller\Atelier@showInfoLogs');
+    $router->get("/error-logs/{name}", '\Atelier\Controller\Atelier@showErrorLogs');
+    $router->get("/get-logs/{name}/{type}", '\Atelier\Controller\Atelier@getLogs');
+
     $router->run();
 
 } catch (Exception $e) {

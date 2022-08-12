@@ -10,10 +10,19 @@ $runLog = $this->data['run_log'];
 ?>
 
 <dl>
+    <dt>Команды</dt>
+    <dd>
+        <?php foreach ($runLog->getCommands() as $command) :?>
+            <a href="/commands/<?=$command->getId()?>">
+                <?=$command->getName()?>
+            </a>
+        <?php endforeach;?>
+    </dd>
     <dt>Начало</dt>
-    <dd><?=\Atelier\Time::timeHuman($runLog->getStartTime())?></dd>
+    <dd class="text-muted"><?=\Atelier\Time::timeHuman($runLog->getStartTime())?></dd>
     <dt>Конец</dt>
-    <dd><?=\Atelier\Time::timeHuman($runLog->getFinishTime())?></dd>
+
+    <dd class="text-muted"><?=\Atelier\Time::timeHuman($runLog->getFinishTime())?></dd>
     <dt>Пользователь</dt>
     <dd><?=$runLog->getUser()?></dd>
     <dt>Скрипт</dt>
@@ -25,18 +34,10 @@ $runLog = $this->data['run_log'];
     <dt>Командная строка</dt>
     <dd><?=$runLog->isCli() ? 'да' : 'нет'?></dd>
     <dt>Ping time</dt>
-    <dd><?=\Atelier\Time::timeHuman($runLog->getPingTime())?></dd>
+    <dd class="text-muted"><?=$runLog->getPingTime() ? \Atelier\Time::timeHuman($runLog->getPingTime()) : 'пусто'?></dd>
     <dt>Память</dt>
     <dd><?=$runLog->getMemoryHuman()?></dd>
 
-    <dt>Команды</dt>
-    <dd>
-        <?php foreach ($runLog->getCommands() as $command) :?>
-            <a href="/commands/<?=$command->getId()?>">
-                <?=$command->getName()?>
-            </a>
-        <?php endforeach;?>
-    </dd>
     <dt>Ответы</dt>
     <dd>
         <li class="list-group list-group-numbered">

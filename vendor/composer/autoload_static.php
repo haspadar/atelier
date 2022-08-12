@@ -8,8 +8,8 @@ class ComposerStaticInitd20be6e76db3175c7c1ade900fdaefb0
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
@@ -61,6 +61,7 @@ class ComposerStaticInitd20be6e76db3175c7c1ade900fdaefb0
             'Symfony\\Component\\DependencyInjection\\' => 38,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
+            'Seld\\CliPrompt\\' => 15,
         ),
         'P' => 
         array (
@@ -82,6 +83,7 @@ class ComposerStaticInitd20be6e76db3175c7c1ade900fdaefb0
         'L' => 
         array (
             'League\\Plates\\' => 14,
+            'League\\CLImate\\' => 15,
         ),
         'G' => 
         array (
@@ -215,6 +217,10 @@ class ComposerStaticInitd20be6e76db3175c7c1ade900fdaefb0
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
+        'Seld\\CliPrompt\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/seld/cli-prompt/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -250,6 +256,10 @@ class ComposerStaticInitd20be6e76db3175c7c1ade900fdaefb0
         'League\\Plates\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
+        ),
+        'League\\CLImate\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/climate/src',
         ),
         'GrahamCampbell\\ResultType\\' => 
         array (

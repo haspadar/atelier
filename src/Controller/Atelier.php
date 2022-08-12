@@ -3,6 +3,7 @@
 namespace Atelier\Controller;
 
 use Atelier\Commands;
+use Atelier\Debug;
 use Atelier\Directory;
 use Atelier\Filter;
 use Atelier\Flash;
@@ -13,6 +14,7 @@ use Atelier\RunLogs;
 use League\Plates\Engine;
 use Atelier\Url;
 use League\Plates\Extension\Asset;
+use Palto\Logs;
 
 class Atelier
 {
@@ -68,6 +70,63 @@ class Atelier
             'period' => $period
         ]);
         echo $this->templatesEngine->make('reports');
+    }
+
+    public function showInfoLogsDirectories()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Все логи',
+            'type' => 'info',
+            'directories' => Directory::getLogsDirectories(),
+        ]);
+        echo $this->templatesEngine->make('logs-directories');
+    }
+
+    public function showErrorLogsDirectories()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Все ошибки',
+            'type' => 'error',
+            'directories' => Directory::getLogsDirectories(),
+        ]);
+        echo $this->templatesEngine->make('logs-directories');
+    }
+
+    public function showInfoLogs(string $name)
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Логи "' . $name . '"',
+            'type' => 'info',
+            'directory' => $name,
+            'breadcrumbs' => array_merge([[
+                'title' => 'Все логи',
+                'url' => '/info-logs-directories'
+            ], [
+                'title' => 'Логи "' . $name . '"',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('logs');
+    }
+
+    public function showErrorLogs(string $name)
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Ошибки "' . $name . '"',
+            'type' => 'error',
+            'directory' => $name,
+            'breadcrumbs' => array_merge([[
+                'title' => 'Все ошибки',
+                'url' => 'error-logs-directories'
+            ], [
+                'title' => 'Ошибки "' . $name . '"',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('logs');
+    }
+
+    public function getLogs(string $name, string $type)
+    {
+        $this->showJsonResponse(['logs' => array_reverse(\Atelier\Logs::getLogs($name, $type))]);
     }
 
     public function showCommands()

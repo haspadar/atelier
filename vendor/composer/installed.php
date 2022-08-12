@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '5efbb1910653974a259107356649a383caefdfc3',
+        'reference' => 'be9dbd3cc9e2a6897bf6a2080e945f902afc1f76',
         'name' => 'haspadar/atelier',
         'dev' => true,
     ),
@@ -92,7 +92,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '5efbb1910653974a259107356649a383caefdfc3',
+            'reference' => 'be9dbd3cc9e2a6897bf6a2080e945f902afc1f76',
             'dev_requirement' => false,
         ),
         'lavary/crunz' => array(
@@ -102,6 +102,17 @@
             'install_path' => __DIR__ . '/../lavary/crunz',
             'aliases' => array(),
             'reference' => '8a1a897c86b7dfe093b25668747abc1dab8ded53',
+            'dev_requirement' => false,
+        ),
+        'league/climate' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/climate',
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
+            'reference' => 'a785a3ac8f584eed4abd45e4e16fe64c46659a28',
             'dev_requirement' => false,
         ),
         'league/plates' => array(
@@ -490,6 +501,15 @@
             ),
             'reference' => '77ac4c1df887d971a0cb47fedbfe363e58e32da6',
             'dev_requirement' => true,
+        ),
+        'seld/cli-prompt' => array(
+            'pretty_version' => '1.0.4',
+            'version' => '1.0.4.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../seld/cli-prompt',
+            'aliases' => array(),
+            'reference' => 'b8dfcf02094b8c03b40322c229493bb2884423c5',
+            'dev_requirement' => false,
         ),
         'sergeytsalkov/meekrodb' => array(
             'pretty_version' => 'dev-master',

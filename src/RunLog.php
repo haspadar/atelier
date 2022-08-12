@@ -64,9 +64,11 @@ class RunLog
         return new \DateTime($this->runLog['finish_time']);
     }
 
-    public function getPingTime(): \DateTime
+    public function getPingTime(): ?\DateTime
     {
-        return new \DateTime($this->runLog['ping_time']);
+        return $this->runLog['ping_time']
+            ? new \DateTime($this->runLog['ping_time'])
+            : null;
     }
 
     public function getMemory(): string

@@ -15,10 +15,10 @@ class Run
         $this->runId = (new RunLogs())->add([
             'start_time' => (new \DateTime())->format('Y-m-d H:i:s'),
             'user' => $this->getUser(),
-            'is_cron' => $this->isCron() ? 1 : 0,
-            'is_cli' => $this->isCli() ? 1 : 0,
+            'is_cron' => Cli::isCron() ? 1 : 0,
+            'is_cli' => Cli::isCli() ? 1 : 0,
             'script' => $this->getScriptWithParameters(),
-            'pid' => $this->getPid() ?: 0,
+            'pid' => Cli::getPid() ?: 0,
             'memory' => $memory,
             'memory_human' => $this->getMemoryHuman($memory)
         ]);
@@ -57,30 +57,6 @@ class Run
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
 
         return round($memory / pow(1024, ($i = floor(log($memory, 1024)))), 2) . ' ' . $unit[$i];
-    }
-
-    /**
-     * @return bool
-     */
-    private function isCron(): bool
-    {
-        return !isset($_SERVER['TERM']);
-    }
-
-    /**
-     * @return bool
-     */
-    private function isCli(): bool
-    {
-        return php_sapi_name() === 'cli';
-    }
-
-    /**
-     * @return false|int
-     */
-    private function getPid(): int|false
-    {
-        return \getmypid();
     }
 
     /**

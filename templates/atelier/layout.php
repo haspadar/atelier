@@ -42,6 +42,17 @@
             <li class="nav-item">
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/run-logs'])) : ?>active<?php endif; ?>" href="/run-logs">Запуски</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/info-logs'])) : ?>active<?php endif; ?>" href="/info-logs-directories">
+                        Логи
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link  <?php if ($this->data['url']->isStartsAt(['/error-logs'])) : ?>active<?php endif; ?>" href="/error-logs-directories">
+                    Ошибки
+                </a>
+            </li>
         </ul>
         <!--        <ul class="list-unstyled ps-0">-->
         <!--            <li class="mb-1">-->
