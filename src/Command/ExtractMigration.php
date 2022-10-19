@@ -5,8 +5,9 @@ namespace Atelier\Command;
 use Atelier\Command;
 use Atelier\Logger;
 use Atelier\Project;
+use Atelier\ProjectCommand;
 
-class ExtractMigration extends Command
+class ExtractMigration extends ProjectCommand
 {
     public function run(Project $project): string
     {

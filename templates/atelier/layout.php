@@ -12,11 +12,10 @@
     <link rel="stylesheet" href="<?=$this->asset('/css/menu.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/atelier.css')?>">
     <meta name="theme-color" content="#7952b3">
-    <?= $this->data['title'] ?>
+    <title><?= $this->data['title'] ?></title>
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <nav class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas" data-bs-keyboard="false"
-     data-bs-backdrop="true" data-bs-scroll="true">
+    <nav class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas" data-bs-keyboard="false" data-bs-backdrop="true" data-bs-scroll="true">
     <div class="offcanvas-header border-bottom">
         <h4>
             <a class="navbar-brand" href="#">
@@ -27,6 +26,9 @@
     </div>
     <div class="offcanvas-body px-0">
         <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/dashboard'])) : ?>active<?php endif; ?>" href="/dashboard">Приборы</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/machines'])) : ?>active<?php endif; ?>" href="/machines">Машины</a>
             </li>
@@ -42,17 +44,17 @@
             <li class="nav-item">
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/run-logs'])) : ?>active<?php endif; ?>" href="/run-logs">Запуски</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/info-logs'])) : ?>active<?php endif; ?>" href="/info-logs-directories">
-                        Логи
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link  <?php if ($this->data['url']->isStartsAt(['/error-logs'])) : ?>active<?php endif; ?>" href="/error-logs-directories">
-                    Ошибки
-                </a>
-            </li>
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link --><?php //if ($this->data['url']->isStartsAt(['/info-logs'])) : ?><!--active--><?php //endif; ?><!--" href="/info-logs-directories">-->
+<!--                        Логи-->
+<!--                </a>-->
+<!--            </li>-->
+<!---->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link  --><?php //if ($this->data['url']->isStartsAt(['/error-logs'])) : ?><!--active--><?php //endif; ?><!--" href="/error-logs-directories">-->
+<!--                    Ошибки-->
+<!--                </a>-->
+<!--            </li>-->
         </ul>
         <!--        <ul class="list-unstyled ps-0">-->
         <!--            <li class="mb-1">-->

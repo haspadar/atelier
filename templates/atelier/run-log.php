@@ -1,10 +1,13 @@
-<?php /** @var $this League\Plates\Template\Template */?>
+<?php /** @var $this League\Plates\Template\Template */
+
+use Atelier\RunLog;
+use Atelier\Time; ?>
 
 <?php $this->layout('layout');?>
 
 <?php
 /**
- * @var \Atelier\RunLog $runLog
+ * @var RunLog $runLog
  */
 $runLog = $this->data['run_log'];
 ?>
@@ -19,10 +22,11 @@ $runLog = $this->data['run_log'];
         <?php endforeach;?>
     </dd>
     <dt>Начало</dt>
-    <dd class="text-muted"><?=\Atelier\Time::timeHuman($runLog->getStartTime())?></dd>
+    <dd class="text-muted"><?= Time::timeHuman($runLog->getStartTime())?></dd>
     <dt>Конец</dt>
-
-    <dd class="text-muted"><?=\Atelier\Time::timeHuman($runLog->getFinishTime())?></dd>
+    <dd class="text-muted"><?=$runLog->getFinishTime() ? Time::timeHuman($runLog->getFinishTime()) : 'не завершилась'?></dd>
+    <dt>Ping time</dt>
+    <dd class="text-muted"><?=$runLog->getPingTime() ? Time::timeHuman($runLog->getPingTime()) : 'пусто'?></dd>
     <dt>Пользователь</dt>
     <dd><?=$runLog->getUser()?></dd>
     <dt>Скрипт</dt>
@@ -33,11 +37,8 @@ $runLog = $this->data['run_log'];
     <dd><?=$runLog->isCron() ? 'да' : 'нет'?></dd>
     <dt>Командная строка</dt>
     <dd><?=$runLog->isCli() ? 'да' : 'нет'?></dd>
-    <dt>Ping time</dt>
-    <dd class="text-muted"><?=$runLog->getPingTime() ? \Atelier\Time::timeHuman($runLog->getPingTime()) : 'пусто'?></dd>
     <dt>Память</dt>
     <dd><?=$runLog->getMemoryHuman()?></dd>
-
     <dt>Ответы</dt>
     <dd>
         <li class="list-group list-group-numbered">

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ef7b0853c8c819a46b06bd714e05bd2",
+    "content-hash": "889bebd67e7a41bfeec9adfdf45e6ae3",
     "packages": [
         {
             "name": "bramus/ansi-php",
@@ -432,16 +432,16 @@
         },
         {
             "name": "lavary/crunz",
-            "version": "3.1.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lavary/crunz.git",
-                "reference": "8a1a897c86b7dfe093b25668747abc1dab8ded53"
+                "reference": "3a4eca50a9f958069f43e0ace4404ffe41d487b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lavary/crunz/zipball/8a1a897c86b7dfe093b25668747abc1dab8ded53",
-                "reference": "8a1a897c86b7dfe093b25668747abc1dab8ded53",
+                "url": "https://api.github.com/repos/lavary/crunz/zipball/3a4eca50a9f958069f43e0ace4404ffe41d487b9",
+                "reference": "3a4eca50a9f958069f43e0ace4404ffe41d487b9",
                 "shasum": ""
             },
             "require": {
@@ -465,6 +465,7 @@
                 "symfony/error-handler": "^4.4 || ^5.2",
                 "symfony/phpunit-bridge": "^4.4.8 || ^5.2.0"
             },
+            "default-branch": true,
             "bin": [
                 "crunz"
             ],
@@ -499,9 +500,15 @@
             "support": {
                 "email": "mrl.8081@gmail.com",
                 "issues": "http://github.com/lavary/crunz/issues",
-                "source": "https://github.com/lavary/crunz/tree/3.1"
+                "source": "https://github.com/lavary/crunz/tree/master"
             },
-            "time": "2021-11-24T14:24:20+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/PabloKowalczyk",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-05-27T16:22:05+00:00"
         },
         {
             "name": "league/climate",
@@ -5013,7 +5020,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.1",
-        "ext-posix": "*"
+        "ext-posix": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.1.0"

@@ -3,18 +3,24 @@
 namespace Atelier;
 
 use Atelier\Model\Reports;
-use Atelier\Project\ProjectType;
+use Atelier\Project\Type;
 use DateTime;
 
 class Report
 {
 
-    private Project $project;
+    private ?Project $project;
+    private Machine $machine;
     private Command $command;
 
     public function __construct(private array $report)
     {
-        $this->project = Projects::getProject($this->report['project_id']);
+        $this->project = $this->report['project_id']
+            ? Projects::getProject($this->report['project_id'])
+            : null;
+        $this->machine = $this->report['machine_id']
+            ? Machines::getMachine($this->report['machine_id'])
+            : $this->project->getMachine()->getId();
         $this->command = Commands::getCommand($this->report['command_id']);
     }
 
@@ -28,7 +34,7 @@ class Report
         return $this->command;
     }
 
-    public function getProject(): Project
+    public function getProject(): ?Project
     {
         return $this->project;
     }
@@ -84,5 +90,13 @@ class Report
     public function getRunLogId()
     {
         return $this->report['run_log_id'];
+    }
+
+    /**
+     * @return Machine
+     */
+    public function getMachine(): Machine
+    {
+        return $this->machine;
     }
 }

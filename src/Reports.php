@@ -3,16 +3,17 @@
 namespace Atelier;
 
 use Atelier\Model\ProjectTypes;
-use Atelier\Project\ProjectType;
+use Atelier\Project\Type;
 use DateTime;
 
 class Reports
 {
-    public static function add(Command $command, Project $project, Run $run)
+    public static function add(Command $command, ?Project $project, ?Machine $machine, Run $run)
     {
         $reportId = (new Model\Reports())->add([
             'command_id' => $command->getId(),
-            'project_id' => $project->getId(),
+            'project_id' => $project?->getId(),
+            'machine_id' => $machine ? $machine->getId() : $project->getMachine()->getId(),
             'start_time' => (new DateTime())->format('Y-m-d H:i:s'),
             'run_log_id' => $run->getId()
         ]);
@@ -40,6 +41,11 @@ class Reports
         }
 
         return $reports;
+    }
+
+    public static function getReportsCount(int $projectTypeId, string $period): int
+    {
+        return (new \Atelier\Model\Reports())->getAllCount($projectTypeId, $period);
     }
 
     /**

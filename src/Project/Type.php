@@ -2,8 +2,10 @@
 
 namespace Atelier\Project;
 
-enum ProjectType
+enum Type
 {
+    case AUTODE;
+    case INDEXUS;
     case ROTATOR;
     case PALTO;
     case UNDEFINED;

@@ -5,8 +5,8 @@
     <thead>
     <tr>
         <th>ID</th>
-        <td>Команды</td>
-        <td>Проекты</td>
+        <th>Команды</th>
+        <th>Проекты</th>
         <th>Начало</th>
         <th>Конец</th>
         <th>Память</th>
@@ -50,7 +50,7 @@
                 <?=\Atelier\Time::timeHuman($runLog->getStartTime())?>
             </td>
             <td class="text-muted">
-                <?=\Atelier\Time::timeHuman($runLog->getFinishTime())?>
+                <?=$runLog->getFinishTime() ? \Atelier\Time::timeHuman($runLog->getFinishTime()) : 'не завершилась'?>
             </td>
             <td>
                 <?=$runLog->getMemoryHuman()?>
@@ -60,3 +60,4 @@
     <?php endforeach;?>
     </tbody>
 </table>
+<?= $this->insert('partials/pagination', ['url' => '/run-logs?page=%s']);

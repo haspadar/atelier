@@ -8,9 +8,12 @@ use Atelier\Directory;
 use Atelier\Filter;
 use Atelier\Flash;
 use Atelier\Machines;
+use Atelier\ProjectCommand;
 use Atelier\Projects;
 use Atelier\Reports;
+use Atelier\RotatorFragments;
 use Atelier\RunLogs;
+use Atelier\Checks;
 use League\Plates\Engine;
 use Atelier\Url;
 use League\Plates\Extension\Asset;
@@ -19,6 +22,7 @@ use Palto\Logs;
 class Atelier
 {
     private Engine $templatesEngine;
+    private Url $url;
 
     public function __construct()
     {
@@ -46,6 +50,37 @@ class Atelier
         echo $this->templatesEngine->make('machine');
     }
 
+    public function getAccessLogTraffic(int $projectId)
+    {
+        $project = Projects::getProject($projectId);
+        $accessLog = $project->getAccessLog();
+        $this->showJsonResponse([
+            'access_log' => $accessLog,
+            'traffic' => ($project->getMachine()->createSsh()->exec(
+                "cat $accessLog | awk '{print $4}' | uniq -c | sort -rn | head"
+            ))
+        ]);
+    }
+
+    public function showDashboard()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Приборы',
+//            'warnings' => Warnings::getWarnings()
+        ]);
+        echo $this->templatesEngine->make('dashboard');
+    }
+
+    public function showFitting(int $typeId)
+    {
+//        $type = Warnings::getFitting($typeId);
+//        $this->templatesEngine->addData([
+//            'title' => 'Прибор "' . $type['title'] . '"',
+//            'warning' => Warnings::getFittingWarning($typeId)
+//        ]);
+//        echo $this->templatesEngine->make('fitting');
+    }
+
     public function showMachines()
     {
         $this->templatesEngine->addData([
@@ -62,12 +97,16 @@ class Atelier
         $offset = ($pageNumber - 1) * $limit;
         $projectTypeId = intval($this->getQueryParam('project_type_id', 0));
         $period = $this->getQueryParam('period');
+        $reportsCount = Reports::getReportsCount($projectTypeId, $period);
         $this->templatesEngine->addData([
             'title' => 'Репорты',
             'reports' => Reports::getReports($projectTypeId, $period, $limit, $offset),
             'project_types' => Projects::getTypes(),
             'project_type_id' => $projectTypeId,
-            'period' => $period
+            'period' => $period,
+            'count' => $reportsCount,
+            'page' => $pageNumber,
+            'pages_count' => ceil($reportsCount / $limit),
         ]);
         echo $this->templatesEngine->make('reports');
     }
@@ -140,9 +179,16 @@ class Atelier
 
     public function showRunLogs()
     {
+        $pageNumber = $this->getQueryParam('page', 1);
+        $limit = 25;
+        $offset = ($pageNumber - 1) * $limit;
+        $runLogsCount = RunLogs::getRunLogsCount();
         $this->templatesEngine->addData([
             'title' => 'Запуски',
-            'run_logs' => RunLogs::getRunLogs()
+            'run_logs' => RunLogs::getRunLogs($limit, $offset),
+            'page' => $pageNumber,
+            'pages_count' => ceil($runLogsCount / $limit),
+            'count' => $runLogsCount
         ]);
         echo $this->templatesEngine->make('run-logs');
     }
@@ -198,8 +244,11 @@ class Atelier
     public function runProjectCommand(int $projectId, string $commandName): void
     {
         $project = Projects::getProject($projectId);
+        /**
+         * @var ProjectCommand $command
+         */
         $command = Commands::getCommandByName($commandName);
-        $report = Commands::run($command, [$project]);
+        $report = $command->runForAll([$project]);
         $this->showJsonResponse(['success' => true, 'response' => nl2br($report->getResponse())]);
     }
 
@@ -222,6 +271,7 @@ class Atelier
             } else {
                 $this->showJsonResponse(['report' => 'Новые проекты не найдены']);
             }
+
         } else {
             $this->showJsonResponse(['error' => $ssh->getError()]);
         }
@@ -251,7 +301,8 @@ class Atelier
             'title' => 'Проект "' . $project->getName() . '"',
             'project' => $project,
             'commands' => $commands,
-            'last_reports' => Reports::getProjectLastReports($project, $commands)
+            'last_reports' => Reports::getProjectLastReports($project, $commands),
+            'rotator_fragments' => RotatorFragments::getByProject($project)
         ]);
         echo $this->templatesEngine->make('project');
     }

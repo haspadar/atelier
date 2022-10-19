@@ -27,9 +27,9 @@ class Machines
     /**
      * @return Machine[]
      */
-    public static function getMachines(): array
+    public static function getMachines(array $ids = []): array
     {
-        return array_map(fn($machine) => new Machine($machine), (new \Atelier\Model\Machines())->getAll());
+        return array_map(fn($machine) => new Machine($machine), (new \Atelier\Model\Machines())->getAll($ids));
     }
 
 //    /**

@@ -9,6 +9,24 @@ $(function () {
     $('form.page').on('submit', function () {
         return false;
     });
+    $('.show-access-log-traffic').on('click', function () {
+        let projectId = $(this).data('projectId');
+        let $column = $(this).parents('td');
+        $.ajax({
+            url: '/get-access-log-traffic/' + projectId,
+            dataType: "json",
+            type: 'GET',
+            data: {},
+            success: function (resp) {
+                let uniqueId = 'access-log-' + Math.floor(Math.random() * 100);
+                $column.html('<div title="' + resp.traffic + '" id="' + uniqueId + '">' + resp.access_log + '</div>');
+                $(document.createElement('div')).attr('id', 'theID')
+                new bootstrap.Tooltip(document.getElementById(uniqueId));
+            }
+        });
+
+        return false;
+    });
     $('.run-project-command').on('click', function () {
         let projectId = $(this).data('id');
         let command = $(this).data('command');
@@ -69,7 +87,7 @@ $(function () {
             }
         });
     });
-    $('.scan-projects').on('click', function () {
+    $('.scan-projects').off('click').on('click', function () {
         let machineId = $(this).data('id');
         auth(machineId, function (login, password) {
             let $report = $('#scan-projects-report-' + machineId);

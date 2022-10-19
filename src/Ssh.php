@@ -46,9 +46,37 @@ class Ssh
         }
     }
 
-    public function exec(string $command): string
+    public function getSsh2(): SSH2
     {
-        Logger::debug('Running command "' . $command . '" on machine "' . $this->machine->getHost() . '"');
+        return $this->ssh2;
+    }
+
+    public function enablePTY()
+    {
+        $this->ssh2->enablePTY();
+    }
+
+    public function write(string $command)
+    {
+        $this->ssh2->write($command);
+    }
+
+    public function read(string $text)
+    {
+        return $this->ssh2->read($text);
+    }
+
+    public function exec(string $command, string $sudoPassword = '', string $hidePassword = ''): string
+    {
+        if ($sudoPassword) {
+            $outputCommand = "echo ***** | sudo -S $command";
+            $command = "echo $sudoPassword | sudo -S $command";
+        } else {
+            $outputCommand = $command;
+        }
+
+        $outputCommand = str_replace($hidePassword, '*****', $outputCommand);
+        Logger::debug('Running command "' . $outputCommand . '" on machine "' . $this->machine->getHost() . '"');
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $response = $this->ssh2->exec($command) ?? '';

@@ -2,28 +2,30 @@
 
 namespace Atelier;
 
+use Atelier\Command\Exception;
 use Atelier\Model\CommandTypes;
+use League\CLImate\CLImate;
 
 abstract class Command
 {
-    private array $command;
-    /**
-     * @var ProjectType[]
-     */
-    private array $projectTypes;
+    protected array $command;
 
-    public function __construct()
+    public function __construct(protected array $options = [])
     {
         $classNameParts = explode('\\', get_class($this));
         $shortClassName = $classNameParts[count($classNameParts) - 1];
         $this->command = (new \Atelier\Model\Commands())->getByName(lcfirst($shortClassName));
-        $this->projectTypes = array_map(
-            fn(array $type) => new ProjectType($type),
-            (new CommandTypes())->getCommandTypes($this->command['id'])
-        );
     }
 
-    abstract public function run(Project $project): string;
+    abstract public function runForAll(): ?Report;
+
+    public function getDescription(): array
+    {
+        return [
+            'Скрипт' => $this->getScript(),
+            'Описание' => $this->getComment()
+        ];
+    }
 
     /**
      * @return array
@@ -48,14 +50,6 @@ abstract class Command
         return $this->command['run_time'];
     }
 
-    /**
-     * @return ProjectType[]
-     */
-    public function getProjectTypes(): array
-    {
-        return $this->projectTypes;
-    }
-
     public function getLog(): string
     {
         return '';
@@ -64,5 +58,45 @@ abstract class Command
     public function getTooltip(): string
     {
         return '';
+    }
+
+    public function getScript(): string
+    {
+        return Names::camelToSnake($this->getName()) . '.php';
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function requirePassword(string $password, string $welcome, string $error): string
+    {
+        if (!$password) {
+            $password = (new CLImate())
+                ->yellow()
+                ->password($welcome)
+                ->prompt();
+        }
+
+        if (!$password) {
+            throw new Exception($error);
+        }
+
+        return $password;
+    }
+
+    protected function requireText(string $text, string $welcome, string $error): string
+    {
+        if (!$text) {
+            $text = (new CLImate())
+                ->yellow()
+                ->input($welcome)
+                ->prompt();
+        }
+
+        if (!$text) {
+            throw new Exception($error);
+        }
+
+        return $text;
     }
 }

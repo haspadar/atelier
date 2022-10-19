@@ -15,6 +15,8 @@ try {
     $router->get('/projects', '\Atelier\Controller\Atelier@showProjects');
     $router->get('/projects/{id}', '\Atelier\Controller\Atelier@showProject');
     $router->delete('/projects/{id}', '\Atelier\Controller\Atelier@deleteProject');
+    $router->get('/dashboard', '\Atelier\Controller\Atelier@showDashboard');
+    $router->get('/fittings/{id}', '\Atelier\Controller\Atelier@showFitting');
     $router->get('/machines', '\Atelier\Controller\Atelier@showMachines');
     $router->get('/machines/{id}', '\Atelier\Controller\Atelier@showMachine');
     $router->get('/reports', '\Atelier\Controller\Atelier@showReports');
@@ -33,6 +35,7 @@ try {
     $router->get("/info-logs/{name}", '\Atelier\Controller\Atelier@showInfoLogs');
     $router->get("/error-logs/{name}", '\Atelier\Controller\Atelier@showErrorLogs');
     $router->get("/get-logs/{name}/{type}", '\Atelier\Controller\Atelier@getLogs');
+    $router->get("/get-access-log-traffic/{projectId}", '\Atelier\Controller\Atelier@getAccessLogTraffic');
 
     $router->run();
 

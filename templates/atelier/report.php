@@ -11,7 +11,11 @@ $report = $this->data['report'];
 
 <dl>
     <dt>Команда</dt>
-    <dd><?=$report->getCommand()->getName()?></dd>
+    <dd>
+        <a href="/commands/<?=$report->getCommand()->getId()?>">
+            <?=$report->getCommand()->getName()?>
+        </a>
+    </dd>
     <dt>Проект</dt>
     <dd>
         <a href="/projects/<?=$report->getProject()->getId()?>">

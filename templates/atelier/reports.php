@@ -20,24 +20,24 @@ use Atelier\Url; ?>
 
     <div class="d-flex justify-content-start">
         <div class="btn-group me-3" role="group">
-            <a class="btn btn-outline-primary <?php if (!$this->data['project_type_id']):?>active<?php endif;?>" href="<?=(new Url())->generate(['project_type_id' => null])?>">Все</a>
+            <a class="btn btn-outline-primary <?php if (!$this->data['project_type_id']):?>active<?php endif;?>" href="<?=(new Url())->generate(['project_type_id' => null, 'page' => 1])?>">Все</a>
             <?php
             /**
              * @var ProjectType $projectType
              */?>
             <?php foreach ($this->data['project_types'] as $projectType) :?>
-                <a class="btn btn-outline-primary <?php if ($this->data['project_type_id'] == $projectType->getId()):?>active<?php endif;?>" href="<?=(new Url())->generate(['project_type_id' => $projectType->getId()])?>">
+                <a class="btn btn-outline-primary <?php if ($this->data['project_type_id'] == $projectType->getId()):?>active<?php endif;?>" href="<?=(new Url())->generate(['project_type_id' => $projectType->getId(), 'page' => 1])?>">
                     <?=$projectType->getName()?>
                 </a>
             <?php endforeach;?>
         </div>
 
         <div class=" btn-group" role="group">
-            <a href="<?=(new Url())->generate(['period' => null])?>" class="btn btn-outline-primary <?php if (!$this->data['period']) :?>active<?php endif;?>">Все</a>
-            <a href="<?=(new Url())->generate(['period' => 'today'])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'today') :?>active<?php endif;?>">Сегодня</a>
-            <a href="<?=(new Url())->generate(['period' => 'yesterday'])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'yesterday') :?>active<?php endif;?>">Вчера</a>
-            <a href="<?=(new Url())->generate(['period' => 'week'])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'week') :?>active<?php endif;?>">За неделю</a>
-            <a href="<?=(new Url())->generate(['period' => 'month'])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'month') :?>active<?php endif;?>">За месяц</a>
+            <a href="<?=(new Url())->generate(['period' => null, 'page' => 1])?>" class="btn btn-outline-primary <?php if (!$this->data['period']) :?>active<?php endif;?>">Все</a>
+            <a href="<?=(new Url())->generate(['period' => 'today', 'page' => 1])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'today') :?>active<?php endif;?>">Сегодня</a>
+            <a href="<?=(new Url())->generate(['period' => 'yesterday', 'page' => 1])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'yesterday') :?>active<?php endif;?>">Вчера</a>
+            <a href="<?=(new Url())->generate(['period' => 'week', 'page' => 1])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'week') :?>active<?php endif;?>">За неделю</a>
+            <a href="<?=(new Url())->generate(['period' => 'month', 'page' => 1])?>" class="btn btn-outline-primary <?php if ($this->data['period'] == 'month') :?>active<?php endif;?>">За месяц</a>
         </div>
     </div>
 
@@ -75,3 +75,4 @@ use Atelier\Url; ?>
     <?php endforeach;?>
     </tbody>
 </table>
+<?= $this->insert('partials/pagination', ['url' => '/reports?page=%s']);

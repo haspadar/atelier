@@ -37,8 +37,11 @@ $machine = $this->data['machine'];
         <h2 class="mt-4">Проекты</h2>
         <table class="table">
             <thead>
-                <th>Проект</th>
-                <th>Тип</th>
+                <tr>
+                    <th>Проект</th>
+                    <th>Тип</th>
+                    <th>Access Log</th>
+                </tr>
             </thead>
             <tbody>
             <?php foreach ($projects as $project) :?>
@@ -53,6 +56,11 @@ $machine = $this->data['machine'];
                             <?=$project->getTypeName()?>
                         </span>
 
+                    </td>
+                    <td>
+                        <a href="#" class="show-access-log-traffic" data-project-id="<?=$project->getId()?>">
+                            Показать нагрузку
+                        </a>
                     </td>
                 </tr>
             <?php endforeach;?>

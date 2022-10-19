@@ -2,9 +2,10 @@
 
 namespace Atelier;
 
-use Atelier\Command\ExtractCommit;
+use Atelier\Command\Exception;
+use Atelier\Command\ExtractGit;
 use Atelier\Model\Reports;
-use Atelier\Project\ProjectType;
+use Atelier\Project\Type;
 
 class Commands
 {
@@ -19,39 +20,11 @@ class Commands
         );
     }
 
-    public static function paltoRun(Command $command)
-    {
-        self::run($command, Projects::getPaltoProjects());
-    }
-
     /**
-     * @param Command $command
-     * @param Project[] $projects
-     * @return void
+     * @param Project $project
+     * @return Command[]
      */
-    public static function run(Command $command, array $projects): ?Report
-    {
-        declare(ticks = 10) {
-            $run = new Run();
-            register_tick_function([$run, 'ping']);
-            foreach ($projects as $project) {
-                $ssh = $project->getMachine()->createSsh();
-                if (!$ssh->getError()) {
-                    $report = \Atelier\Reports::add($command, $project, $run);
-                    $response = $command->run($project);
-                    $report->finish($response);
-                } else {
-                    Logger::error($project->getMachine()->getHost() . ': ' . $ssh->getError());
-                }
-            }
-
-            $run->finish();
-        }
-
-        return $report ?? null;
-    }
-
-    public static function getProjectCommands(Project $project)
+    public static function getProjectCommands(Project $project): array
     {
         return array_map(
             fn ($command) => self::createCommand($command),

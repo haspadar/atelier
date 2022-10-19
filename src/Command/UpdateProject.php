@@ -4,8 +4,9 @@ namespace Atelier\Command;
 
 use Atelier\Command;
 use Atelier\Project;
+use Atelier\ProjectCommand;
 
-class UpdateProject extends Command
+class UpdateProject extends ProjectCommand
 {
     public function run(Project $project): string
     {
@@ -15,7 +16,7 @@ class UpdateProject extends Command
             . $project->getPath()
             . '/phinx.php'
         );
-        (new ExtractCommit())->run($project);
+        (new ExtractGit())->run($project);
         (new ExtractMigration())->run($project);
 
         return $response;

@@ -2,9 +2,9 @@
 
 namespace Atelier;
 
-use Atelier\Command\ExtractCommit;
+use Atelier\Command\ExtractGit;
 use Atelier\Model\Reports;
-use Atelier\Project\ProjectType;
+use Atelier\Project\Type;
 
 class RunLogs
 {
@@ -13,14 +13,19 @@ class RunLogs
         return new RunLog((new Model\RunLogs())->getById($id));
     }
 
+    public static function getRunLogsCount(): int
+    {
+        return (new Model\RunLogs())->getAllCount();
+    }
+
     /**
-     * @return Command[]
+     * @return RunLog[]
      */
-    public static function getRunLogs(): array
+    public static function getRunLogs(int $limit, int $offset): array
     {
         return array_map(
             fn(array $runLog) => new RunLog($runLog),
-            (new Model\RunLogs())->getAll()
+            (new Model\RunLogs())->getAll($limit, $offset)
         );
     }
 
@@ -42,7 +47,7 @@ class RunLogs
             foreach ($projects as $project) {
                 $ssh = $project->getMachine()->createSsh();
                 if (!$ssh->getError()) {
-                    $report = \Atelier\Reports::add($command, $project, $run);
+                    $report = \Atelier\Reports::add($command, $project, null, $run);
                     $response = $command->run($project);
                     $report->finish($response);
                 } else {

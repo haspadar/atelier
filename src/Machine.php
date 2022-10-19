@@ -2,8 +2,9 @@
 
 namespace Atelier;
 
+use Atelier\Model\PhpFpmTraffic;
 use Atelier\Model\Projects;
-use Atelier\Project\ProjectType;
+use Atelier\Project\Type;
 use phpseclib3\Crypt\Common\AsymmetricKey;
 use phpseclib3\Crypt\PublicKeyLoader;
 
@@ -17,13 +18,14 @@ class Machine
     {
     }
 
-    public function promptPassword(string $login, string $password): string
+    public function getPhpFpmTraffic(): float
     {
-        if (!$this->password || !$this->runCommand("echo {$this->password} | sudo -S cat /etc/crontab")) {
-            return $this->promptPassword();
-        }
+        return $this->machine['php_fpm_traffic'];
+    }
 
-        return $this->password;
+    public function getFreeSpace(): int
+    {
+        return $this->machine['free_space'];
     }
 
     public function getHost(): string
@@ -41,54 +43,16 @@ class Machine
         return $this->machine['id'];
     }
 
+    public function setFreeSpace(int $percent): void
+    {
+        (new \Atelier\Model\Machines())->update(['free_space' => $percent], $this->getId());
+    }
+
     public function runPathCommand(string $command): array|string
     {
         return array_values(array_filter(
             $this->runCommand($command, true, fn($path) => $this->filterPath($path))
         ));
-    }
-
-    public function setPassword(string $password)
-    {
-        $this->password = $password;
-    }
-
-    public function getFileContent(string $filename): string
-    {
-        return $this->runCommand("cat " . $filename, false);
-    }
-
-    public function forEveryProject(callable $projectLogic, bool $isPaltoOnly = false)
-    {
-        $projects = array_map(
-            fn(string $name) => new Project($this, $name),
-            $this->runPathCommand("ls -d " . self::PROJECTS_PATH . "*/")
-        );
-        if ($isPaltoOnly) {
-            $projects = array_filter($projects, fn(Project $project) => $project->isPalto());
-        }
-
-        foreach ($projects as $projectKey => $project) {
-            $machineLogMessage = 'Directory ' . $project->getDirectory() . ' (' . ($projectKey + 1) . '/' . count($projects) . ')';
-            Logger::machineInfo($machineLogMessage);
-            $projectLogic($project);
-        }
-    }
-
-    public function isFileExists(string $file): bool
-    {
-        $response = $this->runCommand("test -e " . $file . '  && echo file exists || echo file not found', false);
-        $isExists = $response == 'file exists';
-        Logger::debug('is file ' . $file . ' exists on machine ' . $this->getHost() . ': ' . ($isExists ? 'true' : 'false'));
-
-        return $isExists;
-    }
-
-    public function runSudoCommand(string $command, bool $isArray = true, ?callable $filter = null): array|string
-    {
-        $sudoPassword = $this->password;
-
-        return $this->runCommand("echo $sudoPassword | sudo -S " . $command, $isArray, $filter);
     }
 
     /**
@@ -121,14 +85,6 @@ class Machine
         return $firstSymbol == '/';
     }
 
-    public function findPaltoProjects()
-    {
-//        $directories = $this->getWithFileDirectories(self::PROJECTS_PATH, 'phinx.php', 2);
-//        $filteredDirectories = $this->filterProjectNames($directories);
-//
-//        return array_map(fn($name) => new Project($this, $name), $filteredDirectories);
-    }
-
     public function createSsh(string $login = '', string|AsymmetricKey $password = ''): Ssh
     {
         if (!$login && !$password) {
@@ -151,7 +107,10 @@ class Machine
         $response = $this->ssh->exec("ls -d /var/www/*") ?? '';
         $directories = [];
         foreach (explode(PHP_EOL, $response) as $directory) {
-            if (!in_array($directory, ['', '/var/www/html']) && !$this->isArchive($directory)) {
+            if (!in_array($directory, ['', '/var/www/html'])
+                && !$this->isArchive($directory)
+                && !$this->isFile($directory)
+            ) {
                 $directories[] = $directory;
             }
         }
@@ -162,20 +121,9 @@ class Machine
     /**
      * @return Project[]
      */
-    public function getProjects(?int $typeId = null): array
+    public function getProjects(array $typeIds = []): array
     {
-        return \Atelier\Projects::getProjects($this->getId(), $typeId);
-    }
-
-    /**
-     * @return Project[]
-     */
-    public function getPaltoProjects(): array
-    {
-        $directories = $this->getWithFileDirectories(self::PROJECTS_PATH, 'phinx.php', 2);
-        $filteredDirectories = $this->filterProjectNames($directories);
-
-        return array_map(fn($name) => new Project($this, $name), $filteredDirectories);
+        return \Atelier\Projects::getProjects($this->getId(), $typeIds);
     }
 
     public function addProjects($directories): void
@@ -183,7 +131,7 @@ class Machine
         foreach ($directories as $directory) {
             (new Projects())->add([
                 'machine_id' => $this->getId(),
-                'type' => \Atelier\Projects::getType($this->ssh, $directory)->name,
+                'type_id' => \Atelier\Projects::getType($this->ssh, $directory)->getId(),
                 'path' => $directory,
                 'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
             ]);
@@ -198,9 +146,31 @@ class Machine
         return array_diff($directories, $existsNames);
     }
 
-    public function deleteProjects(int $machineId)
+    public function deleteProjects(int $machineId): void
     {
         (new Projects())->removeMachineProjects($machineId);
+    }
+
+    public function setPhpVersion(string $version): void
+    {
+        (new \Atelier\Model\Machines())->update(['php_version' => $version], $this->getId());
+    }
+
+    public function setPhpFpmActiveTime(?\DateTime $activeTime): void
+    {
+        (new \Atelier\Model\Machines())->update([
+            'php_fpm_active_time' => $activeTime?->format('Y-m-d H:i:s')
+        ], $this->getId());
+    }
+
+    public function addPhpFpmTraffic(string $traffic, \DateTime $activeTime): void
+    {
+        (new PhpFpmTraffic())->add([
+            'machine_id' => $this->getId(),
+            'traffic' => $traffic,
+            'active_time' => $activeTime,
+            'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
+        ]);
     }
 
     private function getWithFileDirectories(string $directory, string $file, int $maxDepth = 4)
@@ -240,6 +210,18 @@ class Machine
         }
 
         return $filtered;
+    }
+
+    private function isFile(string $file): bool
+    {
+        $ignoreFiles = ['.sql', '.env', '.htpasswd'];
+        foreach ($ignoreFiles as $ignoreFile) {
+            if (str_ends_with($file, $ignoreFile)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isArchive(string $directory): bool

@@ -59,9 +59,9 @@ class RunLog
         return new \DateTime($this->runLog['start_time']);
     }
 
-    public function getFinishTime(): \DateTime
+    public function getFinishTime(): ?\DateTime
     {
-        return new \DateTime($this->runLog['finish_time']);
+        return $this->runLog['finish_time'] ? new \DateTime($this->runLog['finish_time']) : null;
     }
 
     public function getPingTime(): ?\DateTime

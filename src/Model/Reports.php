@@ -89,4 +89,23 @@ class Reports extends Model
             default => null
         };
     }
+
+    public function getAllCount(int $projectTypeId, string $period): int
+    {
+        $query = 'SELECT COUNT(*) FROM ' . $this->name . ' AS r INNER JOIN projects AS p ON r.project_id = p.id';
+        $values = [
+            'project_type_id' => $projectTypeId,
+            'start_time_from' => $this->getStartTimeFrom($period)?->format('Y-m-d H:i:s'),
+            'start_time_to' => $this->getStartTimeTo($period)?->format('Y-m-d H:i:s')
+        ];
+        if ($projectTypeId && $period) {
+            $query .= ' WHERE p.type_id = %d_project_type_id AND start_time >= %s_start_time_from AND start_time <= %s_start_time_to';
+        } elseif ($projectTypeId) {
+            $query .= ' WHERE p.type_id = %d_project_type_id';
+        } elseif ($period) {
+            $query .= ' WHERE start_time >= %s_start_time_from AND start_time <= %s_start_time_to';
+        }
+
+        return self::getDb()->queryFirstField($query, $values) ?: 0;
+    }
 }
