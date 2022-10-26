@@ -13,11 +13,9 @@ use Atelier\Projects;
 use Atelier\Reports;
 use Atelier\RotatorFragments;
 use Atelier\RunLogs;
-use Atelier\Checks;
 use League\Plates\Engine;
 use Atelier\Url;
 use League\Plates\Extension\Asset;
-use Palto\Logs;
 
 class Atelier
 {
