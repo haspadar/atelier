@@ -16,6 +16,13 @@ class Commands extends Model
         return self::getDb()->query('SELECT * FROM ' . $this->name) ?: [];
     }
 
+    public function removeNotIn(array $names): int
+    {
+        self::getDb()->delete($this->name, 'name NOT IN %ls', $names);
+
+        return self::getDb()->affectedRows();
+    }
+
     public function getTypeAll(int $typeId)
     {
         return self::getDb()->query('SELECT c.* FROM '

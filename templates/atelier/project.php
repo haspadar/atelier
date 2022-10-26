@@ -1,6 +1,6 @@
 <?php /** @var $this League\Plates\Template\Template */
 
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\Report;
 use Atelier\RotatorFragment;
 use Atelier\Time;
@@ -10,7 +10,7 @@ use Atelier\Time;
 <?php $this->layout('layout');?>
 <?php
 /**
- * @var Project $project
+ * @var Machine $project
  */
 $project = $this->data['project'];
 ?>
@@ -48,7 +48,7 @@ $project = $this->data['project'];
         <?php $commands = $project->isPalto() ? [[
                 'name' => 'extractCommit',
                 'comment' => 'Извлечение последнего коммита',
-                'log' => $project->getLastCommit()?->format('d.m.Y H:i:s'),
+                'log' => $project->getLastCommitTime()?->format('d.m.Y H:i:s'),
             ], [
                 'name' => 'extractMigration',
                 'comment' => 'Извлечение последней миграции',

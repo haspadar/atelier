@@ -4,8 +4,6 @@ namespace Atelier;
 
 use Atelier\Command\ExtractRotatorFragments;
 use Atelier\Model\CommandTypes;
-use Atelier\Project\DbCredentials;
-use Atelier\Project\Palto\Db;
 use Exception;
 
 abstract class ProjectCommand extends Command
@@ -15,7 +13,7 @@ abstract class ProjectCommand extends Command
      */
     protected array $projectTypes;
     /**
-     * @var Project[]
+     * @var Machine[]
      */
     protected array $projects;
     /**
@@ -27,7 +25,7 @@ abstract class ProjectCommand extends Command
     {
         parent::__construct($this->options);
         if (!$this->command) {
-            throw new \Atelier\Command\Exception('Command not found in database');
+            throw new Command\Exception('Command not found in database');
         }
 
         $this->projectTypes = array_map(
@@ -36,13 +34,20 @@ abstract class ProjectCommand extends Command
         );
         $this->projects = Projects::getProjects(0, $this->projectTypes);
         $machineIds = array_unique(array_map(
-            fn(Project $project) => $project->getMachine()->getId(),
+            fn(Machine $project) => $project->getMachine()->getId(),
             $this->projects
         ));
         $this->machines = Machines::getMachines($machineIds);
     }
 
-    abstract public function run(Project $project): string;
+    public function extractLastLine(string $response): string
+    {
+        $lines = array_values(array_filter(explode(PHP_EOL, $response)));
+
+        return $lines[count($lines) - 1];
+    }
+
+    abstract public function run(Machine $project): string;
 
     public function getDescription(): array
     {
@@ -56,7 +61,7 @@ abstract class ProjectCommand extends Command
     }
 
     /**
-     * @param Project[] $projects
+     * @param Machine[] $projects
      * @return Report|null
      */
     public function runForAll(array $projects = []): ?Report
@@ -68,6 +73,10 @@ abstract class ProjectCommand extends Command
                 ', ',
                 array_map(fn(ProjectType $type) => $type->getName(), $this->getProjectTypes())
             );
+            if (!$typeNames) {
+                throw new Command\Exception('Не указаны типы проектов для команды');
+            }
+
             Logger::info('Command ' . $this->getName() . ' started for every ' . $typeNames . ' project');
             $projects = $projects ?: $this->getProjects();
             $report = self::runForProjects($projects);
@@ -96,7 +105,7 @@ abstract class ProjectCommand extends Command
     }
 
     /**
-     * @return Project[]
+     * @return Machine[]
      */
     public function getProjects(): array
     {
@@ -110,10 +119,23 @@ abstract class ProjectCommand extends Command
 
     protected function download(string $url): array
     {
+        $ch = \curl_init();
+        \curl_setopt($ch, CURLOPT_URL,$url);
+        \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+        \curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 0);
+        \curl_setopt ($ch, CURLOPT_USERAGENT, "Home");
+
+        $response = \curl_exec($ch);
+        $info = curl_getinfo($ch);
+
+        return [$response, $info];
+    }
+
+    protected function downloadHeaders(string $url): array
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_NOBODY, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "Home");
@@ -129,7 +151,7 @@ abstract class ProjectCommand extends Command
     }
 
     /**
-     * @param Project[] $projects
+     * @param Machine[] $projects
      */
     private function runForProjects(array $projects): ?Report
     {
@@ -159,9 +181,9 @@ abstract class ProjectCommand extends Command
         return $report ?? null;
     }
 
-    protected function replacePaltoSetting(Project $project, string $name, string $value): string
+    protected function replacePaltoSetting(Machine $project, string $name, string $value): string
     {
-        $dbCredentials = $this->getPaltoDbCredentials($project);
+        $dbCredentials = $this->extractDbCredentials($project);
         $error = $project->getMachine()->getSsh()->exec('mysql -u'
             . $dbCredentials->getUserName()
             . ' -p'
@@ -175,7 +197,7 @@ abstract class ProjectCommand extends Command
         return $error;
     }
 
-    protected function getPaltoDbCredentials(Project $project): Db
+    protected function extractDbCredentials(Machine $project): Project\Db
     {
         $response = $project->getMachine()->getSsh()->exec("cd " . $project->getPath() . ' && (cat config.php || cat configs/.env)');
         $lines = array_filter(explode(PHP_EOL, $response));
@@ -183,10 +205,10 @@ abstract class ProjectCommand extends Command
         $password = $this->parseDbCredentialsLines($lines, ['DB::$password', 'DB_PASSWORD']);
         $dbName = $this->parseDbCredentialsLines($lines, ['DB::$dbName', 'DB_NAME']);
 
-        return new Db($userName, $password, $dbName);
+        return new Project\Db($userName, $password, $dbName);
     }
 
-    protected function replaceFragments(Project $project, string $from, string $to)
+    protected function replaceFragments(Machine $project, string $from, string $to)
     {
         $fragments = array_filter(
             RotatorFragments::getByProject($project),

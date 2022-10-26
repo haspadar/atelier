@@ -5,7 +5,7 @@ namespace Atelier;
 class RunLog
 {
     /**
-     * @var Project[]
+     * @var Machine[]
      */
     private array $projects;
 
@@ -21,7 +21,7 @@ class RunLog
     public function __construct(private readonly array $runLog)
     {
         $this->projects = array_map(
-            fn($project) => new Project($project),
+            fn($project) => new Machine($project),
             (new \Atelier\Model\Reports())->getRunLogProjects($this->runLog['id'])
         );
         $this->commands = array_map(

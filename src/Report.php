@@ -9,7 +9,7 @@ use DateTime;
 class Report
 {
 
-    private ?Project $project;
+    private ?Machine $project;
     private Machine $machine;
     private Command $command;
 
@@ -34,7 +34,7 @@ class Report
         return $this->command;
     }
 
-    public function getProject(): ?Project
+    public function getProject(): ?Machine
     {
         return $this->project;
     }

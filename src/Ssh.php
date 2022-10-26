@@ -1,6 +1,7 @@
 <?php
 namespace Atelier;
 
+use Atelier\Project\Db;
 use phpseclib3\Crypt\Common\AsymmetricKey;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Net\SSH2;
@@ -64,6 +65,20 @@ class Ssh
     public function read(string $text)
     {
         return $this->ssh2->read($text);
+    }
+
+    public function execMysql(string $sql, Db $dbCredentials): string
+    {
+        return $this->exec("mysql -u"
+            . $dbCredentials->getUserName()
+            . ' -p\''
+            . $dbCredentials->getPassword()
+            . '\' '
+            . $dbCredentials->getDbName()
+            . " -e \"$sql\"",
+            '',
+            $dbCredentials->getPassword()
+        );
     }
 
     public function exec(string $command, string $sudoPassword = '', string $hidePassword = ''): string

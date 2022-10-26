@@ -4,18 +4,18 @@ namespace Atelier\Command;
 
 use Atelier\Command;
 use Atelier\Logger;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\ProjectCommand;
 
 class ExtractSmoke extends ProjectCommand
 {
 
-    public function run(Project $project): string
+    public function run(Machine $project): string
     {
         $response = $project->getMachine()->getSsh()->exec(
             'cd ' . $project->getPath() . ' && php vendor/bin/phpunit tests'
         );
-        $lastLine = $project->getLastLine($response);
+        $lastLine = $this->extractLastLine($response);
         if (str_starts_with($lastLine, 'OK')) {
             Logger::info('Project ' . $this->getName() . ' smoke is OK');
             $project->setSmokeLastReport('OK');

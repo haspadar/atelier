@@ -5,7 +5,7 @@ namespace Atelier\Warning;
 use Atelier\Machine;
 use Atelier\Machines;
 use Atelier\Model\Projects;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\Warning;
 
 class FreeSpace extends Warning

@@ -3,7 +3,7 @@
 namespace Atelier\Warning;
 
 use Atelier\Model\Projects;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\Warning;
 
 class OldMigration extends Warning
@@ -12,12 +12,12 @@ class OldMigration extends Warning
     {
         parent::__construct($type);
         $this->projects = array_map(
-            fn($project) => new Project($project),
+            fn($project) => new Machine($project),
             (new Projects())->getOldMigrationProjects()
         );
     }
 
-    public function getProjectProblem(Project $project): string
+    public function getProjectProblem(Machine $project): string
     {
         return $project->getLastMigrationName();
     }

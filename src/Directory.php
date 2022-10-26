@@ -75,6 +75,19 @@ class Directory
         return $files;
     }
 
+    public static function getBinScripts(): array
+    {
+        return array_filter(
+            scandir(self::getBinDirectory()),
+            fn(string $file) => !in_array($file, ['.', '..', 'autoload_require_composer.php', 'list.php'])
+        );
+    }
+
+    public static function getBinDirectory(): string
+    {
+        return self::getRootDirectory() . '/bin';
+    }
+
     public static function getDbDirectory(): string
     {
         return self::getRootDirectory() . '/db';

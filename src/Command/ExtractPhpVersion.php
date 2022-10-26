@@ -8,7 +8,7 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Project;
+use Atelier\Machine;
 
 class ExtractPhpVersion extends MachineCommand
 {

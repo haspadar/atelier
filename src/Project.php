@@ -6,6 +6,8 @@ use Atelier\Model\NginxTraffic;
 use Atelier\Model\Parser;
 use Atelier\Model\ProjectTypes;
 use Atelier\Model\ResponseCodes;
+use Atelier\Model\HttpInfo;
+use Atelier\Model\Rotator;
 use Atelier\Project\Type;
 use DateTime;
 
@@ -19,6 +21,18 @@ class Project
     {
         $this->machine = Machines::getMachine($project['machine_id']);
         $this->projectType = new \Atelier\ProjectType((new ProjectTypes())->getById($this->project['type_id']));
+    }
+
+    public function addHttp(float $seconds, int $httpCode, string $cacheHeader)
+    {
+        $httpInfo = new HttpInfo();
+        $httpInfo->add([
+            'project_id' => $this->getId(),
+            'seconds' => $seconds,
+            'http_code' => $httpCode,
+            'cache_header' => $cacheHeader,
+            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
     }
 
     public function addNginxTraffic(array $countsWithDates)
@@ -40,7 +54,7 @@ class Project
     {
         return $this->machine;
     }
-    
+
     public function getId(): int
     {
         return $this->project['id'];
@@ -53,7 +67,21 @@ class Project
 
     public function getAddress(): string
     {
-        return 'https://www.' . $this->getName();
+        $hasSubDomain = count(explode('.', $this->getName())) > 2;
+
+        return $hasSubDomain
+            ? 'https://'  . $this->getName()
+            : 'https://www.' . $this->getName();
+    }
+
+    public function getNginxAccessLog(): string
+    {
+        return $this->project['access_log'];
+    }
+
+    public function getNginxErrorLog(): string
+    {
+        return $this->project['error_log'];
     }
 
     public function getName(): string
@@ -92,19 +120,30 @@ class Project
         ], $this->getId());
     }
 
+    public function setRotatorInfo(DateTime $time, int $count)
+    {
+        $found = (new Rotator())->getFirst();
+        if ($found) {
+            (new Rotator())->update([
+                'expire_time' => $time->format('Y-m-d H:i:s'),
+                'count' => $count,
+                'update_time' => (new DateTime())->format('Y-m-d H:i:s')
+            ], $found->id);
+        } else {
+            (new Rotator())->add([
+                'expire_time' => $time->format('Y-m-d H:i:s'),
+                'count' => $count,
+                'update_time' => (new DateTime())->format('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
     public function setLastCommitTime(DateTime $time)
     {
         $this->project['last_commit_time'] = $time->format('Y-m-d H:i:s');
         (new \Atelier\Model\Projects())->update([
             'last_commit_time' => $this->project['last_commit_time']
         ], $this->getId());
-    }
-
-    public function getLastLine(string $response): string
-    {
-        $lines = array_values(array_filter(explode(PHP_EOL, $response)));
-
-        return $lines[count($lines) - 1];
     }
 
     public function setSmokeLastReport(string $report)
@@ -128,7 +167,7 @@ class Project
         return $this->project['last_branch_name'] ?? '';
     }
 
-    public function getLastCommit(): ?DateTime
+    public function getLastCommitTime(): ?DateTime
     {
         return $this->project['last_commit_time']
             ? new DateTime($this->project['last_commit_time'])
@@ -201,14 +240,5 @@ class Project
             'hour_ads_count' => $hourAdsCount,
             'create_time' => (new DateTime())->format('Y-m-d H:i:s')
         ]);
-    }
-
-    public function setHttpHeaders(int $httpCode, string $cacheHeader, DateTime $createTime): void
-    {
-        (new \Atelier\Model\Projects())->update([
-            'http_code' => $httpCode,
-            'cache_header' => $cacheHeader,
-            'header_time' => $createTime->format('Y-m-d H:i:s')
-        ], $this->getId());
     }
 }

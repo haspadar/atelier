@@ -115,4 +115,24 @@ class Projects
     {
         return new ProjectType((new ProjectTypes())->getByName(strtolower(Type::UNDEFINED->name)));
     }
+
+    public static function getRotatorProject(): Project
+    {
+        $type = self::getRotatorType();
+        $foundAll = (new Model\Projects())->getAll(0, [$type->getId()]);
+
+        return new Project($foundAll[0]);
+    }
+
+    public static function getLastMigrationName(): string
+    {
+        return (new \Atelier\Model\Projects())->getLastMigrationName();
+    }
+
+    public static function getLastCommitTime(): ?\DateTime
+    {
+        $commitTime = (new \Atelier\Model\Projects())->getCommitTime();
+
+        return $commitTime ? new \DateTime($commitTime) : null;
+    }
 }

@@ -60,4 +60,14 @@ class Projects extends Model
     {
         return self::getDb()->query('SELECT * FROM ' . $this->name . ' WHERE last_branch_name <> %s AND last_branch_name <> ""', 'master');
     }
+
+    public function getLastMigrationName(): string
+    {
+        return self::getDb()->queryFirstField('SELECT MAX(last_migration_name) FROM ' . $this->name);
+    }
+
+    public function getCommitTime(): string
+    {
+        return self::getDb()->queryFirstField('SELECT MAX(last_commit_time) FROM ' . $this->name);
+    }
 }

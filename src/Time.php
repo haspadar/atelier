@@ -84,4 +84,9 @@ class Time
 
         return implode(' ', $humans);
     }
+
+    public static function getDiffHours(\DateTime $big, \DateTime $small): int
+    {
+        return intval($big->diff($small)->format('%h'));
+    }
 }

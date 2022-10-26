@@ -36,7 +36,7 @@ class RunLogs
 
     /**
      * @param Command $command
-     * @param Project[] $projects
+     * @param Machine[] $projects
      * @return void
      */
     public static function run(Command $command, array $projects): ?Report
@@ -61,7 +61,7 @@ class RunLogs
         return $report ?? null;
     }
 
-    public static function getProjectCommands(Project $project)
+    public static function getProjectCommands(Machine $project)
     {
         return array_map(
             fn($command) => self::createCommand($command),

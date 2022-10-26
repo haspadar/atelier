@@ -8,7 +8,7 @@ use DateTime;
 
 class Reports
 {
-    public static function add(Command $command, ?Project $project, ?Machine $machine, Run $run)
+    public static function add(Command $command, ?Machine $project, ?Machine $machine, Run $run)
     {
         $reportId = (new Model\Reports())->add([
             'command_id' => $command->getId(),
@@ -27,11 +27,11 @@ class Reports
     }
 
     /**
-     * @param Project $project
+     * @param Machine $project
      * @param Command[] $commands
      * @return Report[]
      */
-    public static function getProjectLastReports(Project $project, array $commands)
+    public static function getProjectLastReports(Machine $project, array $commands)
     {
         $reports = [];
         foreach ($commands as $command) {

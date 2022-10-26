@@ -5,18 +5,21 @@ namespace Atelier\Command;
 use Atelier\Cli;
 use Atelier\Command;
 use Atelier\Debug;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\ProjectCommand;
 use League\CLImate\CLImate;
 
 class UpdateAuthPasswords extends ProjectCommand
 {
-    public function run(Project $project): string
+    public function run(Machine $project): string
     {
         try {
             $newAuthPassword = $this->options['auth_password'];
             $sudoPassword = $this->options['sudo_password'];
-            $isDbChanged = $this->changeDatabaseSetting($project, $newAuthPassword);
+            $isDbChanged = (new UpdatePaltoSetting([
+                'name' => 'auth_password',
+                    'value' => $newAuthPassword
+                ]))->run($project) === $newAuthPassword;
             $isHtpasswdChanged = $this->changeHtpasswd($project, $newAuthPassword, $sudoPassword);
 
             return ($isDbChanged ? 'Пароль .htpasswd изменён' : 'Ошибка: пароль .htpasswd не изменён')
@@ -48,19 +51,7 @@ class UpdateAuthPasswords extends ProjectCommand
         return array_filter($parsed);
     }
 
-    private function changeDatabaseSetting(Project $project, string $newAuthPassword): bool
-    {
-        $ssh = $project->getMachine()->getSsh();
-
-        $env = $this->parseEnv($ssh->exec('cat ' . $project->getPath() . '/configs/.env'));
-        $ssh->exec("mysql -e \"UPDATE " . $env['DB_NAME'] . ".settings SET password=\\\"$newAuthPassword\\\" name=\\\"auth_password\\\" \"");
-        $response = $ssh->exec("mysql -u" . $env['DB_USER'] . " -p" . $env['DB_PASSWORD'] . " -e \"SELECT value FROM " . $env['DB_NAME'] . ".settings WHERE name=\\\"auth_password\\\" \"");
-        $updatedAuthPassword = explode(PHP_EOL, $response)[1];
-
-        return $updatedAuthPassword == $newAuthPassword;
-    }
-
-    private function changeHtpasswd(Project $project, string $newAuthPassword, string $sudoPassword): bool
+    private function changeHtpasswd(Machine $project, string $newAuthPassword, string $sudoPassword): bool
     {
         $ssh = $project->getMachine()->getSsh();
         $response = $ssh->exec("htpasswd -b -c /tmp/.htpasswd palto $newAuthPassword");

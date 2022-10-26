@@ -5,7 +5,7 @@ namespace Atelier;
 abstract class Warning
 {
     /**
-     * @var Project[]
+     * @var Machine[]
      */
     protected array $projects = [];
 
@@ -29,14 +29,14 @@ abstract class Warning
     }
 
     /**
-     * @return Project[]
+     * @return Machine[]
      */
     public function getProjects(): array
     {
         return $this->projects;
     }
 
-    public function getProjectProblem(Project $project): string
+    public function getProjectProblem(Machine $project): string
     {
         return '';
     }

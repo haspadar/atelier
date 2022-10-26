@@ -23,6 +23,16 @@ class Machine
         return $this->machine['php_fpm_traffic'];
     }
 
+    public function getMysqlVersion(): string
+    {
+        return $this->machine['mysql_version'];
+    }
+
+    public function getPhpVersion(): string
+    {
+        return $this->machine['php_version'];
+    }
+
     public function getFreeSpace(): int
     {
         return $this->machine['free_space'];
@@ -119,7 +129,7 @@ class Machine
     }
 
     /**
-     * @return Project[]
+     * @return Machine[]
      */
     public function getProjects(array $typeIds = []): array
     {
@@ -141,7 +151,7 @@ class Machine
 
     public function getNewDirectories(array $directories): array
     {
-        $existsNames = array_map(fn(Project $project) => $project->getPath(), $this->getProjects());
+        $existsNames = array_map(fn(Machine $project) => $project->getPath(), $this->getProjects());
 
         return array_diff($directories, $existsNames);
     }
@@ -149,6 +159,11 @@ class Machine
     public function deleteProjects(int $machineId): void
     {
         (new Projects())->removeMachineProjects($machineId);
+    }
+
+    public function setMysqlVersion(string $version): void
+    {
+        (new \Atelier\Model\Machines())->update(['mysql_version' => $version], $this->getId());
     }
 
     public function setPhpVersion(string $version): void

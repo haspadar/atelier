@@ -7,7 +7,7 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\ProjectCommand;
 use Atelier\RotatorFragment;
 use Atelier\RotatorFragments;
@@ -22,7 +22,7 @@ class ExtractResponseCodes extends ProjectCommand
      * @return string
      * @throws \Exception
      */
-    public function run(Project $project): string
+    public function run(Machine $project): string
     {
         $response = $project->getMachine()->getSsh()->exec("cat /var/log/nginx/8_access.log | cut -d '\"' -f3 | cut -d ' ' -f2 | sort | uniq -c | sort -r");
         $parsed = $this->parse($response);

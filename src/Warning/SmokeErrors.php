@@ -3,7 +3,7 @@
 namespace Atelier\Warning;
 
 use Atelier\Model\Projects;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\Warning;
 
 class SmokeErrors extends Warning
@@ -12,12 +12,12 @@ class SmokeErrors extends Warning
     {
         parent::__construct($type);
         $this->projects = array_map(
-            fn($project) => new Project($project),
+            fn($project) => new Machine($project),
             (new Projects())->getSmokeErrorProjects()
         );
     }
 
-    public function getProjectProblem(Project $project): string
+    public function getProjectProblem(Machine $project): string
     {
         return $project->getSmokeLastTime()->format('d.m.Y H:i:s')
             . '<br>'

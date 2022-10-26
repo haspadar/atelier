@@ -7,7 +7,7 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\ProjectCommand;
 use Atelier\Projects;
 use Atelier\RotatorFragment;
@@ -20,10 +20,10 @@ class ExtractLogNames extends ProjectCommand
     /**
      * sudo vim /etc/logrotate.d/nginx, change to 0655
      *
-     * @param Project $project
+     * @param Machine $project
      * @return string
      */
-    public function run(Project $project): string
+    public function run(Machine $project): string
     {
         if ($nginxConfig = $this->getNginxConfig($project)) {
             $project->setNginxConfig($nginxConfig);
@@ -56,10 +56,10 @@ class ExtractLogNames extends ProjectCommand
     }
 
     /**
-     * @param Project $project
+     * @param Machine $project
      * @return string
      */
-    private function getNginxConfig(Project $project): string
+    private function getNginxConfig(Machine $project): string
     {
         $domainNginxResponse = $project->getMachine()->getSsh()->exec('grep "' . $project->getName() . '" /etc/nginx/sites-enabled/ -R');
         if (!$domainNginxResponse && ($dotsParts = explode('.', $project->getName())) && count($dotsParts) > 1) {

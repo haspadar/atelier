@@ -9,7 +9,7 @@ class RotatorFragments
     const ROTATOR_KEY = 'ROTATOR_KEY';
     const ROTATOR_URL = 'ROTATOR_URL';
 
-    public static function add(RotatorFragment $fragment, Project $project)
+    public static function add(RotatorFragment $fragment, Machine $project)
     {
         Logger::info('Adding rotator fragment (' . $fragment->getPath() . ' for project ' . $project->getName());
         (new Model\RotatorFragments())->add([
@@ -48,18 +48,18 @@ class RotatorFragments
         return $files;
     }
 
-    public static function removeProject(Project $project)
+    public static function removeProject(Machine $project)
     {
         Logger::info('Removing project ' . $project->getName() . ' rotator fragments');
         (new Model\RotatorFragments())->removeByProjectId($project->getId());
     }
 
     /**
-     * @param Project $project
+     * @param Machine $project
      * @return RotatorFragment[]
      * @throws \Exception
      */
-    public static function getByProject(Project $project): array
+    public static function getByProject(Machine $project): array
     {
         $fragments = [];
         foreach ((new Model\RotatorFragments())->getByProjectId($project->getId()) as $found) {

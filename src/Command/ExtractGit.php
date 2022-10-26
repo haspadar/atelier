@@ -5,12 +5,12 @@ namespace Atelier\Command;
 use Atelier\Command;
 use Atelier\Debug;
 use Atelier\Logger;
-use Atelier\Project;
+use Atelier\Machine;
 use Atelier\ProjectCommand;
 
 class ExtractGit extends ProjectCommand
 {
-    public function run(Project $project): string
+    public function run(Machine $project): string
     {
         $response = $project->getMachine()->getSsh()->exec("cd " . $project->getPath() . ' && git log -1 --format=%cd && git branch');
         $parsedTime = explode(PHP_EOL, $response)[0];
