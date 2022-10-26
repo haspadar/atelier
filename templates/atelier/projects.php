@@ -1,6 +1,8 @@
 <?php /** @var $this League\Plates\Template\Template */
 
 use Atelier\Machine;
+use Atelier\Project;
+
 $this->layout('layout');
 ?>
 
@@ -27,7 +29,7 @@ $this->layout('layout');
 
                 <?php
                 /**
-                 * @var Machine $project
+                 * @var Project $project
                  */
                 foreach ($typeProjects as $project) :?>
                     <tr>

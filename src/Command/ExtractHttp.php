@@ -8,12 +8,12 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 
 class ExtractHttp extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         list($response, $info) = $this->downloadHeaders($project->getAddress());
         if ($info['http_code'] == 200) {

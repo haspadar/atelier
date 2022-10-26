@@ -4,13 +4,14 @@ namespace Atelier\Command;
 
 use Atelier\Command;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 use Atelier\RotatorFragment;
 use Atelier\RotatorFragments;
 
 class ExtractRotatorFragments extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         $ssh = $project->getMachine()->getSsh();
         RotatorFragments::removeProject($project);

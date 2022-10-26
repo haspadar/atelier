@@ -61,7 +61,7 @@ class RunLogs
         return $report ?? null;
     }
 
-    public static function getProjectCommands(Machine $project)
+    public static function getProjectCommands(Project $project)
     {
         return array_map(
             fn($command) => self::createCommand($command),

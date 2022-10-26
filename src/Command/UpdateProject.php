@@ -4,11 +4,12 @@ namespace Atelier\Command;
 
 use Atelier\Command;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 
 class UpdateProject extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         $response = $project->getMachine()->getSsh()->exec("cd "
             . $project->getPath()

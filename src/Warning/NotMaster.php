@@ -4,6 +4,7 @@ namespace Atelier\Warning;
 
 use Atelier\Model\Projects;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\Warning;
 
 class NotMaster extends Warning
@@ -12,12 +13,12 @@ class NotMaster extends Warning
     {
         parent::__construct($type);
         $this->projects = array_map(
-            fn($project) => new Machine($project),
+            fn($project) => new Project($project),
             (new Projects())->getNotMasterProjects()
         );
     }
 
-    public function getProjectProblem(Machine $project): string
+    public function getProjectProblem(Project $project): string
     {
         return $project->getLastBranchName();
     }

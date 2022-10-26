@@ -6,6 +6,7 @@ use Atelier\Command;
 use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 use Atelier\RotatorFragment;
 use Atelier\RotatorFragments;
@@ -13,7 +14,7 @@ use Atelier\Validator;
 
 class UpdateRotatorUrl extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         try {
             $oldUrl = $this->options['old_url'];

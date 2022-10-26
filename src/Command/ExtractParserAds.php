@@ -5,11 +5,12 @@ namespace Atelier\Command;
 use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 
 class ExtractParserAds extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         $dbCredentials = $this->extractDbCredentials($project);
         if ($dbCredentials->getDbName()) {

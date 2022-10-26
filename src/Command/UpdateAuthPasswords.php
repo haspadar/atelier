@@ -6,12 +6,13 @@ use Atelier\Cli;
 use Atelier\Command;
 use Atelier\Debug;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 use League\CLImate\CLImate;
 
 class UpdateAuthPasswords extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         try {
             $newAuthPassword = $this->options['auth_password'];
@@ -51,7 +52,7 @@ class UpdateAuthPasswords extends ProjectCommand
         return array_filter($parsed);
     }
 
-    private function changeHtpasswd(Machine $project, string $newAuthPassword, string $sudoPassword): bool
+    private function changeHtpasswd(Project $project, string $newAuthPassword, string $sudoPassword): bool
     {
         $ssh = $project->getMachine()->getSsh();
         $response = $ssh->exec("htpasswd -b -c /tmp/.htpasswd palto $newAuthPassword");

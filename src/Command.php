@@ -136,7 +136,7 @@ abstract class Command
     private function generateProjectTypes(): void
     {
         $types = (new CommandTypes())->getCommandTypes($this->command['id']);
-        if (!$types) {
+        if (!$types && Cli::isCli()) {
             $allTypeNames = array_column((new ProjectTypes())->getAll(), 'name');
             $typeNames = (new CLImate())
                 ->green()

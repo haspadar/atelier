@@ -8,7 +8,6 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Machine;
 
 class ExtractMysqlVersion extends MachineCommand
 {

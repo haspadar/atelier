@@ -1,4 +1,6 @@
-<?php /** @var $this League\Plates\Template\Template */?>
+<?php /** @var $this League\Plates\Template\Template */
+
+use Atelier\Project; ?>
 <?php $this->layout('layout');?>
 
 <table class="table">
@@ -42,7 +44,7 @@
                 <?php endforeach;?>
             </td>
             <td>
-                <div data-bs-toggle="tooltip" title="<?=implode(', ', array_map(fn(\Atelier\Machine $project) => $project->getName(), $runLog->getProjects()))?>">
+                <div data-bs-toggle="tooltip" title="<?=implode(', ', array_map(fn(\Atelier\Project $project) => $project->getName(), $runLog->getProjects()))?>">
                     <?=count($runLog->getProjects())?> <?=\Atelier\Plural::get(count($runLog->getProjects()), 'проект', 'проекта', 'проектов')?>
                 </div>
             </td>

@@ -36,7 +36,7 @@ abstract class Warning
         return $this->projects;
     }
 
-    public function getProjectProblem(Machine $project): string
+    public function getProjectProblem(Project $project): string
     {
         return '';
     }

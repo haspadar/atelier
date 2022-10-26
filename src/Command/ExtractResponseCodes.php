@@ -7,7 +7,7 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 use Atelier\RotatorFragment;
 use Atelier\RotatorFragments;
@@ -18,11 +18,11 @@ class ExtractResponseCodes extends ProjectCommand
     /**
      * sudo vim /etc/logrotate.d/nginx, change to 0655
      *
-     * @param Machine $machine
+     * @param Project $machine
      * @return string
      * @throws \Exception
      */
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         $response = $project->getMachine()->getSsh()->exec("cat /var/log/nginx/8_access.log | cut -d '\"' -f3 | cut -d ' ' -f2 | sort | uniq -c | sort -r");
         $parsed = $this->parse($response);

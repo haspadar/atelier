@@ -29,11 +29,11 @@ use Atelier\Command; ?>
                 <?=$command->getComment()?>
             </td>
             <td>
-                <?php foreach ($command->getProjectTypes() as $projectType) :?>
-                    <span class="badge badge-primary">
-                        <?=$projectType->getName()?>
-                    </span>
-                <?php endforeach;?>
+<!--                --><?php //foreach ($command->getProjectTypes() as $projectType) :?>
+<!--                    <span class="badge badge-primary">-->
+<!--                        --><?//=$projectType->getName()?>
+<!--                    </span>-->
+<!--                --><?php //endforeach;?>
             </td>
         </tr>
 

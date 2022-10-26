@@ -34,7 +34,7 @@ abstract class ProjectCommand extends Command
         );
         $this->projects = Projects::getProjects(0, $this->projectTypes);
         $machineIds = array_unique(array_map(
-            fn(Machine $project) => $project->getMachine()->getId(),
+            fn(Project $project) => $project->getMachine()->getId(),
             $this->projects
         ));
         $this->machines = Machines::getMachines($machineIds);
@@ -47,7 +47,7 @@ abstract class ProjectCommand extends Command
         return $lines[count($lines) - 1];
     }
 
-    abstract public function run(Machine $project): string;
+    abstract public function run(Project $project): string;
 
     public function getDescription(): array
     {
@@ -181,7 +181,7 @@ abstract class ProjectCommand extends Command
         return $report ?? null;
     }
 
-    protected function replacePaltoSetting(Machine $project, string $name, string $value): string
+    protected function replacePaltoSetting(Project $project, string $name, string $value): string
     {
         $dbCredentials = $this->extractDbCredentials($project);
         $error = $project->getMachine()->getSsh()->exec('mysql -u'
@@ -197,7 +197,7 @@ abstract class ProjectCommand extends Command
         return $error;
     }
 
-    protected function extractDbCredentials(Machine $project): Project\Db
+    protected function extractDbCredentials(Project $project): Project\Db
     {
         $response = $project->getMachine()->getSsh()->exec("cd " . $project->getPath() . ' && (cat config.php || cat configs/.env)');
         $lines = array_filter(explode(PHP_EOL, $response));
@@ -208,7 +208,7 @@ abstract class ProjectCommand extends Command
         return new Project\Db($userName, $password, $dbName);
     }
 
-    protected function replaceFragments(Machine $project, string $from, string $to)
+    protected function replaceFragments(Project $project, string $from, string $to)
     {
         $fragments = array_filter(
             RotatorFragments::getByProject($project),

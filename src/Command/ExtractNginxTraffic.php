@@ -8,12 +8,12 @@ use Atelier\Debug;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 
 class ExtractNginxTraffic extends ProjectCommand
 {
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         $accessLog = $project->getAccessLog();
         if ($accessLog) {

@@ -5,12 +5,13 @@ namespace Atelier\Command;
 use Atelier\Command;
 use Atelier\Logger;
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 
 class ExtractSmoke extends ProjectCommand
 {
 
-    public function run(Machine $project): string
+    public function run(Project $project): string
     {
         $response = $project->getMachine()->getSsh()->exec(
             'cd ' . $project->getPath() . ' && php vendor/bin/phpunit tests'

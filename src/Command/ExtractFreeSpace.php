@@ -7,7 +7,6 @@ use Atelier\Command;
 use Atelier\Logger;
 use Atelier\Machine;
 use Atelier\MachineCommand;
-use Atelier\Machine;
 
 class ExtractFreeSpace extends MachineCommand
 {

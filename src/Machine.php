@@ -151,7 +151,7 @@ class Machine
 
     public function getNewDirectories(array $directories): array
     {
-        $existsNames = array_map(fn(Machine $project) => $project->getPath(), $this->getProjects());
+        $existsNames = array_map(fn(Project $project) => $project->getPath(), $this->getProjects());
 
         return array_diff($directories, $existsNames);
     }

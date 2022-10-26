@@ -46,7 +46,7 @@
                     </span>
                 <?php endif;?>
 
-                <?php foreach (array_unique(array_map(fn(\Atelier\Machine $project) => $project->getTypeName(), $projects)) as $type) : ?>
+                <?php foreach (array_unique(array_map(fn(\Atelier\Project $project) => $project->getTypeName(), $projects)) as $type) : ?>
                     <span class="badge badge-primary">
                         <?=$type?>
                     </span>

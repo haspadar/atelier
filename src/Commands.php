@@ -21,10 +21,10 @@ class Commands
     }
 
     /**
-     * @param Machine $project
+     * @param Project $project
      * @return Command[]
      */
-    public static function getProjectCommands(Machine $project): array
+    public static function getProjectCommands(Project $project): array
     {
         return array_map(
             fn ($command) => self::createCommand($command),

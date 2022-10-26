@@ -1,6 +1,7 @@
 <?php /** @var $this League\Plates\Template\Template */
 
 use Atelier\Machine;
+use Atelier\Project;
 use Atelier\Report;
 use Atelier\RotatorFragment;
 use Atelier\Time;
@@ -10,7 +11,7 @@ use Atelier\Time;
 <?php $this->layout('layout');?>
 <?php
 /**
- * @var Machine $project
+ * @var Project $project
  */
 $project = $this->data['project'];
 ?>
