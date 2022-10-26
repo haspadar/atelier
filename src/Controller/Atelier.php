@@ -35,7 +35,7 @@ class Atelier
 
     public function showIndex()
     {
-        $this->redirect('/garderobe');
+        $this->redirect('/machines');
     }
 
     public function showMachine(int $id)
