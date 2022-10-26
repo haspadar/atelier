@@ -21,7 +21,10 @@ class Notifications
             explode(',', Config::get('EMAILS'))
         );
         foreach ($contacts as $contact) {
-            $messages = (new Model\Notifications())->getActualMessages($contact);
+            $messages = (new Model\Notifications())->getActualMessages(
+                $contact,
+                (new \DateTime())->modify('-7 DAYS')->format('Y-m-d H:i:s')
+            );
             if ($messages) {
                 foreach (self::groupByType($messages) as $type => $typeMessages) {
                     $subject = self::generateSummarySubject($type, $typeMessages);
