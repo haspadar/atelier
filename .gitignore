@@ -2,5 +2,5 @@
 /public/adminer.php
 /public/.DS_Store
 .DS_Store
-logs/*
+/logs/*
 /vendor/
