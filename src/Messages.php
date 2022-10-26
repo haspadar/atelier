@@ -90,7 +90,16 @@ class Messages
     {
         $message['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         $message['type'] = $type->name;
-        if (!(new Model\Messages())->getToday(
+        $now = new DateTime();
+        if (!(new Model\Messages())->getBetween(
+            ($type == Type::CRITICAL
+                ? $now->modify('-1 DAY')
+                : ($type == Type::WARNING
+                    ? $now->modify('-3 DAY')
+                    : $now->modify('-7 DAY')
+                )
+            )->format('Y-m-d H:i:s'),
+            $now->format('Y-m-d H:i:s'),
             $message['machine_id'] ?? null,
             $message['project_id'] ?? null,
             $message['type'],
