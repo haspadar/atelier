@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "284713b6ba29d0fcfce5565cb9454c3d",
+    "content-hash": "8fe60b28ed87d494a3cbf4a22f15016a",
     "packages": [
         {
             "name": "bramus/ansi-php",
@@ -955,12 +955,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "99c7797d53cb44bf17302aa816b57f44adb7c2b0"
+                "reference": "df66aafbe9d687133cd7d5a2981cf6825903b6f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/99c7797d53cb44bf17302aa816b57f44adb7c2b0",
-                "reference": "99c7797d53cb44bf17302aa816b57f44adb7c2b0",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/df66aafbe9d687133cd7d5a2981cf6825903b6f0",
+                "reference": "df66aafbe9d687133cd7d5a2981cf6825903b6f0",
                 "shasum": ""
             },
             "require": {
@@ -1064,7 +1064,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-22T02:18:40+00:00"
+            "time": "2022-10-24T10:52:31+00:00"
         },
         {
             "name": "psr/container",
@@ -3312,7 +3312,8 @@
     "platform": {
         "php": ">=8.1",
         "ext-posix": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-bcmath": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.1.0"
