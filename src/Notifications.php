@@ -18,7 +18,7 @@ class Notifications
     {
         $contacts = array_map(
             fn(string $email) => trim($email),
-            explode(',', Config::get('EMAILS'))
+            explode(',', Settings::getByName('emails'))
         );
         foreach ($contacts as $contact) {
             $messages = (new Model\Notifications())->getActualMessages(

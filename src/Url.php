@@ -48,36 +48,6 @@ class Url
         return $this->path;
     }
 
-    public function getRegionUrl(): string
-    {
-        $parts = self::getUrlParts($this->path);
-
-        return $parts[0] ?? '';
-    }
-
-    public function getCategoriesUrls(): array
-    {
-        $parts = $this->getUrlParts($this->path);
-        array_shift($parts);
-        if (self::isAdPage()) {
-            array_pop($parts);
-        }
-
-        return array_values(array_filter($parts));
-    }
-
-    public function getCategoryUrl(): string
-    {
-        $categoriesUrls = $this->getCategoriesUrls();
-
-        return $categoriesUrls[count($categoriesUrls) - 1] ?? '';
-    }
-
-    public function getCategoryLevel(): int
-    {
-        return count($this->getCategoriesUrls());
-    }
-
     public function generate(array $replaces): self
     {
         $parameters = $this->getQueryParameters();
@@ -103,28 +73,6 @@ class Url
         }
 
         return $parameters;
-    }
-
-    public function getAdId(): int
-    {
-        $last = $this->getLastPart($this->path);
-
-        return intval(mb_substr($last, 2));
-    }
-
-    public function isDefaultRegionPage(): bool
-    {
-        return $this->getPath() == '/' . Config::get('DEFAULT_REGION_URL');
-    }
-
-    public function isCategoryPage(): bool
-    {
-        return count($this->getParts()) > 1 && !$this->isAdPage();
-    }
-
-    public function isRegionPage(): bool
-    {
-        return count($this->getParts()) == 1;
     }
 
     public function generateParentUrl(): self

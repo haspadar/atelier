@@ -95,8 +95,8 @@ class Messages
             ($type == Type::CRITICAL
                 ? $now->modify('-1 DAY')
                 : ($type == Type::WARNING
-                    ? $now->modify('-3 DAY')
-                    : $now->modify('-7 DAY')
+                    ? $now->modify('-1 WEEK')
+                    : $now->modify('-1 MONTH')
                 )
             )->format('Y-m-d H:i:s'),
             $now->format('Y-m-d H:i:s'),

@@ -9,13 +9,13 @@ class Email
 {
     public static function send(string $toEmail, string $subject, string $body): bool
     {
-        if (Config::get('SMTP_EMAIL')) {
-            $login = explode('@', Config::get('SMTP_EMAIL'))[0];
-            $dsn = "smtp://$login:" . Config::get('SMTP_PASSWORD') . '@' . Config::get('SMTP_HOST') . ':' . Config::get('SMTP_PORT');
+        if (Settings::getByName('smtp_email')) {
+            $login = explode('@', Settings::getByName('smtp_email'))[0];
+            $dsn = "smtp://$login:" . Settings::getByName('smtp_password') . '@' . Settings::getByName('smtp_host') . ':' . Settings::getByName('smtp_port');
             $transport = Transport::fromDsn($dsn);
             $mailer = new Mailer($transport);
             $email = (new \Symfony\Component\Mime\Email())
-                ->from(Config::get('SMTP_EMAIL'))
+                ->from(Settings::getByName('smtp_email'))
                 ->to($toEmail)
                 ->subject($subject)
                 ->html($body);

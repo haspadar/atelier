@@ -58,48 +58,11 @@ class Machine
         (new \Atelier\Model\Machines())->update(['free_space' => $percent], $this->getId());
     }
 
-    public function runPathCommand(string $command): array|string
-    {
-        return array_values(array_filter(
-            $this->runCommand($command, true, fn($path) => $this->filterPath($path))
-        ));
-    }
-
-    /**
-     * @param string $command
-     * @param bool $isArray
-     * @param callable|null $filter
-     * @return array|string
-     */
-    public function runCommand(string $command, bool $isArray = true, ?callable $filter = null): array|string
-    {
-        $fullCommand = "ssh -T $this->name \"" . $command . "\"";
-        $filteredCommand = $this->password
-            ? str_replace($this->password, '[PASSWORD_HIDDEN]', $fullCommand)
-            : $fullCommand;
-        Logger::machineDebug('Running command: ' . $filteredCommand);
-        $response = `$fullCommand`;
-        if ($response) {
-            Logger::machineDebug($response);
-        }
-
-        $responseLines = array_values(array_filter(explode(PHP_EOL, $response ?? ''), $filter ?? null));
-
-        return $isArray ? $responseLines : implode(PHP_EOL, $responseLines);
-    }
-
-    private function filterPath(string $path): bool
-    {
-        $firstSymbol = mb_substr($path, 0, 1);
-
-        return $firstSymbol == '/';
-    }
-
     public function createSsh(string $login = '', string|AsymmetricKey $password = ''): Ssh
     {
         if (!$login && !$password) {
-            $login = 'km';
-            $password = PublicKeyLoader::load(file_get_contents('/Users/haspadar/.ssh/id_rsa_km'));
+            $login = Settings::getByName('machine_default_login');
+            $password = PublicKeyLoader::load(file_get_contents(Settings::getByName('ssh_key')));
         }
 
         $this->ssh = new Ssh($this, $login, $password);
@@ -171,13 +134,6 @@ class Machine
         (new \Atelier\Model\Machines())->update(['php_version' => $version], $this->getId());
     }
 
-    public function setPhpFpmActiveTime(?\DateTime $activeTime): void
-    {
-        (new \Atelier\Model\Machines())->update([
-            'php_fpm_active_time' => $activeTime?->format('Y-m-d H:i:s')
-        ], $this->getId());
-    }
-
     public function addPhpFpmTraffic(string $traffic, \DateTime $activeTime): void
     {
         (new PhpFpmTraffic())->add([
@@ -186,45 +142,6 @@ class Machine
             'active_time' => $activeTime,
             'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
         ]);
-    }
-
-    private function getWithFileDirectories(string $directory, string $file, int $maxDepth = 4)
-    {
-        return array_map(
-            function (string $name) use ($directory, $file) {
-                preg_match(
-                    '/('
-                    . str_replace('/', '\/', $directory)
-                    . "(.+)"
-                    . '\/)'
-                    . str_replace('.', '\.', $file)
-                    . '/',
-                    $name,
-                    $matches
-                );
-
-                return $matches[1];
-            },
-            $this->runPathCommand("find " . $directory . " -maxdepth $maxDepth -name " . $file)
-        );
-    }
-
-    private function filterProjectNames(array $directories): array
-    {
-        if (!$this->projectNames) {
-            return $directories;
-        }
-
-        $filtered = [];
-        foreach ($directories as $directory) {
-            $directoryParts = array_values(array_filter(explode('/', $directory)));
-            $projectName = $directoryParts[count($directoryParts) - 1];
-            if (in_array($projectName, $this->projectNames)) {
-                $filtered[] = $directory;
-            }
-        }
-
-        return $filtered;
     }
 
     private function isFile(string $file): bool
