@@ -1,7 +1,6 @@
 <?php
 
 use Atelier\Logger;
-use Atelier\Model\Model;
 use Atelier\Settings;
 use Longman\TelegramBot\Request;
 
@@ -16,13 +15,10 @@ try {
     );
     $result = $telegram->setWebhook(Settings::getByName('telegram_webhook'));
     if ($result->isOk()) {
-        Logger::error('Ok: ' . $result->getDescription());
+        $input = Request::getInput();
+        $post = json_decode($input, true);
+        Logger::info('Json: ' . $input);
     }
-
-
-    $input = Request::getInput();
-    $post = json_decode($input, true);
-    Logger::error('Json: ' . $input);
 } catch (Longman\TelegramBot\Exception\TelegramException $e) {
     Logger::error($e->getMessage());
 }
