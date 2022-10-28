@@ -8,6 +8,7 @@ use Longman\TelegramBot\Request;
 require_once '../../vendor/autoload.php';
 date_default_timezone_set('Europe/Minsk');
 
+Logger::info('Ping');
 try {
     $telegram = new Longman\TelegramBot\Telegram(
         Settings::getByName('telegram_token'),
