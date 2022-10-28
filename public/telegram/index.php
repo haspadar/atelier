@@ -9,7 +9,7 @@ date_default_timezone_set('Europe/Minsk');
 try {
     $telegram = new Longman\TelegramBot\Telegram(
         Settings::getByName('telegram_token'),
-        Settings::getByName('atelier_palto_bot')
+        Settings::getByName('telegram_bot')
     );
     $telegram->enableMySql([
         'host' => Model::getDb()->host,
