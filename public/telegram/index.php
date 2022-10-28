@@ -2,26 +2,31 @@
 
 use Atelier\Logger;
 use Atelier\Settings;
+use Atelier\Telegram;
 use Longman\TelegramBot\Request;
 
 require_once '../../vendor/autoload.php';
 date_default_timezone_set('Europe/Minsk');
 
-Logger::info('Ping');
-try {
-    $telegram = new Longman\TelegramBot\Telegram(
-        Settings::getByName('telegram_token'),
-        Settings::getByName('telegram_bot')
-    );
-    $result = $telegram->setWebhook(Settings::getByName('telegram_webhook'));
-    if ($result->isOk()) {
-        $input = Request::getInput();
-        $post = json_decode($input, true);
-        Logger::info('Json: ' . $input);
-    }
-} catch (Longman\TelegramBot\Exception\TelegramException $e) {
-    Logger::error($e->getMessage());
-}
+$bot = new Telegram(Settings::getByName('telegram_token'));
+$bot->sendMessage('Hello');
+//
+//
+//Logger::info('Ping');
+//try {
+//    $telegram = new Longman\TelegramBot\Telegram(
+//        Settings::getByName('telegram_token'),
+//        Settings::getByName('telegram_bot')
+//    );
+//    $result = $telegram->setWebhook(Settings::getByName('telegram_webhook'));
+//    if ($result->isOk()) {
+//        $input = Request::getInput();
+//        $post = json_decode($input, true);
+//        Logger::info('Json: ' . $input);
+//    }
+//} catch (Longman\TelegramBot\Exception\TelegramException $e) {
+//    Logger::error($e->getMessage());
+//}
 
 //
 //
