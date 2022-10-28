@@ -2,11 +2,10 @@
 $basicChatData = json_decode(file_get_contents("php://input"),true);
 $chatId = $basicChatData['message']['chat']['id'];
 $message = $basicChatData['message']['text'] ?? '';
-$response = send($message . ': Hello my friend!', $chatId);
-\Atelier\Debug::dump($response, '$response');
+$response = send($message . ': Hello my friend!. debug:' . var_export($basicChatData, true), $chatId);
 
 function send(string $message, string $chatId) {
-    $token = '5734498019:AAF3N-QeaLrmmumryE3_z8IzjhlcOvWfggQ';
+    $token = \Atelier\Settings::getByName('telegram_token');
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
     curl_setopt($ch, CURLOPT_POSTFIELDS, "https://api.telegram.org/bot$token/sendMessage");
