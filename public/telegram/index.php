@@ -1,7 +1,9 @@
 <?php
 
+use Atelier\Logger;
 use Atelier\Model\Model;
 use Atelier\Settings;
+use Longman\TelegramBot\Request;
 
 require_once '../../vendor/autoload.php';
 date_default_timezone_set('Europe/Minsk');
@@ -11,33 +13,17 @@ try {
         Settings::getByName('telegram_token'),
         Settings::getByName('telegram_bot')
     );
-    $telegram->enableMySql([
-        'host' => Model::getDb()->host,
-        'port' => Model::getDb()->port,
-        'user' => Model::getDb()->user,
-        'password' => Model::getDb()->password,
-        'database' => Model::getDb()->dbName,
-    ]);
     $result = $telegram->setWebhook(Settings::getByName('telegram_webhook'));
     if ($result->isOk()) {
-        echo $result->getDescription();
+        Logger::error('Ok: ' . $result->getDescription());
     }
 
-    $telegram->handle();
-} catch (Longman\TelegramBot\Exception\TelegramException $e) {
-    // Log telegram errors
-    Longman\TelegramBot\TelegramLog::error($e);
-    \Atelier\Logger::error(var_export([
-        'host' => Model::getDb()->host,
-        'port' => Model::getDb()->port,
-        'user' => Model::getDb()->user,
-        'password' => Model::getDb()->password,
-        'database' => Model::getDb()->dbName,
-    ], true));
-    \Atelier\Logger::error($e->getMessage());
 
-    // Uncomment this to output any errors (ONLY FOR DEVELOPMENT!)
-     echo $e;
+    $input = Request::getInput();
+    $post = json_decode($input, true);
+    Logger::error('Json: ' . $input);
+} catch (Longman\TelegramBot\Exception\TelegramException $e) {
+    Logger::error($e->getMessage());
 }
 
 //
