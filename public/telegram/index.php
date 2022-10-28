@@ -27,6 +27,13 @@ try {
 } catch (Longman\TelegramBot\Exception\TelegramException $e) {
     // Log telegram errors
     Longman\TelegramBot\TelegramLog::error($e);
+    \Atelier\Logger::error(var_export([
+        'host' => Model::getDb()->host,
+        'port' => Model::getDb()->port,
+        'user' => Model::getDb()->user,
+        'password' => Model::getDb()->password,
+        'database' => Model::getDb()->dbName,
+    ], true));
     \Atelier\Logger::error($e->getMessage());
 
     // Uncomment this to output any errors (ONLY FOR DEVELOPMENT!)
