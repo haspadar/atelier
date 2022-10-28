@@ -1,7 +1,8 @@
 <?php
 $basicChatData = json_decode(file_get_contents("php://input"),true);
 $chatId = $basicChatData['message']['chat']['id'];
-$response = send('Hello my friend!', $chatId);
+$message = $basicChatData['message']['text'] ?? '';
+$response = send($message . ': Hello my friend!', $chatId);
 \Atelier\Debug::dump($response, '$response');
 
 function send(string $message, string $chatId) {
