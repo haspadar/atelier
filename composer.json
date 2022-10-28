@@ -17,7 +17,9 @@
     "league/climate": "dev-master",
     "ext-curl": "*",
     "ext-bcmath": "*",
-    "crunzphp/crunz": "^3.4"
+    "crunzphp/crunz": "^3.4",
+    "robmorgan/phinx": "^0.13.1",
+    "longman/telegram-bot": "^0.79.0"
   },
   "autoload": {
     "psr-4": {

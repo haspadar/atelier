@@ -46,6 +46,20 @@
       <path value="$PROJECT_DIR$/vendor/bramus/ansi-php" />
       <path value="$PROJECT_DIR$/vendor/crunzphp/crunz" />
       <path value="$PROJECT_DIR$/vendor/laravel/serializable-closure" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/core" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/utility" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/datasource" />
+      <path value="$PROJECT_DIR$/vendor/cakephp/database" />
+      <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/vendor/robmorgan/phinx" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/longman/telegram-bot" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
