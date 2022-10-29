@@ -9,6 +9,7 @@ class Telegram
     public function __construct(private string $token)
     {
         $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
+        Logger::warning('Input: ' . var_export($this->input, true));
     }
 
     public function sendMessageWithBaseButtons(string $message, array $keyboard): array
