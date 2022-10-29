@@ -6,18 +6,14 @@ use Atelier\Telegram\Update;
 
 class Telegram
 {
-    private Update $update;
+    private array $update;
 
     public function __construct(private string $token)
     {
-
-        Logger::info(var_export(json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR), true));
-//        $this->input = new Input();
-//        if ($this->input->isValid())
-//        $this->addChat();
+        $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function getUpdate(): Update
+    public function getUpdate(): array
     {
         return $this->update;
     }
@@ -36,15 +32,25 @@ class Telegram
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
             'text' => $message,
-            'chat_id' => $this->update->getChatTd()
+            'chat_id' => $this->getChatId()
         ]));
 
 
         return curl_exec($ch);
     }
 
+    public function isMessage(): bool
+    {
+        return isset($this->input['message']);
+    }
+
     private function addChat()
     {
         $user = $this->update->getUser();
+    }
+
+    private function getChatId(): string
+    {
+        return $this->input['chat']['id'];
     }
 }

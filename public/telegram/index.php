@@ -10,6 +10,9 @@ date_default_timezone_set('Europe/Minsk');
 
 $bot = new Telegram(Settings::getByName('telegram_token'));
 //Logger::info('Debug: ' . var_export($bot->getUpdate()->getInput(), true));
+if ($bot->isMessage()) {
+
+}
 $bot->sendMessage('Hello');
 //
 //
