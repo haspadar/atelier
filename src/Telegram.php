@@ -56,6 +56,11 @@ class Telegram
         return [];
     }
 
+    public function isUnsubscribe(): bool
+    {
+        return isset($this->input['my_chat_member']['old_chat_member']);
+    }
+
     public function getClickedInlineButton(): string
     {
         return $this->input['callback_query']['data'] ?? '';

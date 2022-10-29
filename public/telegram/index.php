@@ -34,6 +34,8 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
         'message_types' => implode(',', [Type::CRITICAL->name, Type::WARNING->name, Type::INFO->name])
     ]);
     $bot->sendMessage('Предупреждения будут отправляться раз в месяц с 09:00 до 22:00');
+} elseif ($bot->isUnsubscribe($bot->getChatId())) {
+    \Atelier\Subscribers::remove($bot->getChatId());
 } elseif ($bot->isMessage()) {
     $bot->sendMessageWithInlineButtons(
         'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [

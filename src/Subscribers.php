@@ -4,6 +4,14 @@ namespace Atelier;
 
 class Subscribers
 {
+    public static function remove(int $chatId)
+    {
+        $model = new \Atelier\Model\Subscribers();
+        $found = $model->getBy('chat_id', $chatId);
+        $model->remove($found['id']);
+        Logger::warning('Subscriber removed');
+    }
+
     public static function add(array $subscriber)
     {
         $model = new \Atelier\Model\Subscribers();
