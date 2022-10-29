@@ -57,10 +57,6 @@ class Telegram
 
     private function getChatId(): string
     {
-        Logger::info('update_id: ' . ($this->input['update_id'] ?? ''));
-        Logger::info('message_id: ' . ($this->input['message']['message_id'] ?? ''));
-        Logger::info('ChatId1: ' . ($this->input['chat']['id'] ?? ''));
-        Logger::info('ChatId1: ' . ($this->input['my_chat_member']['chat']['id'] ?? ''));
-        return $this->input['chat']['id'] ?? ($this->input['my_chat_member']['chat']['id'] ?? '');
+        return $this->input['message']['chat']['id'] ?? ($this->input['my_chat_member']['chat']['id'] ?? '');
     }
 }
