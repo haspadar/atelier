@@ -18,12 +18,17 @@ class Telegram
         return $this->update;
     }
 
-    public function sendMessage(string $message): mixed
+    public function sendMessageWithInlineButtons(string $message, array $buttons): mixed
     {
-        return json_decode($this->request($message), true, 512, JSON_THROW_ON_ERROR);
+        return $this->request($message, ['reply_markup' => ['inline_keyboard' => $buttons]]);
     }
 
-    private function request(string $message): string
+    public function sendMessage(string $message): mixed
+    {
+        return $this->request($message);
+    }
+
+    private function request(string $message, array $params = []): string
     {
         if ($this->getChatId()) {
             $token = $this->token;
@@ -31,13 +36,13 @@ class Telegram
             curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge([
                 'text' => $message,
                 'chat_id' => $this->getChatId()
-            ]));
+            ], $params)));
 
 
-            return curl_exec($ch);
+            return json_decode(curl_exec($ch), true, 512, JSON_THROW_ON_ERROR);
         }
 
         Logger::error('Input doesn\'t contains chat info: ' . var_export($this->input, true));
@@ -45,14 +50,19 @@ class Telegram
         return '';
     }
 
+    public function getClickedInlineButton(): string
+    {
+        return isset($this->input['callback_query']['data']) ?? '';
+    }
+
     public function isMessage(): bool
     {
         return isset($this->input['message']);
     }
 
-    private function addChat()
+    public function getFromFirstName(): string
     {
-        $user = $this->update->getUser();
+        return $this->input['message']['from']['first_name'];
     }
 
     private function getChatId(): string
