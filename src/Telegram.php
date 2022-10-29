@@ -57,7 +57,11 @@ class Telegram
             ], $params)));
 
 
-            return json_decode(curl_exec($ch), true, 512, JSON_THROW_ON_ERROR);
+            $response = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            Logger::info('Response: ' . $response);
+            Logger::info('$info: ' . var_export($info, true));
+            return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
         }
 
         Logger::error('Input doesn\'t contains chat info: ' . var_export($this->input, true));
