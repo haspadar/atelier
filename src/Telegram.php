@@ -20,16 +20,7 @@ class Telegram
 
     public function sendMessageWithBaseButtons(string $message, array $keyboard): array
     {
-        return $this->request($message, ['reply_markup' => ["keyboard" => array(
-            array(
-                array(
-                    "text" => "888"
-                ),
-                array(
-                    "text" => "999"
-                ),
-            )
-        ), "resize_keyboard" => true]]);
+        return $this->request($message, ['reply_markup' => ["keyboard" => $keyboard, "resize_keyboard" => true]]);
     }
 
     public function sendMessageWithInlineButtons(string $message, array $buttons): array
@@ -60,19 +51,10 @@ class Telegram
                     'text' => $message,
                     'chat_id' => $this->getChatId()
                 ], $params), true));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge_recursive([
                 'text' => $message,
-                'chat_id' => $this->getChatId(),
-                'reply_markup' => [
-                    'inline_keyboard' => array(
-                        array(
-                            array('text'=>'Кнопка 1','callback_data'=>'444'),
-                            array('text'=>'Кнопка 2','callback_data'=>'555'),
-                            array('text'=>'Кнопка 3','callback_data'=>'777'),
-                        )
-                    )
-                ]
-            ]));
+                'chat_id' => $this->getChatId()
+            ], $params)));
 
 
             return json_decode(curl_exec($ch), true, 512, JSON_THROW_ON_ERROR);
