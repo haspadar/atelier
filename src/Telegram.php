@@ -11,7 +11,7 @@ class Telegram
     public function __construct(private string $token)
     {
         $this->input = new Input();
-        $this->addChat();
+//        $this->addChat();
     }
 
     public function getInput(): Input
