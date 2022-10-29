@@ -2,23 +2,24 @@
 
 namespace Atelier;
 
-use Atelier\Telegram\Input;
+use Atelier\Telegram\Update;
 
 class Telegram
 {
-    private Input $input;
+    private Update $update;
 
     public function __construct(private string $token)
     {
-        Logger::info(json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR));
+
+        Logger::info(var_export(json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR), true));
 //        $this->input = new Input();
 //        if ($this->input->isValid())
 //        $this->addChat();
     }
 
-    public function getInput(): Input
+    public function getUpdate(): Update
     {
-        return $this->input;
+        return $this->update;
     }
 
     public function sendMessage(string $message): mixed
@@ -35,7 +36,7 @@ class Telegram
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
             'text' => $message,
-            'chat_id' => $this->input->getChatTd()
+            'chat_id' => $this->update->getChatTd()
         ]));
 
 
@@ -44,6 +45,6 @@ class Telegram
 
     private function addChat()
     {
-        $user = $this->input->getUser();
+        $user = $this->update->getUser();
     }
 }

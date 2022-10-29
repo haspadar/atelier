@@ -9,7 +9,7 @@ require_once '../../vendor/autoload.php';
 date_default_timezone_set('Europe/Minsk');
 
 $bot = new Telegram(Settings::getByName('telegram_token'));
-Logger::info('Debug: ' . var_export($bot->getInput()->getInput(), true));
+Logger::info('Debug: ' . var_export($bot->getUpdate()->getInput(), true));
 $bot->sendMessage('Hello');
 //
 //
