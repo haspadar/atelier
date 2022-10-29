@@ -14,10 +14,8 @@ class Telegram
         Logger::info('Debug: ' . var_export($this->input, true));
         Logger::info('callback_query: ' . var_export($this->input['callback_query'], true));
         Logger::info('Data: ' . var_export($this->input['callback_query']['data'], true));
-//        array (   'update_id' => 278445189,   'callback_query' =>
-//            array (     'id' => '690781338248020581',
-//                'from' => array (       'id' => 160835063,       'is_bot' => false,       'first_name' => 'Костя',       'username' => 'haspadar_III',       'language_code' => 'ru',),
-//                ,     'chat_instance' => '5758169490136786947',     'data' => 'CRITICAL',   ), )
+        Logger::info('Message Chat Id: ' . var_export($this->input['message']['chat']['id'], true));
+        
     }
 
     public function getUpdate(): array
