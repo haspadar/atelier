@@ -20,7 +20,13 @@ class Telegram
 
     public function sendMessageWithInlineButtons(string $message, array $buttons): array
     {
-        return $this->request($message, ['reply_markup' => ['inline_keyboard' => [$buttons]]]);
+        return $this->request($message, ['reply_markup' => ['inline_keyboard' => array(
+            array(
+                array('text'=>'Кнопка 1','callback_data'=>'444'),
+                array('text'=>'Кнопка 2','callback_data'=>'555'),
+                array('text'=>'Кнопка 3','callback_data'=>'777'),
+            )
+        )]]);
     }
 
     public function sendMessage(string $message): array
