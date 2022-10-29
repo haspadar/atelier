@@ -84,6 +84,11 @@ class Telegram
 
     private function getChatId(): string
     {
-        return $this->input['message']['chat']['id'] ?? ($this->input['my_chat_member']['chat']['id'] ?? '');
+        return $this->input['message']['chat']['id']
+            ?? ($this->input['my_chat_member']['chat']['id']
+                ?? ($this->input['callback_query']['message']['chat']['id']
+                    ?? ''
+                )
+            );
     }
 }
