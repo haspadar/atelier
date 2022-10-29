@@ -12,6 +12,7 @@ class Telegram
     {
         $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
         Logger::info('Debug: ' . var_export($this->input, true));
+        Logger::info('Value: ' . var_export($this->input['callback_data'], true));
     }
 
     public function getUpdate(): array
@@ -65,7 +66,7 @@ class Telegram
 
     public function getClickedInlineButton(): string
     {
-        return $this->input['callback_query']['data'] ?? '';
+        return $this->input['callback_data'] ?? '';
     }
 
     public function isMessage(): bool
