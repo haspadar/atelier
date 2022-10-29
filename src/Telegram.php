@@ -23,20 +23,26 @@ class Telegram
         return json_decode($this->request($message), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    private function request(string $message)
+    private function request(string $message): string
     {
-        $token = $this->token;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'text' => $message,
-            'chat_id' => $this->getChatId()
-        ]));
+        if ($this->getChatId()) {
+            $token = $this->token;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'text' => $message,
+                'chat_id' => $this->getChatId()
+            ]));
 
 
-        return curl_exec($ch);
+            return curl_exec($ch);
+        }
+
+        Logger::error('Input hasn\'t include chat info: ' . var_export($this->input, true));
+
+        return '';
     }
 
     public function isMessage(): bool
@@ -51,6 +57,6 @@ class Telegram
 
     private function getChatId(): string
     {
-        return $this->input['chat']['id'];
+        return $this->input['chat']['id'] ?? '';
     }
 }
