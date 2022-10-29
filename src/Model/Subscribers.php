@@ -13,7 +13,7 @@ class Subscribers extends Model
 
     public function getAll(): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name) ?: [];
+        return self::getDb()->query('SELECT * FROM ' . $this->name) ?: [];
     }
 
 }

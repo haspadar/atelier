@@ -10,8 +10,12 @@ class Subscribers
     {
         $model = new Model\Subscribers();
         $found = $model->getBy('chat_id', $chatId);
-        $model->remove($found['id']);
-        Logger::warning('Subscriber removed');
+        if ($found) {
+            $model->remove($found['id']);
+            Logger::warning('Subscriber removed');
+        } else {
+            Logger::warning('Subscriber for remove not found');
+        }
     }
 
     public static function add(array $subscriber)
