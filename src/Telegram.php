@@ -10,7 +10,9 @@ class Telegram
 
     public function __construct(private string $token)
     {
-        $this->input = new Input();
+        Logger::info(json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR));
+//        $this->input = new Input();
+//        if ($this->input->isValid())
 //        $this->addChat();
     }
 
