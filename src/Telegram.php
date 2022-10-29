@@ -18,9 +18,23 @@ class Telegram
         return $this->update;
     }
 
+    public function sendMessageWithBaseButtons(string $message, array $keyboard): array
+    {
+        return $this->request($message, ['reply_markup' => ["keyboard" => array(
+            array(
+                array(
+                    "text" => "888"
+                ),
+                array(
+                    "text" => "999"
+                ),
+            )
+        ), "resize_keyboard" => true]]);
+    }
+
     public function sendMessageWithInlineButtons(string $message, array $buttons): array
     {
-        return $this->request($message, ['parse_mode' => 'Markdown', 'reply_markup' => ['inline_keyboard' => array(
+        return $this->request($message, ['reply_markup' => ['inline_keyboard' => array(
             array(
                 array('text'=>'Кнопка 1','callback_data'=>'444'),
                 array('text'=>'Кнопка 2','callback_data'=>'555'),
