@@ -40,7 +40,7 @@ class Telegram
             return curl_exec($ch);
         }
 
-        Logger::error('Input hasn\'t include chat info: ' . var_export($this->input, true));
+        Logger::error('Input doesn\'t contains chat info: ' . var_export($this->input, true));
 
         return '';
     }
@@ -57,6 +57,8 @@ class Telegram
 
     private function getChatId(): string
     {
+        Logger::info('ChatId1: ' . ($this->input['chat']['id'] ?? ''));
+        Logger::info('ChatId1: ' . ($this->input['my_chat_member']['chat']['id'] ?? ''));
         return $this->input['chat']['id'] ?? ($this->input['my_chat_member']['chat']['id'] ?? '');
     }
 }
