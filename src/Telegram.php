@@ -2,19 +2,19 @@
 
 namespace Atelier;
 
+use Atelier\Telegram\Input;
+
 class Telegram
 {
-    private array $input;
+    private Input $input;
 
     public function __construct(private string $token)
     {
-        $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
+        $this->input = new Input();
+        $this->addChat();
     }
 
-    /**
-     * @return array
-     */
-    public function getInput(): array
+    public function getInput(): Input
     {
         return $this->input;
     }
@@ -22,11 +22,6 @@ class Telegram
     public function sendMessage(string $message): mixed
     {
         return json_decode($this->request($message), true, 512, JSON_THROW_ON_ERROR);
-    }
-
-    private function getChatTd(): string
-    {
-        return $this->input["message"]["chat"]["id"];
     }
 
     private function request(string $message)
@@ -38,10 +33,15 @@ class Telegram
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
             'text' => $message,
-            'chat_id' => $this->getChatTd()
+            'chat_id' => $this->input->getChatTd()
         ]));
 
 
         return curl_exec($ch);
+    }
+
+    private function addChat()
+    {
+        $user = $this->input->getUser();
     }
 }
