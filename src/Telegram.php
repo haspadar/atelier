@@ -12,7 +12,21 @@ class Telegram
     {
         $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
         Logger::info('Debug: ' . var_export($this->input, true));
-        Logger::info('Value: ' . var_export($this->input['callback_data'], true));
+        Logger::info('Data: ' . var_export($this->input['data'], true));
+//        array (   'update_id' => 278445189,   'callback_query' =>
+//            array (     'id' => '690781338248020581',
+//                'from' => array (       'id' => 160835063,       'is_bot' => false,       'first_name' => 'Костя',       'username' => 'haspadar_III',       'language_code' => 'ru',),
+//                'message' =>      array (       'message_id' => 137,       'from' =>        array (
+//                    'id' => 5734498019,         'is_bot' => true,         'first_name' => 'atelier',         'username' => 'atelier_palto_bot',
+//                    ),
+//                    'chat' =>        array (         'id' => 160835063,         'first_name' => 'Костя',         'username' => 'haspadar_III',         'type' => 'private',       ),
+//                    'date' => 1667007821,       'text' => 'Привет, Костя. Какие уведомления хочешь получать?',
+//                    'reply_markup' =>        array (         'inline_keyboard' =>          array (
+//                        0 =>            array (             0 =>              array (               'text' => 'Только важные',               'callback_data' => 'CRITICAL',             ),
+//                        1 =>              array (               'text' => 'Предупреждения',               'callback_data' => 'WARNING',
+//                            ),             2 =>              array (               'text' => 'Рекомендации',
+//                                'callback_data' => 'INFO',             ),           ),         ),       ),
+//                    ),     'chat_instance' => '5758169490136786947',     'data' => 'CRITICAL',   ), )
     }
 
     public function getUpdate(): array
@@ -66,7 +80,7 @@ class Telegram
 
     public function getClickedInlineButton(): string
     {
-        return $this->input['callback_data'] ?? '';
+        return $this->input['data'] ?? '';
     }
 
     public function isMessage(): bool
