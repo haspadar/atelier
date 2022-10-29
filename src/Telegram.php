@@ -65,7 +65,7 @@ class Telegram
 
     public function getClickedInlineButton(): string
     {
-        return isset($this->input['callback_query']['data']) ?? '';
+        return $this->input['callback_query']['data'] ?? '';
     }
 
     public function isMessage(): bool
