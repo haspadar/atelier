@@ -14,7 +14,7 @@ class Telegram
         Logger::info('Debug: ' . var_export($this->input, true));
         Logger::info('callback_query: ' . var_export($this->input['callback_query'], true));
         Logger::info('Data: ' . var_export($this->input['callback_query']['data'], true));
-        Logger::info('Message Chat Id: ' . var_export($this->input['callback_query']['chat']['id'], true));
+        Logger::info('Message Chat Id: ' . var_export($this->input['callback_query']['message']['chat']['id'], true));
 
     }
 
