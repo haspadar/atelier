@@ -18,17 +18,17 @@ class Telegram
         return $this->update;
     }
 
-    public function sendMessageWithInlineButtons(string $message, array $buttons): mixed
+    public function sendMessageWithInlineButtons(string $message, array $buttons): array
     {
         return $this->request($message, ['reply_markup' => ['inline_keyboard' => $buttons]]);
     }
 
-    public function sendMessage(string $message): mixed
+    public function sendMessage(string $message): array
     {
         return $this->request($message);
     }
 
-    private function request(string $message, array $params = []): string
+    private function request(string $message, array $params = []): array
     {
         if ($this->getChatId()) {
             $token = $this->token;
@@ -47,7 +47,7 @@ class Telegram
 
         Logger::error('Input doesn\'t contains chat info: ' . var_export($this->input, true));
 
-        return '';
+        return [];
     }
 
     public function getClickedInlineButton(): string
