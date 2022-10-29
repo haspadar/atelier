@@ -60,10 +60,19 @@ class Telegram
                     'text' => $message,
                     'chat_id' => $this->getChatId()
                 ], $params), true));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge_recursive([
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
                 'text' => $message,
-                'chat_id' => $this->getChatId()
-            ], $params)));
+                'chat_id' => $this->getChatId(),
+                'reply_markup' => [
+                    'inline_keyboard' => array(
+                        array(
+                            array('text'=>'Кнопка 1','callback_data'=>'444'),
+                            array('text'=>'Кнопка 2','callback_data'=>'555'),
+                            array('text'=>'Кнопка 3','callback_data'=>'777'),
+                        )
+                    )
+                ]
+            ]));
 
 
             return json_decode(curl_exec($ch), true, 512, JSON_THROW_ON_ERROR);
