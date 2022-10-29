@@ -9,7 +9,7 @@ use Longman\TelegramBot\Request;
 require_once '../../vendor/autoload.php';
 date_default_timezone_set('Europe/Minsk');
 
-$bot = new Telegram(Settings::getByName('telegram_token'));
+$bot = new Telegram();
 if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
     \Atelier\Subscribers::add([
         'chat_id' => $bot->getChatId(),

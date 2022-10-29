@@ -3,52 +3,45 @@
 namespace Atelier;
 
 use Atelier\Message\Type;
-use Atelier\Model\HttpInfo;
-use Atelier\Model\NginxTraffic;
-use Atelier\Model\Parser;
-use Atelier\Model\PhpFpmTraffic;
-use Atelier\Model\Rotator;
-use Cassandra\Date;
 use DateTime;
-use Palto\Email;
 
 class Notifications
 {
     public static function generate(): void
     {
-        $contacts = array_map(
-            fn(string $email) => trim($email),
-            explode(',', Settings::getByName('emails'))
-        );
-        foreach ($contacts as $contact) {
+        $subscribers = Subscribers::getAll();
+        $telegram = new Telegram();
+        foreach ($subscribers as $subscriber) {
             $messages = (new Model\Notifications())->getActualMessages(
-                $contact,
-                (new \DateTime())->modify('-7 DAYS')->format('Y-m-d H:i:s')
+                $subscriber['chat_id'],
+                (new \DateTime())->modify('-1 MONTH')->format('Y-m-d H:i:s')
             );
             if ($messages) {
+                $types = explode(',', $subscriber['message_types']);
                 foreach (self::groupByType($messages) as $type => $typeMessages) {
-                    $subject = self::generateSummarySubject($type, $typeMessages);
-                    $body = self::generateSummaryBody($type, $typeMessages);
-                    \Atelier\Email::send($contact, $subject, $body);
-                    $now = new DateTime();
-                    foreach ($typeMessages as $typeMessage) {
-                        (new Model\Notifications())->add([
-                            'message_id' => $typeMessage['id'],
-                            'contact' => $contact,
-                            'create_time' => $now->format('Y-m-d H:i:s')
-                        ]);
+                    if (in_array($type, $types)) {
+                        $subject = self::generateSummarySubject($type, $typeMessages);
+                        $body = self::generateSummaryBody($type, $typeMessages);
+                        $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
+                        $now = new DateTime();
+                        foreach ($typeMessages as $typeMessage) {
+                            (new Model\Notifications())->add([
+                                'message_id' => $typeMessage['id'],
+                                'contact' => $subscriber['chat_id'],
+                                'create_time' => $now->format('Y-m-d H:i:s')
+                            ]);
+                        }
+
+                        Logger::info('Sent ' . $type . ' telegram  to ' . $subscriber['chat_id']);
+                    } else {
+                        Logger::warning('Ignored ' . $type . ' type for chat_id=' . $subscriber['chat_id']);
                     }
 
-                    Logger::info('Sent ' . $type . ' email to ' . $contact);
                 }
             } else {
-                Logger::debug('No actual messages for ' . $contact);
+                Logger::debug('No actual messages for ' . $subscriber['chat_id']);
             }
 
-        }
-
-        if (!$contacts) {
-            Logger::warning('No emails in config');
         }
     }
 

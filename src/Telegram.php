@@ -5,9 +5,11 @@ namespace Atelier;
 class Telegram
 {
     private array $input;
+    private string $token;
 
-    public function __construct(private string $token)
+    public function __construct()
     {
+        $this->token = Settings::getByName('telegram_token');
         $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
         Logger::warning('Input: ' . var_export($this->input, true));
     }
@@ -29,22 +31,25 @@ class Telegram
         ]);
     }
 
-    public function sendMessage(string $message): array
+    public function sendMessage(string $message, string $chatId = ''): array
     {
-        return $this->request($message);
+        return $this->request($message, $chatId ? ['chat_id' => $chatId] : []);
     }
 
     private function request(string $message, array $params = []): array
     {
-        if ($this->getChatId()) {
+        if (!isset($params['chat_id'])) {
+            $params['chat_id'] = $this->getChatId();
+        }
+
+        if ($params['chat_id']) {
             $token = $this->token;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge_recursive([
-                'text' => $message,
-                'chat_id' => $this->getChatId()
+                'text' => $message
             ], $params)));
             $response = curl_exec($ch);
 

@@ -11,4 +11,9 @@ class Subscribers extends Model
         return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE `' . $field . '`="' . $value . '"') ?: [];
     }
 
+    public function getAll(): array
+    {
+        return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name) ?: [];
+    }
+
 }
