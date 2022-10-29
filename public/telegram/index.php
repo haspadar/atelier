@@ -12,23 +12,23 @@ date_default_timezone_set('Europe/Minsk');
 $bot = new Telegram(Settings::getByName('telegram_token'));
 //Logger::info('Debug: ' . var_export($bot->getUpdate()->getInput(), true));
 if ($bot->isMessage()) {
-    $bot->sendMessageWithBaseButtons('Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', array(
-        array(
-            array(
-                "text" => "888"
-            ),
-            array(
-                "text" => "999"
-            ),
-        )
-    ));
-//    $bot->sendMessageWithInlineButtons(
-//        'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
-//            ['text'=>'Только важные', 'callback_data' => Type::CRITICAL->name],
-//            ['text'=>'Предупреждения', 'callback_data' => Type::WARNING->name],
-//            ['text'=>'Рекомендации', 'callback_data' => Type::INFO->name],
-//        ]
-//    );
+//    $bot->sendMessageWithBaseButtons('Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', array(
+//        array(
+//            array(
+//                "text" => "888"
+//            ),
+//            array(
+//                "text" => "999"
+//            ),
+//        )
+//    ));
+    $bot->sendMessageWithInlineButtons(
+        'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
+            ['text'=>'Только важные', 'callback_data' => Type::CRITICAL->name],
+            ['text'=>'Предупреждения', 'callback_data' => Type::WARNING->name],
+            ['text'=>'Рекомендации', 'callback_data' => Type::INFO->name],
+        ]
+    );
 } elseif ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
     $bot->sendMessage('Важные уведомления отправляются раз в сутки с 09:00 до 22:00');
 } elseif ($bot->getClickedInlineButton() == Type::WARNING->name) {

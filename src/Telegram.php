@@ -20,12 +20,19 @@ class Telegram
 
     public function sendMessageWithBaseButtons(string $message, array $keyboard): array
     {
-        return $this->request($message, ['reply_markup' => json_encode(["keyboard" => $keyboard, "resize_keyboard" => true])]);
+        return $this->request($message, [
+            'reply_markup' => json_encode([
+                "keyboard" => $keyboard,
+                "resize_keyboard" => true
+            ])
+        ]);
     }
 
     public function sendMessageWithInlineButtons(string $message, array $buttons): array
     {
-        return $this->request($message, ['reply_markup' => json_encode(['inline_keyboard' => [$buttons]])]);
+        return $this->request($message, [
+            'reply_markup' => json_encode(['inline_keyboard' => [$buttons]])
+        ]);
     }
 
     public function sendMessage(string $message): array
@@ -41,20 +48,12 @@ class Telegram
             curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            Logger::info('params: ' . var_export(array_merge_recursive([
-                    'text' => $message,
-                    'chat_id' => $this->getChatId()
-                ], $params), true));
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge_recursive([
                 'text' => $message,
                 'chat_id' => $this->getChatId()
             ], $params)));
-
-
             $response = curl_exec($ch);
-            $info = curl_getinfo($ch);
-            Logger::info('Response: ' . $response);
-            Logger::info('$info: ' . var_export($info, true));
+
             return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
         }
 
