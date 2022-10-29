@@ -36,7 +36,7 @@ class Telegram
             curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$token/sendMessage");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge([
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array_merge_recursive([
                 'text' => $message,
                 'chat_id' => $this->getChatId()
             ], $params)));
