@@ -20,7 +20,7 @@ class Telegram
 
     public function sendMessageWithBaseButtons(string $message, array $keyboard): array
     {
-        return $this->request($message, ['reply_markup' => ["keyboard" => $keyboard, "resize_keyboard" => true]]);
+        return $this->request($message, ['reply_markup' => json_encode(["keyboard" => $keyboard, "resize_keyboard" => true])]);
     }
 
     public function sendMessageWithInlineButtons(string $message, array $buttons): array
