@@ -11,12 +11,6 @@ date_default_timezone_set('Europe/Minsk');
 
 $bot = new Telegram(Settings::getByName('telegram_token'));
 if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
-    Logger::info(var_export([
-        'chat_id' => $bot->getChatId(),
-        'username' => $bot->getUsername(),
-        'first_name' => $bot->getFirstName(),
-        'message_types' => implode(',', [Type::CRITICAL->name])
-    ], true));
     \Atelier\Subscribers::add([
         'chat_id' => $bot->getChatId(),
         'username' => $bot->getUsername(),

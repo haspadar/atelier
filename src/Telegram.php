@@ -2,25 +2,13 @@
 
 namespace Atelier;
 
-use Atelier\Telegram\Update;
-
 class Telegram
 {
-    private array $update;
+    private array $input;
 
     public function __construct(private string $token)
     {
         $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
-        Logger::info('Debug: ' . var_export($this->input, true));
-        Logger::info('callback_query: ' . var_export($this->input['callback_query'], true));
-        Logger::info('Data: ' . var_export($this->input['callback_query']['data'], true));
-        Logger::info('Message Chat Id: ' . var_export($this->input['callback_query']['message']['chat']['id'], true));
-
-    }
-
-    public function getUpdate(): array
-    {
-        return $this->update;
     }
 
     public function sendMessageWithBaseButtons(string $message, array $keyboard): array
