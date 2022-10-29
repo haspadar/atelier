@@ -82,7 +82,21 @@ class Telegram
         return $this->input['message']['from']['first_name'];
     }
 
-    private function getChatId(): string
+    public function getUsername(): string
+    {
+        $user = $this->getUser();
+
+        return $user['username'];
+    }
+
+    public function getFirstName(): string
+    {
+        $user = $this->getUser();
+
+        return $user['first_name'];
+    }
+
+    public function getChatId(): string
     {
         return $this->input['message']['chat']['id']
             ?? ($this->input['my_chat_member']['chat']['id']
@@ -90,5 +104,10 @@ class Telegram
                     ?? ''
                 )
             );
+    }
+
+    private function getUser(): array
+    {
+        return $this->input['callback_query']['from'] ?? [];
     }
 }

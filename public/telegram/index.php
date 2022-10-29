@@ -11,11 +11,35 @@ date_default_timezone_set('Europe/Minsk');
 
 $bot = new Telegram(Settings::getByName('telegram_token'));
 if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
-    $bot->sendMessage('Важные уведомления отправляются раз в сутки с 09:00 до 22:00');
+    Logger::info(var_export([
+        'chat_id' => $bot->getChatId(),
+        'username' => $bot->getUsername(),
+        'first_name' => $bot->getFirstName(),
+        'message_types' => implode(',', [Type::CRITICAL->name])
+    ], true));
+    \Atelier\Subscribers::add([
+        'chat_id' => $bot->getChatId(),
+        'username' => $bot->getUsername(),
+        'first_name' => $bot->getFirstName(),
+        'message_types' => implode(',', [Type::CRITICAL->name])
+    ]);
+    $bot->sendMessage('Важные уведомления будут отправляться раз в сутки с 09:00 до 22:00');
 } elseif ($bot->getClickedInlineButton() == Type::WARNING->name) {
-    $bot->sendMessage('Предупреждения отправляются раз в неделею с 09:00 до 22:00');
+    \Atelier\Subscribers::add([
+        'chat_id' => $bot->getChatId(),
+        'username' => $bot->getUsername(),
+        'first_name' => $bot->getFirstName(),
+        'message_types' => implode(',', [Type::CRITICAL->name, Type::WARNING->name])
+    ]);
+    $bot->sendMessage('Предупреждения будут отправляться раз в неделею с 09:00 до 22:00');
 }  elseif ($bot->getClickedInlineButton() == Type::INFO->name) {
-    $bot->sendMessage('Предупреждения отправляются раз в месяц с 09:00 до 22:00');
+    \Atelier\Subscribers::add([
+        'chat_id' => $bot->getChatId(),
+        'username' => $bot->getUsername(),
+        'first_name' => $bot->getFirstName(),
+        'message_types' => implode(',', [Type::CRITICAL->name, Type::WARNING->name, Type::INFO->name])
+    ]);
+    $bot->sendMessage('Предупреждения будут отправляться раз в месяц с 09:00 до 22:00');
 } elseif ($bot->isMessage()) {
     $bot->sendMessageWithInlineButtons(
         'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
