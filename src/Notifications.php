@@ -32,14 +32,14 @@ class Notifications
                             ]);
                         }
 
-                        Logger::info('Sent ' . $type . ' telegram  to ' . $subscriber['chat_id']);
+                        Logger::info('Sent ' . $type . ' telegram  to ' . $subscriber['first_name']);
                     } else {
-                        Logger::warning('Ignored ' . $type . ' type for chat_id=' . $subscriber['chat_id']);
+                        Logger::warning('Ignored ' . $type . ' type for ' . $subscriber['first_name']);
                     }
 
                 }
             } else {
-                Logger::debug('No actual messages for ' . $subscriber['chat_id']);
+                Logger::debug('No actual messages for ' . $subscriber['first_name']);
             }
 
         }
