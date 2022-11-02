@@ -166,14 +166,14 @@ class Messages
         $text = self::generateTrafficText($yesterdayTraffic, $todayTraffic, $lastTraffic);
         if ($text) {
             self::add([
-                'title' => 'Вырос php-трафик на ' . $machine->getName(),
-                'text' => sprintf(
-                    $text,
-                    'на сайте <a href="' . $machine->getAddress() . '" target="_blank">'
-                    . $machine->getName()
-                    . '</a>'
-                ),
-                'project_id' => $machine->getId(),
+                'title' => 'Вырос php-трафик на ' . $machine->getHost(),
+                'text' => 'На машине '
+                    . $machine->getHost()
+                    . ' ('
+                    . $machine->getIp()
+                    . ') проблемы. '
+                    . $text,
+                'machine_id' => $machine->getId()
             ], $type);
         } else {
             Logger::debug('Nginx traffic is normal');
