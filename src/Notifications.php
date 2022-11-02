@@ -22,7 +22,8 @@ class Notifications
                     if (in_array($type, $types)) {
                         $subject = self::generateSummarySubject($type, $typeMessages);
                         $body = self::generateSummaryBody($type, $typeMessages);
-                        $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
+//                        $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
+                        $telegram->sendMessage($subject, $subscriber['chat_id']);
                         $now = new DateTime();
                         foreach ($typeMessages as $typeMessage) {
                             (new Model\Notifications())->add([
