@@ -4,14 +4,16 @@ namespace Atelier;
 
 class Telegram
 {
-    private array $input;
+    private array $input = [];
     private string $token;
 
     public function __construct()
     {
         $this->token = Settings::getByName('telegram_token');
-        $this->input = json_decode(file_get_contents("php://input"), true, 512, JSON_THROW_ON_ERROR);
-        Logger::warning('Input: ' . var_export($this->input, true));
+        if ($input = file_get_contents("php://input")) {
+            $this->input = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
+            Logger::warning('Input: ' . var_export($this->input, true));
+        }
     }
 
     public function sendMessageWithBaseButtons(string $message, array $keyboard): array
