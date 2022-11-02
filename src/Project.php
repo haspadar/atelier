@@ -128,7 +128,7 @@ class Project
                 'expire_time' => $time->format('Y-m-d H:i:s'),
                 'count' => $count,
                 'update_time' => (new DateTime())->format('Y-m-d H:i:s')
-            ], $found->id);
+            ], $found['id']);
         } else {
             (new Rotator())->add([
                 'expire_time' => $time->format('Y-m-d H:i:s'),
