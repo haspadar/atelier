@@ -27,16 +27,20 @@ class Notifications
                         Logger::info('Body ' . $body);
                         $response = $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
-                        $now = new DateTime();
-                        foreach ($typeMessages as $typeMessage) {
-                            (new Model\Notifications())->add([
-                                'message_id' => $typeMessage['id'],
-                                'contact' => $subscriber['chat_id'],
-                                'create_time' => $now->format('Y-m-d H:i:s')
-                            ]);
-                        }
+                        if ($response['ok']) {
+                            $now = new DateTime();
+                            foreach ($typeMessages as $typeMessage) {
+                                (new Model\Notifications())->add([
+                                    'message_id' => $typeMessage['id'],
+                                    'contact' => $subscriber['chat_id'],
+                                    'create_time' => $now->format('Y-m-d H:i:s')
+                                ]);
+                            }
 
-                        Logger::info('Sent ' . $type . ' telegram to ' . $subscriber['first_name']);
+                            Logger::info('Sent ' . $type . ' telegram to ' . $subscriber['first_name']);
+                        } else {
+                            Logger::error($response['description']);
+                        }
                     } else {
                         Logger::warning('Ignored ' . $type . ' type for ' . $subscriber['first_name']);
                     }
