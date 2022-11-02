@@ -2,6 +2,7 @@
 
 namespace Atelier\Controller;
 
+use Atelier\Command\ExtractNewProjects;
 use Atelier\Commands;
 use Atelier\Debug;
 use Atelier\Directory;
@@ -258,18 +259,8 @@ class Atelier
             $this->getPutParam('password')
         );
         if (!$ssh->getError()) {
-            $directories = $machine->scanProjectDirectories();
-            if ($newDirectories = $machine->getNewDirectories($directories)) {
-                $machine->addProjects($newDirectories);
-                $this->showJsonResponse([
-                    'report' => count($newDirectories) > 1
-                        ? 'Добавлены проекты ' . implode(', ', $newDirectories)
-                        : 'Добавлен проект ' . $newDirectories[0]
-                ]);
-            } else {
-                $this->showJsonResponse(['report' => 'Новые проекты не найдены']);
-            }
-
+            $command = new ExtractNewProjects();
+            $this->showJsonResponse(['report' => $command->run($machine)]);
         } else {
             $this->showJsonResponse(['error' => $ssh->getError()]);
         }

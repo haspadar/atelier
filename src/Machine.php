@@ -4,7 +4,6 @@ namespace Atelier;
 
 use Atelier\Model\PhpFpmTraffic;
 use Atelier\Model\Projects;
-use Atelier\Project\Type;
 use phpseclib3\Crypt\Common\AsymmetricKey;
 use phpseclib3\Crypt\PublicKeyLoader;
 
