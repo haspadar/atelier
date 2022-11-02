@@ -4,6 +4,7 @@ namespace Atelier;
 
 use Atelier\Message\Type;
 use DateTime;
+use Longman\TelegramBot\DB;
 
 class Notifications
 {
@@ -21,9 +22,10 @@ class Notifications
                 foreach (self::groupByType($messages) as $type => $typeMessages) {
                     if (in_array($type, $types)) {
                         $subject = self::generateSummarySubject($type, $typeMessages);
-                        $body = self::generateSummaryBody($type, $typeMessages);
-//                        $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
-                        $telegram->sendMessage($subject, $subscriber['chat_id']);
+                        $body = self::generateSummaryBody($typeMessages);
+                        Logger::info('Subject ' . $subject);
+                        Logger::info('Body ' . $body);
+                        $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
                         $now = new DateTime();
                         foreach ($typeMessages as $typeMessage) {
                             (new Model\Notifications())->add([
@@ -33,7 +35,7 @@ class Notifications
                             ]);
                         }
 
-                        Logger::info('Sent ' . $type . ' telegram  to ' . $subscriber['first_name']);
+                        Logger::info('Sent ' . $type . ' telegram to ' . $subscriber['first_name']);
                     } else {
                         Logger::warning('Ignored ' . $type . ' type for ' . $subscriber['first_name']);
                     }
@@ -61,6 +63,7 @@ class Notifications
 
         if ($type == Type::WARNING) {
             return count($messages)
+                . ' '
                 . Plural::get(
                     count($messages),
                     'уведомление',
@@ -70,6 +73,7 @@ class Notifications
         }
 
         return count($messages)
+            . ' '
             . Plural::get(
                 count($messages),
                 'рекомендация',
@@ -78,7 +82,7 @@ class Notifications
             );
     }
 
-    private static function generateSummaryBody(string $type, array $messages): string
+    private static function generateSummaryBody(array $messages): string
     {
         $summary = '<ol>';
         foreach ($messages as $message) {
