@@ -39,7 +39,7 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
         'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
             ['text'=> 'Critical', 'callback_data' => Type::CRITICAL->name],
             ['text'=> 'Critical & Warning', 'callback_data' => Type::WARNING->name],
-            ['text'=> 'Critical, Warning & Info', 'callback_data' => Type::INFO->name],
+            ['text'=> 'Все', 'callback_data' => Type::INFO->name],
         ]
     );
 }
