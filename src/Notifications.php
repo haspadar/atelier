@@ -21,11 +21,9 @@ class Notifications
                 $types = explode(',', $subscriber['message_types']);
                 foreach (self::groupByType($messages) as $type => $typeMessages) {
                     if (in_array($type, $types)) {
-                        $subject = self::generateSummarySubject($type, $typeMessages);
-                        $body = self::generateSummaryBody($typeMessages);
-                        Logger::info('Subject ' . $subject);
-                        Logger::info('Body ' . $body);
-                        $response = $telegram->sendMessage($subject . PHP_EOL . PHP_EOL . $body, $subscriber['chat_id']);
+                        $message = self::generateMessage($type, $typeMessages);
+                        Logger::info('Message ' . $message);
+                        $response = $telegram->sendMessage($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
                         if ($response['ok']) {
                             $now = new DateTime();
@@ -50,6 +48,39 @@ class Notifications
                 Logger::debug('No actual messages for ' . $subscriber['first_name']);
             }
 
+        }
+    }
+
+    private static function generateMessage(string $type, array $messages): string
+    {
+        $subject = self::generateSummarySubject($type, $messages);
+        $url = sprintf('<a href="%s">Перейти на сайт</a>', self::generateUrl($type));
+        $groupNames = self::getGroupNames($messages);
+        $list = implode('', array_map(
+            fn($name) => '<li>' . $name . '</li>',
+            array_slice($groupNames, 0, 5)
+        ));
+
+        return $subject . ':<br><ul>' . $list . (count($groupNames) > 5 ? '<li>и др.</li>' : '') . '</ul>' . $url;
+    }
+
+    private static function getGroupNames(array $messages): array
+    {
+        return array_unique(array_column($messages, 'group_title'));
+    }
+
+    private static function generateUrl(string $type): string
+    {
+        if ($type == Type::CRITICAL->name) {
+            return 'https://atelier.palto.name/checks#CRITICAL';
+        }
+
+        if ($type == Type::WARNING->name) {
+            return 'https://atelier.palto.name/checks#WARNING';
+        }
+
+        if ($type == Type::INFO->name) {
+            return 'https://atelier.palto.name/checks#INFO';
         }
     }
 
