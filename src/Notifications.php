@@ -22,9 +22,6 @@ class Notifications
                 foreach (self::groupByType($checks) as $type => $typeChecks) {
                     if (in_array($type, $types)) {
                         $message = self::generateMessage($type, $typeChecks);
-                        Logger::info('Message ' . $message);
-                        Debug::dump($message, '$message');
-                        Debug::dump(mb_strlen($message), 'strlen');
                         $response = $telegram->sendHtml($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
                         if ($response['ok']) {
