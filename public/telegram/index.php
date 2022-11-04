@@ -15,7 +15,7 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
         'first_name' => $bot->getFirstName(),
         'check_types' => implode(',', [Type::CRITICAL->name])
     ]);
-    $bot->sendMessage('Важные уведомления будут отправляться с 09:00 до 22:00');
+    $bot->sendText('Важные уведомления будут отправляться с 09:00 до 22:00');
 } elseif ($bot->getClickedInlineButton() == Type::WARNING->name) {
     Subscribers::add([
         'chat_id' => $bot->getChatId(),
@@ -23,7 +23,7 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
         'first_name' => $bot->getFirstName(),
         'check_types' => implode(',', [Type::CRITICAL->name, Type::WARNING->name])
     ]);
-    $bot->sendMessage('Предупреждения будут отправляться с 09:00 до 22:00');
+    $bot->sendText('Предупреждения будут отправляться с 09:00 до 22:00');
 }  elseif ($bot->getClickedInlineButton() == Type::INFO->name) {
     Subscribers::add([
         'chat_id' => $bot->getChatId(),
@@ -31,7 +31,7 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
         'first_name' => $bot->getFirstName(),
         'check_types' => implode(',', [Type::CRITICAL->name, Type::WARNING->name, Type::INFO->name])
     ]);
-    $bot->sendMessage('Предупреждения будут отправляться с 09:00 до 22:00');
+    $bot->sendText('Предупреждения будут отправляться с 09:00 до 22:00');
 } elseif ($bot->isUnsubscribe($bot->getChatId())) {
     Subscribers::remove($bot->getChatId());
 } elseif ($bot->isMessage()) {

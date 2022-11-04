@@ -33,9 +33,14 @@ class Telegram
         ]);
     }
 
-    public function sendMessage(string $message, string $chatId = ''): array
+    public function sendHtml(string $message, string $chatId = ''): array
     {
         return $this->request($message, $chatId ? ['chat_id' => $chatId, 'parse_mode' => 'html'] : []);
+    }
+
+    public function sendText(string $message, string $chatId = ''): array
+    {
+        return $this->request($message, $chatId ? ['chat_id' => $chatId] : []);
     }
 
     private function request(string $message, array $params = []): array

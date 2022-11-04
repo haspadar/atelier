@@ -25,7 +25,7 @@ class Notifications
                         Logger::info('Message ' . $message);
                         Debug::dump($message, '$message');
                         Debug::dump(mb_strlen($message), 'strlen');
-                        $response = $telegram->sendMessage($message, $subscriber['chat_id']);
+                        $response = $telegram->sendHtml($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
                         if ($response['ok']) {
                             $now = new DateTime();
@@ -59,12 +59,12 @@ class Notifications
         $subject = self::generateSummarySubject($type, $checks);
         $url = sprintf('<a href="%s">Перейти на сайт</a>', self::generateUrl($type));
         $groupTitles = self::getGroupTitles($checks);
-        $list = implode('', array_map(
-            fn($name) => '<li>' . $name . '</li>',
+        $list = implode(', ', array_map(
+            fn($name) => '"' . $name . '"',
             array_slice($groupTitles, 0, 10)
         ));
 
-        return $subject . ':<ul>' . $list . (count($groupTitles) > 10 ? '<li>и др.</li>' : '') . '</ul>' . $url;
+        return $subject . ':' . $list . (count($groupTitles) > 10 ? 'и др.' : '') . $url;
     }
 
     /**
