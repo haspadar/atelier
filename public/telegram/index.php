@@ -37,8 +37,8 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
 } elseif ($bot->isMessage()) {
     $bot->sendMessageWithInlineButtons(
         'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
-            ['text'=> 'Critical', 'callback_data' => Type::CRITICAL->name],
-            ['text'=> 'Critical & Warning', 'callback_data' => Type::WARNING->name],
+            ['text'=> 'Срочные', 'callback_data' => Type::CRITICAL->name],
+            ['text'=> 'Срочные, важные', 'callback_data' => Type::WARNING->name],
             ['text'=> 'Все', 'callback_data' => Type::INFO->name],
         ]
     );
