@@ -27,7 +27,7 @@
     <div class="offcanvas-body px-0">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/messages'])) : ?>active<?php endif; ?>" href="/messages">Сообщения</a>
+                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/checks'])) : ?>active<?php endif; ?>" href="/checks">Проверки</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/machines'])) : ?>active<?php endif; ?>" href="/machines">Машины</a>

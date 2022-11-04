@@ -1,6 +1,6 @@
 <?php
 
-use Atelier\Message\Type;
+use Atelier\Check\Type;
 use Atelier\Subscribers;
 use Atelier\Telegram;
 

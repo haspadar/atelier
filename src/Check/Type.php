@@ -1,6 +1,6 @@
 <?php
 
-namespace Atelier\Message;
+namespace Atelier\Check;
 
 enum Type
 {

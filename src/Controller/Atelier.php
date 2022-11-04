@@ -9,8 +9,8 @@ use Atelier\Directory;
 use Atelier\Filter;
 use Atelier\Flash;
 use Atelier\Machines;
-use Atelier\Message\Type;
-use Atelier\Messages;
+use Atelier\Check\Type;
+use Atelier\Checks;
 use Atelier\ProjectCommand;
 use Atelier\Projects;
 use Atelier\Reports;
@@ -63,21 +63,21 @@ class Atelier
         ]);
     }
 
-    public function showMessage(int $id)
+    public function showCheck(int $id)
     {
-        $message = (new \Atelier\Model\Messages())->getById($id);
+        $check = (new \Atelier\Model\Checks())->getById($id);
         $this->templatesEngine->addData([
-            'title' => 'Сообщение ' . $id,
-            'message' => $message
+            'title' => 'Проверка ' . $id,
+            'check' => $check
         ]);
-        echo $this->templatesEngine->make('message');
+        echo $this->templatesEngine->make('check');
     }
 
-    public function showMessages()
+    public function showChecks()
     {
-        $criticalMessagesCount = Messages::getMessagesCount(Type::CRITICAL);
-        $warningMessagesCount = Messages::getMessagesCount(Type::WARNING);
-        $infoMessagesCount = Messages::getMessagesCount(Type::INFO);
+        $criticalChecksCount = Checks::getChecksCount(Type::CRITICAL);
+        $warningChecksCount = Checks::getChecksCount(Type::WARNING);
+        $infoChecksCount = Checks::getChecksCount(Type::INFO);
         $criticalPageNumber = $this->getQueryParam('critical_page', 1);
         $warningPageNumber = $this->getQueryParam('warning_page', 1);
         $infoPageNumber = $this->getQueryParam('info_age', 1);
@@ -86,23 +86,23 @@ class Atelier
         $warningOffset = ($warningPageNumber - 1) * $limit;
         $infoOffset = ($infoPageNumber - 1) * $limit;
         $this->templatesEngine->addData([
-            'title' => 'Сообщения',
-            'critical_messages' => Messages::getMessages(Type::CRITICAL, $limit, $criticalOffset),
-            'critical_count' => $criticalMessagesCount,
+            'title' => 'Проверки',
+            'critical_checks' => Checks::getChecks(Type::CRITICAL, $limit, $criticalOffset),
+            'critical_count' => $criticalChecksCount,
             'critical_page' => $criticalPageNumber,
-            'critical_pages_count' => ceil($criticalMessagesCount / $limit),
+            'critical_pages_count' => ceil($criticalChecksCount / $limit),
 
-            'warning_messages' => Messages::getMessages(Type::WARNING, $limit, $warningOffset),
-            'warning_count' => $warningMessagesCount,
+            'warning_checks' => Checks::getChecks(Type::WARNING, $limit, $warningOffset),
+            'warning_count' => $warningChecksCount,
             'warning_page' => $warningPageNumber,
-            'warning_pages_count' => ceil($warningMessagesCount / $limit),
+            'warning_pages_count' => ceil($warningChecksCount / $limit),
 
-            'info_messages' => Messages::getMessages(Type::INFO, $limit, $infoOffset),
-            'info_count' => $infoMessagesCount,
+            'info_checks' => Checks::getChecks(Type::INFO, $limit, $infoOffset),
+            'info_count' => $infoChecksCount,
             'info_page' => $infoPageNumber,
-            'info_pages_count' => ceil($infoMessagesCount / $limit),
+            'info_pages_count' => ceil($infoChecksCount / $limit),
         ]);
-        echo $this->templatesEngine->make('messages');
+        echo $this->templatesEngine->make('checks');
     }
 
     public function showMachines()

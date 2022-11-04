@@ -2,7 +2,7 @@
 
 namespace Atelier;
 
-use Atelier\Message\Type;
+use Atelier\Check\Type;
 use DateTime;
 use Longman\TelegramBot\DB;
 

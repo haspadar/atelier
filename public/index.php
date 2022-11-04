@@ -15,8 +15,8 @@ try {
     $router->get('/projects', '\Atelier\Controller\Atelier@showProjects');
     $router->get('/projects/{id}', '\Atelier\Controller\Atelier@showProject');
     $router->delete('/projects/{id}', '\Atelier\Controller\Atelier@deleteProject');
-    $router->get('/messages', '\Atelier\Controller\Atelier@showMessages');
-    $router->get('/messages/{id}', '\Atelier\Controller\Atelier@showMessage');
+    $router->get('/checks', '\Atelier\Controller\Atelier@showChecks');
+    $router->get('/checks/{id}', '\Atelier\Controller\Atelier@showCheck');
     $router->get('/machines', '\Atelier\Controller\Atelier@showMachines');
     $router->get('/machines/{id}', '\Atelier\Controller\Atelier@showMachine');
     $router->get('/reports', '\Atelier\Controller\Atelier@showReports');

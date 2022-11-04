@@ -2,7 +2,7 @@
 
 namespace Atelier;
 
-use Atelier\Message\Type;
+use Atelier\Check\Type;
 use Atelier\Model\HttpInfo;
 use Atelier\Model\NginxTraffic;
 use Atelier\Model\Parser;
@@ -10,19 +10,19 @@ use Atelier\Model\PhpFpmTraffic;
 use Atelier\Model\Rotator;
 use DateTime;
 
-class Messages
+class Checks
 {
-    public static function getMessagesCount(Type $type): int
+    public static function getChecksCount(Type $type): int
     {
-        return (new Model\Messages())->getAllCount($type->name);
+        return (new Model\Checks())->getAllCount($type->name);
     }
 
-    public static function getMessages(Type $type, int $limit = 0, int $offset = 0): array
+    public static function getChecks(Type $type, int $limit = 0, int $offset = 0): array
     {
-        $messages = (new Model\Messages())->getAll($type->name, $limit, $offset);
+        $checks = (new Model\Checks())->getAll($type->name, $limit, $offset);
         $grouped = [];
-        foreach ($messages as $message) {
-            $grouped[$message['group_title']][] = $message;
+        foreach ($checks as $check) {
+            $grouped[$check['group_title']][] = $check;
         }
 
         return $grouped;
@@ -101,17 +101,17 @@ class Messages
         }
     }
 
-    private static function add(array $message, Type $type, ?Project $project, ?Machine $machine = null): void
+    private static function add(array $check, Type $type, ?Project $project, ?Machine $machine = null): void
     {
-        $message['project_id'] = $project?->getId();
-        $message['machine_id'] = $machine ? $machine->getId() : $project->getMachine()->getId();
-        $message['title'] = $message['group_title']
+        $check['project_id'] = $project?->getId();
+        $check['machine_id'] = $machine ? $machine->getId() : $project->getMachine()->getId();
+        $check['title'] = $check['group_title']
             . ' на '
             . ($project ? $project->getName() : $machine->getHost());
-        $message['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
-        $message['type'] = $type->name;
+        $check['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
+        $check['type'] = $type->name;
         $now = new DateTime();
-        if (!(new Model\Messages())->getBetween(
+        if (!(new Model\Checks())->getBetween(
             ($type == Type::CRITICAL
                 ? $now->modify('-1 DAY')
                 : ($type == Type::WARNING
@@ -120,15 +120,15 @@ class Messages
                 )
             )->format('Y-m-d H:i:s'),
             $now->format('Y-m-d H:i:s'),
-            $message['machine_id'] ?? null,
-            $message['project_id'] ?? null,
-            $message['type'],
-            $message['title']
+            $check['machine_id'] ?? null,
+            $check['project_id'] ?? null,
+            $check['type'],
+            $check['title']
         )) {
-            (new Model\Messages())->add($message);
-            Logger::info('Added ' . $type->name . ' message "' . $message['title'] . '"');
+            (new Model\Checks())->add($check);
+            Logger::info('Added ' . $type->name . ' check "' . $check['title'] . '"');
         } else {
-            Logger::warning('Ignored exists ' . $type->name . ' message "' . $message['title'] . '"');
+            Logger::warning('Ignored exists ' . $type->name . ' check "' . $check['title'] . '"');
         }
     }
 

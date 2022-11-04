@@ -1,6 +1,6 @@
 <?php /** @var $this League\Plates\Template\Template */
 
-use Atelier\Message\Type;
+use Atelier\Check\Type;
 use Atelier\Project;
 use Atelier\Time; ?>
 <?php $this->layout('layout');?>
@@ -25,11 +25,11 @@ use Atelier\Time; ?>
 
 <div class="tab-content" id="pills-tabContent">
     <?php foreach ([
-            Type::CRITICAL->name => $this->data['critical_messages'],
-            Type::WARNING->name => $this->data['warning_messages'] ?? [],
-            Type::INFO->name => $this->data['info_messages'] ?? [],
-           ] as $messageTypeName => $groupedMessages) :?>
-        <div class="tab-pane fade show <?php if (Type::CRITICAL->name == $messageTypeName) :?>active<?php endif?>" id="<?=$messageTypeName?>" role="tabpanel" tabindex="0">
+            Type::CRITICAL->name => $this->data['critical_checks'],
+            Type::WARNING->name => $this->data['warning_checks'] ?? [],
+            Type::INFO->name => $this->data['info_checks'] ?? [],
+           ] as $checkTypeName => $groupedChecks) :?>
+        <div class="tab-pane fade show <?php if (Type::CRITICAL->name == $checkTypeName) :?>active<?php endif?>" id="<?=$checkTypeName?>" role="tabpanel" tabindex="0">
             <table class="table">
                 <thead>
                     <tr>
@@ -41,25 +41,25 @@ use Atelier\Time; ?>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($groupedMessages as $groupTitle => $messages) :?>
-                        <?php foreach ($messages as $message) :?>
+                    <?php foreach ($groupedChecks as $groupTitle => $checks) :?>
+                        <?php foreach ($checks as $check) :?>
                             <tr>
                                 <td>
-                                    <a href="/messages/<?=$message['id']?>" class="text-decoration-none"><?=$groupTitle?></a>
+                                    <a href="/checks/<?=$check['id']?>" class="text-decoration-none"><?=$groupTitle?></a>
                                 </td>
                                 <td>
-                                    <?php if ($message['project_id']) :?>
-                                        <a href="/projects/<?=$message['project_id']?>" target="_blank" class="text-decoration-none">
-                                            <?= Project::extractName($message['project_path'])?>
+                                    <?php if ($check['project_id']) :?>
+                                        <a href="/projects/<?=$check['project_id']?>" target="_blank" class="text-decoration-none">
+                                            <?= Project::extractName($check['project_path'])?>
                                         </a>
                                     <?php endif;?>
                                 </td>
                                 <td>
-                                    <a href="/machines/<?=$message['machine_id']?>" target="_blank" class="text-decoration-none">
-                                        <?= $message['machine_host']?>
+                                    <a href="/machines/<?=$check['machine_id']?>" target="_blank" class="text-decoration-none">
+                                        <?= $check['machine_host']?>
                                     </a>
                                 </td>
-                                <td class="small text-muted"><?= Time::timeHuman(new DateTime($message['create_time']))?></td>
+                                <td class="small text-muted"><?= Time::timeHuman(new DateTime($check['create_time']))?></td>
                                 <td>
                                     <a href="" class="btn-danger btn-sm text-decoration-none">
                                         Игнорировать
@@ -74,23 +74,23 @@ use Atelier\Time; ?>
                     <?php endforeach;?>
                 </tbody>
             </table>
-            <?php if ($messageTypeName == Type::CRITICAL->name) :?>
+            <?php if ($checkTypeName == Type::CRITICAL->name) :?>
                 <?= $this->insert('partials/pagination', [
-                    'url' => '/messages?critical_page=%s',
+                    'url' => '/checks?critical_page=%s',
                     'page' => $this->data['critical_page'],
                     'count' => $this->data['critical_count'],
                     'pages_count' => $this->data['critical_pages_count'],
                 ]);?>
-            <?php elseif ($messageTypeName == Type::WARNING->name) :?>
+            <?php elseif ($checkTypeName == Type::WARNING->name) :?>
                 <?= $this->insert('partials/pagination', [
-                    'url' => '/messages?warning_page=%s',
+                    'url' => '/checks?warning_page=%s',
                     'page' => $this->data['warning_page'],
                     'count' => $this->data['warning_count'],
                     'pages_count' => $this->data['warning_pages_count'],
                 ]);?>
-            <?php elseif ($messageTypeName == Type::INFO->name) :?>
+            <?php elseif ($checkTypeName == Type::INFO->name) :?>
                 <?= $this->insert('partials/pagination', [
-                    'url' => '/messages?info_page=%s',
+                    'url' => '/checks?info_page=%s',
                     'page' => $this->data['info_page'],
                     'count' => $this->data['info_count'],
                     'pages_count' => $this->data['info_pages_count'],
