@@ -3,6 +3,7 @@
 namespace Atelier;
 
 use Atelier\Check\Type;
+use Atelier\Model\CheckIgnores;
 use Atelier\Model\HttpInfo;
 use Atelier\Model\NginxTraffic;
 use Atelier\Model\Parser;
@@ -111,13 +112,16 @@ class Checks
     {
         $check['project_id'] = $project?->getId();
         $check['machine_id'] = $machine ? $machine->getId() : $project->getMachine()->getId();
+        $check['name'] = debug_backtrace()[1]['function'];
         $check['title'] = $check['group_title']
             . ' на '
             . ($project ? $project->getName() : $machine->getHost());
         $check['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         $check['type'] = $type->name;
         $now = new DateTime();
-        if (!(new Model\Checks())->getBetween(
+        if (!self::isIgnored($check)) {
+            Logger::warning('Check ignored: ' . var_export($check, true));
+        } elseif (!(new Model\Checks())->getBetween(
             ($type == Type::CRITICAL
                 ? $now->modify('-1 DAY')
                 : ($type == Type::WARNING
@@ -467,5 +471,11 @@ class Checks
     public static function getById(int $id): Check
     {
         return new Check((new \Atelier\Model\Checks())->getById($id));
+    }
+
+    private static function isIgnored(array $check): bool
+    {
+        return (new CheckIgnores())->find($check['name'], $check['project_id'], null)
+            || (new CheckIgnores())->find($check['name'], null, $check['machine_id']);
     }
 }

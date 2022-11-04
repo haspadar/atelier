@@ -17,6 +17,9 @@ try {
     $router->delete('/projects/{id}', '\Atelier\Controller\Atelier@deleteProject');
     $router->get('/checks', '\Atelier\Controller\Atelier@showChecks');
     $router->get('/checks/{id}', '\Atelier\Controller\Atelier@showCheck');
+    $router->delete('/checks/{id}', '\Atelier\Controller\Atelier@ignoreCheck');
+    $router->delete('/check-projects/{id}', '\Atelier\Controller\Atelier@ignoreCheckProject');
+    $router->delete('/check-machines/{id}', '\Atelier\Controller\Atelier@ignoreCheckMachine');
     $router->get('/machines', '\Atelier\Controller\Atelier@showMachines');
     $router->get('/machines/{id}', '\Atelier\Controller\Atelier@showMachine');
     $router->get('/reports', '\Atelier\Controller\Atelier@showReports');

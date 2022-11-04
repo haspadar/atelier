@@ -11,6 +11,13 @@ use Atelier\Time; ?>
  */
 
 $check = $this->data['check'];
+if ($check->isIgnored()) :
+?>
+    <div class="alert alert-danger alert-dismissible mt-2 fade show" role="alert">
+        Сообщение скрыто
+    </div>
+<?php
+endif;
 ?>
 
 <dl>
@@ -42,18 +49,19 @@ $check = $this->data['check'];
     </dd>
 </dl>
 
+<?php if (!$check->isIgnored()) :?>
+    <button class="btn btn-danger ignore-check" type="button" data-id="<?=$check->getId()?>">
+        Игнорировать сообщение
+    </button>
+<?php endif;?>
 
-<button class="btn btn-danger ignore-message" type="button" data-id="<?=$check->getId()?>">
-    Игнорировать сообщение
-</button>
-
-<?php if ($check['project_id']) :?>
-    <button class="btn btn-warning ignore-project" type="button" data-id="<?=$check->getId()?>">
+<?php if ($check->getProjectId()) :?>
+    <button class="btn btn-warning ignore-check-project" type="button" data-id="<?=$check->getId()?>">
         Не проверять проект <?=$check->getProjectName()?>
     </button>
 <?php endif;?>
 
-<button class="btn btn-warning ignore-machine" type="button" data-id="<?=$check->getId()?>">
+<button class="btn btn-warning ignore-check-machine" type="button" data-id="<?=$check->getId()?>">
     Не проверять машину <?=$check->getMachineHost()?>
 </button>
 

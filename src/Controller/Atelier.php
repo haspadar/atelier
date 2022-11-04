@@ -64,6 +64,34 @@ class Atelier
         ]);
     }
 
+    public function ignoreCheckProject(int $checkId)
+    {
+        $check = Checks::getById($checkId);
+        if ($check->getProjectId()) {
+            $check->ignoreProject();
+            Flash::addSuccess('Проект не будет проверяться');
+            $this->showJsonResponse(['success' => true, 'redirect_url' => '/checks#' . $check->getTypeName()]);
+        }
+    }
+
+    public function ignoreCheckMachine(int $checkId)
+    {
+        $check = Checks::getById($checkId);
+        if ($check->getMachineId()) {
+            $check->ignoreMachine();
+            Flash::addSuccess('Машина не будет проверяться');
+            $this->showJsonResponse(['success' => true, 'redirect_url' => '/checks#' . $check->getTypeName()]);
+        }
+    }
+
+    public function ignoreCheck(int $checkId)
+    {
+        $check = Checks::getById($checkId);
+        $check->ignore();
+        Flash::addSuccess('Сообщение скрыто');
+        $this->showJsonResponse(['success' => true, 'redirect_url' => '/checks#' . $check->getTypeName()]);
+    }
+
     public function showCheck(int $id)
     {
         $check = Checks::getById($id);

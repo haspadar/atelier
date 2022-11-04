@@ -1,4 +1,55 @@
 $(function () {
+    function getHash() {
+        var url = document.location.toString();
+
+        return url.split('#')[1];
+    }
+    (function handleTabs(callback) {
+        // Javascript to enable link to tab
+        var url = document.location.toString();
+        if (url.match('#')) {
+            var $tab = $('.nav-tabs a[href="#' + getHash() + '"]');
+            $tab.tab('show');
+            if (url.split('#').length > 2) {
+                var $subTab = $(
+                    '.nav-tabs a[href=#'
+                    + url.split('#')[1]
+                    + '#' + url.split('#')[2]
+                    + ']'
+                );
+                if (callback) {
+                    callback($subTab);
+                }
+
+                $subTab.tab('show');
+            }
+        } 
+
+        //Change hash for page-reload
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            var hash = e.target.hash;
+            hash = hash.replace(/^#/, '');
+            var fx, node = $('#' + hash);
+            if (node.length) {
+                node.attr('id', '');
+                fx = $('<div></div>')
+                    .css({
+                        position: 'absolute',
+                        visibility: 'hidden',
+                        top: $(document).scrollTop() + 'px'
+                    })
+                    .attr('id', hash)
+                    .appendTo(document.body);
+            }
+
+            document.location.hash = hash;
+            if (node.length) {
+                fx.remove();
+                node.attr('id', hash);
+            }
+        });
+    })();
+
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     if (tooltipTriggerList) {
         tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -55,6 +106,63 @@ $(function () {
                         .html('<a href="#response" class="text-success response-link">Команда отработала</a>');
                 } else {
                     $error.text(resp.error);
+                }
+            }
+        });
+
+        return false;
+    });
+    $('.ignore-check').on('click', function () {
+        let checkId = $(this).data('id');
+        $.ajax({
+            url: '/checks/' + checkId,
+            dataType: "json",
+            type: 'DELETE',
+            data: {},
+            success: function (response) {
+                let $tr = $(this).parents('tr');
+                if ($tr.length) {
+                    document.location.reload();
+                } else {
+                    document.location = response.redirect_url;
+                }
+            }
+        });
+
+        return false;
+    });
+    $('.ignore-check-project').on('click', function () {
+        let checkId = $(this).data('id');
+        $.ajax({
+            url: '/check-projects/' + checkId,
+            dataType: "json",
+            type: 'DELETE',
+            data: {},
+            success: function (response) {
+                let $tr = $(this).parents('tr');
+                if ($tr.length) {
+                    document.location.reload();
+                } else {
+                    document.location = response.redirect_url;
+                }
+            }
+        });
+
+        return false;
+    });
+    $('.ignore-check-machine').on('click', function () {
+        let checkId = $(this).data('id');
+        $.ajax({
+            url: '/check-machines/' + checkId,
+            dataType: "json",
+            type: 'DELETE',
+            data: {},
+            success: function (response) {
+                let $tr = $(this).parents('tr');
+                if ($tr.length) {
+                    document.location.reload();
+                } else {
+                    document.location = response.redirect_url;
                 }
             }
         });

@@ -5,21 +5,21 @@ use Atelier\Project;
 use Atelier\Time; ?>
 <?php $this->layout('layout');?>
 
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+<ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active small" data-bs-toggle="pill" data-bs-target="#<?= Type::CRITICAL->name?>" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
+        <a href="#<?= Type::CRITICAL->name?>" class="nav-link active small" data-bs-toggle="pill" data-bs-target="#<?= Type::CRITICAL->name?>" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
             <?= Type::CRITICAL->name?>
-        </button>
+        </a>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link small" data-bs-toggle="pill" data-bs-target="#<?= Type::WARNING->name?>" type="button" role="tab" aria-controls="pills-home" aria-selected="false">
+        <a href="#<?= Type::WARNING->name?>" class="nav-link small" data-bs-toggle="pill" data-bs-target="#<?= Type::WARNING->name?>" type="button" role="tab" aria-controls="pills-home" aria-selected="false">
             <?= Type::WARNING->name?>
-        </button>
+        </a>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link small" data-bs-toggle="pill" data-bs-target="#<?= Type::INFO->name?>" type="button" role="tab" aria-controls="pills-home" aria-selected="false">
+        <a href="#<?= Type::INFO->name?>" class="nav-link small" data-bs-toggle="pill" data-bs-target="#<?= Type::INFO->name?>" type="button" role="tab" aria-controls="pills-home" aria-selected="false">
             <?= Type::INFO->name?>
-        </button>
+        </a>
     </li>
 </ul>
 
@@ -64,13 +64,9 @@ use Atelier\Time; ?>
                                 </td>
                                 <td class="small text-muted"><?= Time::timeHuman($check->getCreateTime())?></td>
                                 <td>
-                                    <a href="" class="btn-danger btn-sm text-decoration-none">
+                                    <a href="javascript:void(0);" class="btn-danger btn-sm text-decoration-none ignore-check" data-id="<?=$check->getId()?>">
                                         Игнорировать
                                     </a>
-<!--                                    <a href="" class="btn-warning btn-sm text-decoration-none">-->
-<!--                                        Не проверять проект-->
-<!--                                    </a>-->
-
                                 </td>
                             </tr>
                         <?php endforeach;?>
