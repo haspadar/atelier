@@ -35,7 +35,7 @@ class Telegram
 
     public function sendMessage(string $message, string $chatId = ''): array
     {
-        return $this->request($message, $chatId ? ['chat_id' => $chatId] : []);
+        return $this->request($message, $chatId ? ['chat_id' => $chatId, 'parse_mode' => 'html'] : []);
     }
 
     private function request(string $message, array $params = []): array
