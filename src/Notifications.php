@@ -64,7 +64,7 @@ class Notifications
             array_slice($groupTitles, 0, 10)
         ));
 
-        return $subject . ':<br><ul>' . $list . (count($groupTitles) > 10 ? '<li>и др.</li>' : '') . '</ul>' . $url;
+        return $subject . ':<ul>' . $list . (count($groupTitles) > 10 ? '<li>и др.</li>' : '') . '</ul>' . $url;
     }
 
     /**
