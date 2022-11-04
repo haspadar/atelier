@@ -13,23 +13,23 @@ class Notifications
         $subscribers = Subscribers::getAll();
         $telegram = new Telegram();
         foreach ($subscribers as $subscriber) {
-            $messages = (new Model\Notifications())->getActualMessages(
+            $checks = (new Model\Notifications())->getActualChecks(
                 $subscriber['chat_id'],
                 (new \DateTime())->modify('-1 MONTH')->format('Y-m-d H:i:s')
             );
-            if ($messages) {
-                $types = explode(',', $subscriber['message_types']);
-                foreach (self::groupByType($messages) as $type => $typeMessages) {
+            if ($checks) {
+                $types = explode(',', $subscriber['check_types']);
+                foreach (self::groupByType($checks) as $type => $typeChecks) {
                     if (in_array($type, $types)) {
-                        $message = self::generateMessage($type, $typeMessages);
+                        $message = self::generateCheck($type, $typeChecks);
                         Logger::info('Message ' . $message);
                         $response = $telegram->sendMessage($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
                         if ($response['ok']) {
                             $now = new DateTime();
-                            foreach ($typeMessages as $typeMessage) {
+                            foreach ($typeChecks as $typeCheck) {
                                 (new Model\Notifications())->add([
-                                    'message_id' => $typeMessage['id'],
+                                    'check_id' => $typeCheck['id'],
                                     'contact' => $subscriber['chat_id'],
                                     'create_time' => $now->format('Y-m-d H:i:s')
                                 ]);
@@ -45,17 +45,17 @@ class Notifications
 
                 }
             } else {
-                Logger::debug('No actual messages for ' . $subscriber['first_name']);
+                Logger::debug('No actual checks for ' . $subscriber['first_name']);
             }
 
         }
     }
 
-    private static function generateMessage(string $type, array $messages): string
+    private static function generateCheck(string $type, array $checks): string
     {
-        $subject = self::generateSummarySubject($type, $messages);
+        $subject = self::generateSummarySubject($type, $checks);
         $url = sprintf('<a href="%s">Перейти на сайт</a>', self::generateUrl($type));
-        $groupNames = self::getGroupNames($messages);
+        $groupNames = self::getGroupNames($checks);
         $list = implode('', array_map(
             fn($name) => '<li>' . $name . '</li>',
             array_slice($groupNames, 0, 5)
@@ -64,9 +64,9 @@ class Notifications
         return $subject . ':<br><ul>' . $list . (count($groupNames) > 5 ? '<li>и др.</li>' : '') . '</ul>' . $url;
     }
 
-    private static function getGroupNames(array $messages): array
+    private static function getGroupNames(array $checks): array
     {
-        return array_unique(array_column($messages, 'group_title'));
+        return array_unique(array_column($checks, 'group_title'));
     }
 
     private static function generateUrl(string $type): string
@@ -84,13 +84,13 @@ class Notifications
         }
     }
 
-    private static function generateSummarySubject(string $type, array $messages): string
+    private static function generateSummarySubject(string $type, array $checks): string
     {
         if ($type == Type::CRITICAL->name) {
-            return count($messages)
+            return count($checks)
                 . ' '
                 . Plural::get(
-                    count($messages),
+                    count($checks),
                     'важное сообщение',
                     'важных сообщения',
                     'важных сообщений'
@@ -98,41 +98,41 @@ class Notifications
         }
 
         if ($type == Type::WARNING) {
-            return count($messages)
+            return count($checks)
                 . ' '
                 . Plural::get(
-                    count($messages),
+                    count($checks),
                     'уведомление',
                     'уведомления',
                     'уведомлений'
                 );
         }
 
-        return count($messages)
+        return count($checks)
             . ' '
             . Plural::get(
-                count($messages),
+                count($checks),
                 'рекомендация',
                 'рекомендации',
                 'рекомендаций'
             );
     }
 
-    private static function generateSummaryBody(array $messages): string
+    private static function generateSummaryBody(array $checks): string
     {
         $summary = '<ol>';
-        foreach ($messages as $message) {
-            $summary .= '<li>' . $message['title'] . '<br>' . $message['text'] . '</li>';
+        foreach ($checks as $check) {
+            $summary .= '<li>' . $check['title'] . '<br>' . $check['text'] . '</li>';
         }
 
         return $summary . '</ol>';
     }
 
-    private static function groupByType(array $messages): array
+    private static function groupByType(array $checks): array
     {
         $grouped = [];
-        foreach ($messages as $message) {
-            $grouped[$message['type']][] = $message;
+        foreach ($checks as $check) {
+            $grouped[$check['type']][] = $check;
         }
 
         return $grouped;
