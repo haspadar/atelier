@@ -29,7 +29,7 @@ class Notifications
                             $now = new DateTime();
                             foreach ($typeChecks as $typeCheck) {
                                 (new Model\Notifications())->add([
-                                    'check_id' => $typeCheck['id'],
+                                    'check_id' => $typeCheck->getId(),
                                     'contact' => $subscriber['chat_id'],
                                     'create_time' => $now->format('Y-m-d H:i:s')
                                 ]);
