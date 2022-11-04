@@ -119,7 +119,7 @@ class Checks
         $check['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         $check['type'] = $type->name;
         $now = new DateTime();
-        if (!self::isIgnored($check)) {
+        if (self::isIgnored($check)) {
             Logger::warning('Check ignored: ' . var_export($check, true));
         } elseif (!(new Model\Checks())->getBetween(
             ($type == Type::CRITICAL
