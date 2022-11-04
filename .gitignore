@@ -1,5 +1,4 @@
 /configs/.env
-/public/adminer.php
 /public/.DS_Store
 .DS_Store
 /logs/*
