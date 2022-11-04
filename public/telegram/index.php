@@ -38,8 +38,8 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
     $bot->sendMessageWithInlineButtons(
         'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
             ['text'=> Type::CRITICAL->name, 'callback_data' => Type::CRITICAL->name],
-            ['text'=> implode(', ', [Type::CRITICAL->name, Type::WARNING->name]), 'callback_data' => Type::WARNING->name],
-            ['text'=> implode(', ', [Type::CRITICAL->name, Type::WARNING->name, Type::INFO->name]), 'callback_data' => Type::INFO->name],
+            ['text'=> implode(',', [Type::CRITICAL->name, Type::WARNING->name]), 'callback_data' => Type::WARNING->name],
+            ['text'=> implode(',', [Type::CRITICAL->name, Type::WARNING->name, Type::INFO->name]), 'callback_data' => Type::INFO->name],
         ]
     );
 }
