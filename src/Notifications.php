@@ -23,6 +23,9 @@ class Notifications
                     if (in_array($type, $types)) {
                         $message = self::generateMessage($type, $typeChecks);
                         Logger::info('Message ' . $message);
+                        Debug::dump($message, '$message');
+                        Debug::dump(mb_strlen($message), 'strlen');
+                        exit;
                         $response = $telegram->sendMessage($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
                         if ($response['ok']) {
