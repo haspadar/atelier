@@ -61,10 +61,10 @@ class Notifications
         $groupTitles = self::getGroupTitles($checks);
         $list = implode(', ', array_map(
             fn($name) => '"' . $name . '"',
-            array_slice($groupTitles, 0, 10)
+            array_slice($groupTitles, 0, 20)
         ));
 
-        return $subject . ':' . $list . (count($groupTitles) > 10 ? 'и др.' : '') . $url;
+        return $subject . ': ' . $list . (count($groupTitles) > 20 ? 'и др.' : '') . '. ' . $url;
     }
 
     /**
