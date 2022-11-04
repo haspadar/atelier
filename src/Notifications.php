@@ -25,7 +25,6 @@ class Notifications
                         Logger::info('Message ' . $message);
                         Debug::dump($message, '$message');
                         Debug::dump(mb_strlen($message), 'strlen');
-                        exit;
                         $response = $telegram->sendMessage($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
                         if ($response['ok']) {
@@ -42,6 +41,7 @@ class Notifications
                         } else {
                             Logger::error($response['description']);
                         }
+                        exit;
                     } else {
                         Logger::warning('Ignored ' . $type . ' type for ' . $subscriber['first_name']);
                     }
@@ -61,10 +61,10 @@ class Notifications
         $groupTitles = self::getGroupTitles($checks);
         $list = implode('', array_map(
             fn($name) => '<li>' . $name . '</li>',
-            array_slice($groupTitles, 0, 5)
+            array_slice($groupTitles, 0, 10)
         ));
 
-        return $subject . ':<br><ul>' . $list . (count($groupTitles) > 5 ? '<li>и др.</li>' : '') . '</ul>' . $url;
+        return $subject . ':<br><ul>' . $list . (count($groupTitles) > 10 ? '<li>и др.</li>' : '') . '</ul>' . $url;
     }
 
     /**
