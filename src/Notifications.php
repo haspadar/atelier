@@ -144,7 +144,7 @@ class Notifications
     {
         $grouped = [];
         foreach ($checks as $check) {
-            $grouped[$check['type']][] = $check;
+            $grouped[$check->getTypeName()][] = $check;
         }
 
         return $grouped;
