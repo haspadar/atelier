@@ -12,7 +12,7 @@ class HttpInfo extends Model
             'SELECT * FROM ' . $this->name . ' WHERE project_id = %d AND create_time >= %s',
             $projectId,
             $fromTime
-        );
+        ) ?: [];
     }
 
     public function getLast(int $projectId): array
@@ -20,7 +20,7 @@ class HttpInfo extends Model
         return self::getDb()->queryFirstRow(
             'SELECT * FROM ' . $this->name . ' WHERE id=(SELECT MAX(id) FROM ' . $this->name . ' WHERE project_id = %d)',
             $projectId
-        );
+        ) ?: [];
     }
 
 }

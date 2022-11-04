@@ -27,7 +27,7 @@
     <div class="offcanvas-body px-0">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/dashboard'])) : ?>active<?php endif; ?>" href="/dashboard">Приборы</a>
+                <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/messages'])) : ?>active<?php endif; ?>" href="/messages">Сообщения</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?php if ($this->data['url']->isStartsAt(['/machines'])) : ?>active<?php endif; ?>" href="/machines">Машины</a>
@@ -116,60 +116,60 @@
         <!--        </ul>-->
     </div>
 </nav>
-    <main class="container">
-    <div class="row">
-        <div class="col p-4">
-            <!-- toggler -->
-            <button id="sidebarCollapse" class="float-end" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"
-                    role="button" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+<main class="container">
+<div class="row">
+    <div class="col p-4">
+        <!-- toggler -->
+        <button id="sidebarCollapse" class="float-end" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"
+                role="button" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
 
-            <h1><?= $this->data['title'] ?></h1>
-            <?php /** @var ?\Atelier\FlashMessage $flashMessage */?>
-            <?php if ($flashMessage = $this->data['flash'] ?? null) : ?>
-                <div class="alert alert-<?= strtolower($flashMessage->getType()->name) ?> alert-dismissible mt-2 fade show" role="alert">
-                    <?= $flashMessage->getMessage() ?>
-                </div>
-            <?php endif; ?>
+        <h1><?= $this->data['title'] ?></h1>
+        <?php /** @var ?\Atelier\FlashMessage $flashMessage */?>
+        <?php if ($flashMessage = $this->data['flash'] ?? null) : ?>
+            <div class="alert alert-<?= strtolower($flashMessage->getType()->name) ?> alert-dismissible mt-2 fade show" role="alert">
+                <?= $flashMessage->getMessage() ?>
+            </div>
+        <?php endif; ?>
 
-            <?= $this->section('content') ?>
+        <?= $this->section('content') ?>
+    </div>
+</div>
+
+<div class="modal fade show" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" style="" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4" id="authModalLabel">Авторизация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="post">
+                    <div class="mb-3">
+                        <label for="login" class="visually-hidden">Логин</label>
+                        <input type="text" class="form-control" name="login" id="login" value="<?=\Atelier\Settings::getByName('machine_default_login')?>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="visually-hidden">Пароль</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Пароль">
+                        <div id="authError" class="d-none invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary mb-3">Проверить</button>
+                    </div>
+                </form>
+            </div>
+            <!--                <div class="modal-footer">-->
+            <!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>-->
+            <!--                </div>-->
         </div>
     </div>
-
-        <div class="modal fade show" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" style="" aria-modal="true" role="dialog">
-            <div class="modal-dialog modal-fullscreen-sm-down">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title h4" id="authModalLabel">Авторизация</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="#" method="post">
-                            <div class="mb-3">
-                                <label for="login" class="visually-hidden">Логин</label>
-                                <input type="text" class="form-control" name="login" id="login" value="<?=\Atelier\Settings::getByName('machine_default_login')?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="visually-hidden">Пароль</label>
-                                <input type="password" class="form-control" name="password" id="password" placeholder="Пароль">
-                                <div id="authError" class="d-none invalid-feedback"></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary mb-3">Проверить</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!--                <div class="modal-footer">-->
-                    <!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>-->
-                    <!--                </div>-->
-                </div>
-            </div>
-        </div>
+</div>
 </main>
     <footer class="container text-muted border-top mt-auto"></footer>
     <script src="<?=$this->asset('/js/jquery.min.js')?>"></script>

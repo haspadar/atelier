@@ -12,6 +12,22 @@ use DateTime;
 
 class Messages
 {
+    public static function getMessagesCount(Type $type): int
+    {
+        return (new Model\Messages())->getAllCount($type->name);
+    }
+
+    public static function getMessages(Type $type, int $limit = 0, int $offset = 0): array
+    {
+        $messages = (new Model\Messages())->getAll($type->name, $limit, $offset);
+        $grouped = [];
+        foreach ($messages as $message) {
+            $grouped[$message['group_title']][] = $message;
+        }
+
+        return $grouped;
+    }
+
     public static function generate(): void
     {
         self::generateCritical();
@@ -73,21 +89,25 @@ class Messages
                 $project = Projects::getRotatorProject();
                 $hoursCount = Time::getDiffHours(new DateTime(), $expireTime);
                 self::add([
-                    'title' => 'Заканчиваются прокси',
+                    'group_title' => 'Заканчиваются прокси',
                     'text' => Plural::get($hoursCount, 'Остался ', 'Осталось ', 'Осталось ')
                         . $hoursCount
                         . 'ч для ' . $rotatorInfo['count']
-                        . ' прокси',
-                    'project_id' => $project->getId(),
-                ], $type);
+                        . ' прокси'
+                ], $type, $project);
             } else {
                 Logger::debug('Ignored expire time ' . $expireTime->format('Y-m-d H:i:s'));
             }
         }
     }
 
-    private static function add(array $message, Type $type): void
+    private static function add(array $message, Type $type, ?Project $project, ?Machine $machine = null): void
     {
+        $message['project_id'] = $project?->getId();
+        $message['machine_id'] = $machine ? $machine->getId() : $project->getMachine()->getId();
+        $message['title'] = $message['group_title']
+            . ' на '
+            . ($project ? $project->getName() : $machine->getHost());
         $message['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         $message['type'] = $type->name;
         $now = new DateTime();
@@ -116,12 +136,11 @@ class Messages
     {
         if ($project->getSmokeLastReport() != 'OK') {
             self::add([
-                'title' => 'Тесты отработали с ошибкой на ' . $project->getName(),
+                'group_title' => 'Тесты отработали с ошибкой',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ошибка: "' . $project->getSmokeLastReport() . '".',
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Smoke is OK');
         }
@@ -135,7 +154,7 @@ class Messages
             $withAdsLastTime = (new Parser())->getWithAdsLastTime($project->getId());
             $now = new DateTime();
             self::add([
-                'title' => 'Не парсятся объявления на ' . $project->getName(),
+                'group_title' => 'Не парсятся объявления',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> за последние '
@@ -145,8 +164,7 @@ class Messages
                         ? 'Новые объявления были ' . Time::getDiffHours($now, new DateTime($withAdsLastTime)) . 'ч назад'
                         : ''
                     ),
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Has parsed ads for last day');
         }
@@ -166,15 +184,14 @@ class Messages
         $text = self::generateTrafficText($yesterdayTraffic, $todayTraffic, $lastTraffic);
         if ($text) {
             self::add([
-                'title' => 'Вырос php-трафик на ' . $machine->getHost(),
+                'group_title' => 'Вырос php-трафик',
                 'text' => 'На машине '
                     . $machine->getHost()
                     . ' ('
                     . $machine->getIp()
                     . ') проблемы. '
                     . $text,
-                'machine_id' => $machine->getId()
-            ], $type);
+            ], $type, null, $machine);
         } else {
             Logger::debug('Nginx traffic is normal');
         }
@@ -194,15 +211,14 @@ class Messages
         $text = self::generateTrafficText($yesterdayTraffic, $todayTraffic, $lastTraffic);
         if ($text) {
             self::add([
-                'title' => 'Вырос nginx-трафик на ' . $project->getName(),
+                'group_title' => 'Вырос nginx-трафик',
                 'text' => sprintf(
                     $text,
                     'на сайте <a href="' . $project->getAddress() . '" target="_blank">'
                         . $project->getName()
                         . '</a>'
                 ),
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Nginx traffic is normal');
         }
@@ -216,7 +232,7 @@ class Messages
             || $project->getNginxErrorLog() != $generatedErrorLog
         ) {
             self::add([
-                'title' => 'Неправильные имена nginx-логов на ' . $project->getName(),
+                'group_title' => 'Неправильные имена nginx-логов',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> неправильные имена логов ('
@@ -224,8 +240,7 @@ class Messages
                     . ', '
                     . $project->getNginxErrorLog()
                     . ')',
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Nginx log names is correct');
         }
@@ -234,14 +249,13 @@ class Messages
     private static function checkHttpAccess(Project $project, Type $type): void
     {
         $http = (new HttpInfo())->getLast($project->getId());
-        if (!$http['http_code'] == 403) {
+        if (!($http['http_code'] ?? []) == 403) {
             self::add([
-                'title' => 'Сайт ' . $project->getName() . ' закрыт паролем',
+                'group_title' => 'Включён http-пароль',
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> закрыт паролем',
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Site is open');
         }
@@ -250,14 +264,13 @@ class Messages
     private static function checkCache(Project $project, Type $type): void
     {
         $http = (new HttpInfo())->getLast($project->getId());
-        if (!$http['cache_header']) {
+        if (!($http['cache_header'] ?? [])) {
             self::add([
-                'title' => 'Не включён кэш на ' . $project->getName(),
+                'group_title' => 'Не включён кэш',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> не включён кэш',
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Cache header exists');
         }
@@ -268,15 +281,14 @@ class Messages
         $lastPhpVersion = (new \Atelier\Model\Machines())->getLastMysqlVersion();
         if ($machine->getMysqlVersion() != $lastPhpVersion) {
             self::add([
-                'title' => 'Обновите Mysql на ' . $machine->getHost(),
+                'group_title' => 'Обновите Mysql',
                 'text' => 'На машине '
                     . $machine->getHost()
                     . ' ('
                     . $machine->getIp()
                     . ') старая версия Mysql: '
                     . $machine->getMysqlVersion(),
-                'machine_id' => $machine->getId(),
-            ], $type);
+            ], $type, null, $machine);
         } else {
             Logger::debug('Mysql version is last');
         }
@@ -287,15 +299,14 @@ class Messages
         $lastPhpVersion = (new \Atelier\Model\Machines())->getLastPhpVersion();
         if ($machine->getPhpVersion() != $lastPhpVersion) {
             self::add([
-                'title' => 'Обновите Php на ' . $machine->getHost(),
+                'group_title' => 'Обновите Php',
                 'text' => 'На машине '
                     . $machine->getHost()
                     . ' ('
                     . $machine->getIp()
                     . ') старая версия Php: '
                     . $machine->getPhpVersion(),
-                'machine_id' => $machine->getId(),
-            ], $type);
+            ], $type, null, $machine);
         } else {
             Logger::debug('Php version is last');
         }
@@ -305,7 +316,7 @@ class Messages
     {
         if ($machine->getFreeSpace() <= $percent) {
             self::add([
-                'title' => 'Заканчивается место на ' . $machine->getHost(),
+                'group_title' => 'Заканчивается место',
                 'text' => 'На машине '
                     . $machine->getHost()
                     . ' ('
@@ -313,8 +324,7 @@ class Messages
                     . ') осталось '
                     . $machine->getFreeSpace()
                     . '% свободного места',
-                'machine_id' => $machine->getId(),
-            ], $type);
+            ], $type, null, $machine);
         } else {
             Logger::debug('Ignored free space ' . $machine->getFreeSpace());
         }
@@ -325,12 +335,11 @@ class Messages
         $lastCommitTime = Projects::getLastCommitTime();
         if ($project->getLastCommitTime() != $lastCommitTime) {
             self::add([
-                'title' => 'Не обновился код на ' . $project->getName(),
+                'group_title' => 'Не обновился код',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> код отстаёт от последнего коммита',
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Last commit time is actual');
         }
@@ -340,12 +349,11 @@ class Messages
     {
         if (!in_array($project->getLastBranchName(), ['master', 'main'])) {
             self::add([
-                'title' => 'Включена ветка ' . $project->getLastBranchName() . ' на ' . $project->getName(),
+                'group_title' => 'Включена тестовая ветка',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
-                    . '</a> включена ветка ' . $project->getLastBranchName(),
-                'project_id' => $project->getId(),
-            ], $type);
+                    . '</a> ' . ($project->getLastBranchName() ? 'включена ветка ' . $project->getLastBranchName() : 'нету гита')
+            ], $type, $project);
         } else {
             Logger::debug('Branch is master');
         }
@@ -356,12 +364,11 @@ class Messages
         $lastMigrationName = Projects::getLastMigrationName();
         if ($project->getLastMigrationName() != $lastMigrationName) {
             self::add([
-                'title' => 'Не загрузилась последняя миграция на ' . $project->getName(),
+                'group_title' => 'Не загрузилась последняя миграция',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> загрузились не все миграции',
-                'project_id' => $project->getId(),
-            ], $type);
+            ], $type, $project);
         } else {
             Logger::debug('Last migration is actual');
         }
@@ -374,13 +381,14 @@ class Messages
         if ($longHttps) {
             $isLongHttp = $https[count($https) - 1]['seconds'] >= $seconds;
             self::add([
-                'title' => $project->getName() . ($isLongHttp ? ' тормозит' : ' тормозил'),
+                'group_title' => 'Проблемы с производительностью',
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
-                    . '</a> тормозил '
-                    . self::groupTimes(array_column($longHttps, 'create_time')),
-                'project_id' => $project->getId(),
-            ], $type);
+                    . '</a> ' . ($isLongHttp
+                        ? ' тормозит прямо счас'
+                        : ' тормозил ' . self::groupTimes(array_column($longHttps, 'create_time'))
+                    ),
+            ], $type, $project);
         } else {
             Logger::debug('Not found long http requests (more than ' . $seconds . ' seconds)');
         }
@@ -393,13 +401,14 @@ class Messages
         if ($notSuccessHttps) {
             $isOffline = $https[count($https) - 1]['http_code'] != 200;
             self::add([
-                'title' => $project->getName() . ($isOffline ? ' недоступен' : ' был недоступен'),
+                'group_title' => 'Проблемы с открытием',
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
-                    . '</a> был недоступен '
-                    . self::groupTimes(array_column($notSuccessHttps, 'create_time')),
-                'project_id' => $project->getId(),
-            ], $type);
+                    . '</a> ' . ($isOffline
+                        ? 'недоступен прямо счас'
+                        : 'был недоступен ' . self::groupTimes(array_column($notSuccessHttps, 'create_time'))
+                    ),
+            ], $type, $project);
         } else {
             Logger::debug('Not found not success http requests');
         }

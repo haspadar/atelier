@@ -9,6 +9,8 @@ use Atelier\Directory;
 use Atelier\Filter;
 use Atelier\Flash;
 use Atelier\Machines;
+use Atelier\Message\Type;
+use Atelier\Messages;
 use Atelier\ProjectCommand;
 use Atelier\Projects;
 use Atelier\Reports;
@@ -61,23 +63,46 @@ class Atelier
         ]);
     }
 
-    public function showDashboard()
+    public function showMessage(int $id)
     {
+        $message = (new \Atelier\Model\Messages())->getById($id);
         $this->templatesEngine->addData([
-            'title' => 'Приборы',
-//            'warnings' => Warnings::getWarnings()
+            'title' => 'Сообщение ' . $id,
+            'message' => $message
         ]);
-        echo $this->templatesEngine->make('dashboard');
+        echo $this->templatesEngine->make('message');
     }
 
-    public function showFitting(int $typeId)
+    public function showMessages()
     {
-//        $type = Warnings::getFitting($typeId);
-//        $this->templatesEngine->addData([
-//            'title' => 'Прибор "' . $type['title'] . '"',
-//            'warning' => Warnings::getFittingWarning($typeId)
-//        ]);
-//        echo $this->templatesEngine->make('fitting');
+        $criticalMessagesCount = Messages::getMessagesCount(Type::CRITICAL);
+        $warningMessagesCount = Messages::getMessagesCount(Type::WARNING);
+        $infoMessagesCount = Messages::getMessagesCount(Type::INFO);
+        $criticalPageNumber = $this->getQueryParam('critical_page', 1);
+        $warningPageNumber = $this->getQueryParam('warning_page', 1);
+        $infoPageNumber = $this->getQueryParam('info_age', 1);
+        $limit = 25;
+        $criticalOffset = ($criticalPageNumber - 1) * $limit;
+        $warningOffset = ($warningPageNumber - 1) * $limit;
+        $infoOffset = ($infoPageNumber - 1) * $limit;
+        $this->templatesEngine->addData([
+            'title' => 'Сообщения',
+            'critical_messages' => Messages::getMessages(Type::CRITICAL, $limit, $criticalOffset),
+            'critical_count' => $criticalMessagesCount,
+            'critical_page' => $criticalPageNumber,
+            'critical_pages_count' => ceil($criticalMessagesCount / $limit),
+
+            'warning_messages' => Messages::getMessages(Type::WARNING, $limit, $warningOffset),
+            'warning_count' => $warningMessagesCount,
+            'warning_page' => $warningPageNumber,
+            'warning_pages_count' => ceil($warningMessagesCount / $limit),
+
+            'info_messages' => Messages::getMessages(Type::INFO, $limit, $infoOffset),
+            'info_count' => $infoMessagesCount,
+            'info_page' => $infoPageNumber,
+            'info_pages_count' => ceil($infoMessagesCount / $limit),
+        ]);
+        echo $this->templatesEngine->make('messages');
     }
 
     public function showMachines()

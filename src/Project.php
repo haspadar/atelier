@@ -84,9 +84,14 @@ class Project
         return $this->project['error_log'];
     }
 
+    public static function extractName(string $path): string
+    {
+        return str_replace('/var/www/', '', $path);
+    }
+
     public function getName(): string
     {
-        return str_replace('/var/www/', '', $this->getPath());
+        return self::extractName($this->getPath());
     }
 
     public function getType(): \Atelier\ProjectType
