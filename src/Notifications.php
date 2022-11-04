@@ -41,7 +41,6 @@ class Notifications
                         } else {
                             Logger::error($response['description']);
                         }
-                        exit;
                     } else {
                         Logger::warning('Ignored ' . $type . ' type for ' . $subscriber['first_name']);
                     }
