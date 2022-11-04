@@ -2,6 +2,7 @@
 
 namespace Atelier\Controller;
 
+use Atelier\Check;
 use Atelier\Command\ExtractNewProjects;
 use Atelier\Commands;
 use Atelier\Debug;
@@ -65,7 +66,7 @@ class Atelier
 
     public function showCheck(int $id)
     {
-        $check = (new \Atelier\Model\Checks())->getById($id);
+        $check = Checks::getById($id);
         $this->templatesEngine->addData([
             'title' => 'Проверка ' . $id,
             'check' => $check

@@ -17,12 +17,18 @@ class Checks
         return (new Model\Checks())->getAllCount($type->name);
     }
 
+    /**
+     * @param Type $type
+     * @param int $limit
+     * @param int $offset
+     * @return Check[]
+     */
     public static function getChecks(Type $type, int $limit = 0, int $offset = 0): array
     {
         $checks = (new Model\Checks())->getAll($type->name, $limit, $offset);
         $grouped = [];
         foreach ($checks as $check) {
-            $grouped[$check['group_title']][] = $check;
+            $grouped[$check['group_title']][] = new Check($check);
         }
 
         return $grouped;
@@ -456,5 +462,10 @@ class Checks
         }
 
         return $text ?? '';
+    }
+
+    public static function getById(int $id): Check
+    {
+        return new Check((new \Atelier\Model\Checks())->getById($id));
     }
 }

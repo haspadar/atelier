@@ -42,24 +42,27 @@ use Atelier\Time; ?>
                 </thead>
                 <tbody>
                     <?php foreach ($groupedChecks as $groupTitle => $checks) :?>
+                        <?php /**
+                         * @var \Atelier\Check $check
+                         */?>
                         <?php foreach ($checks as $check) :?>
                             <tr>
                                 <td>
-                                    <a href="/checks/<?=$check['id']?>" class="text-decoration-none"><?=$groupTitle?></a>
+                                    <a href="/checks/<?=$check->getId()?>" class="text-decoration-none"><?=$groupTitle?></a>
                                 </td>
                                 <td>
-                                    <?php if ($check['project_id']) :?>
-                                        <a href="/projects/<?=$check['project_id']?>" target="_blank" class="text-decoration-none">
-                                            <?= Project::extractName($check['project_path'])?>
+                                    <?php if ($check->getProjectId()) :?>
+                                        <a href="/projects/<?=$check->getProjectId()?>" target="_blank" class="text-decoration-none">
+                                            <?= $check->getProjectName()?>
                                         </a>
                                     <?php endif;?>
                                 </td>
                                 <td>
-                                    <a href="/machines/<?=$check['machine_id']?>" target="_blank" class="text-decoration-none">
-                                        <?= $check['machine_host']?>
+                                    <a href="/machines/<?=$check->getMachineId()?>" target="_blank" class="text-decoration-none">
+                                        <?= $check->getMachineHost()?>
                                     </a>
                                 </td>
-                                <td class="small text-muted"><?= Time::timeHuman(new DateTime($check['create_time']))?></td>
+                                <td class="small text-muted"><?= Time::timeHuman($check->getCreateTime())?></td>
                                 <td>
                                     <a href="" class="btn-danger btn-sm text-decoration-none">
                                         Игнорировать

@@ -23,11 +23,6 @@ class Checks extends Model
         ) ?: [];
     }
 
-    public function getIgnoredAll(): array
-    {
-        return self::getDb()->query('SELECT * FROM checks WHERE ignore_time IS NOT NULL');
-    }
-
     public function getAllCount(string $type): int
     {
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ' . $this->name . ' WHERE type=%s AND ignore_time IS NULL', $type);
