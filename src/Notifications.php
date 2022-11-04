@@ -21,7 +21,7 @@ class Notifications
                 $types = explode(',', $subscriber['check_types']);
                 foreach (self::groupByType($checks) as $type => $typeChecks) {
                     if (in_array($type, $types)) {
-                        $message = self::generateCheck($type, $typeChecks);
+                        $message = self::generateMessage($type, $typeChecks);
                         Logger::info('Message ' . $message);
                         $response = $telegram->sendMessage($message, $subscriber['chat_id']);
                         Logger::info('Response: ' . var_export($response, true));
@@ -51,22 +51,31 @@ class Notifications
         }
     }
 
-    private static function generateCheck(string $type, array $checks): string
+    private static function generateMessage(string $type, array $checks): string
     {
         $subject = self::generateSummarySubject($type, $checks);
         $url = sprintf('<a href="%s">Перейти на сайт</a>', self::generateUrl($type));
-        $groupNames = self::getGroupNames($checks);
+        $groupTitles = self::getGroupTitles($checks);
         $list = implode('', array_map(
             fn($name) => '<li>' . $name . '</li>',
-            array_slice($groupNames, 0, 5)
+            array_slice($groupTitles, 0, 5)
         ));
 
-        return $subject . ':<br><ul>' . $list . (count($groupNames) > 5 ? '<li>и др.</li>' : '') . '</ul>' . $url;
+        return $subject . ':<br><ul>' . $list . (count($groupTitles) > 5 ? '<li>и др.</li>' : '') . '</ul>' . $url;
     }
 
-    private static function getGroupNames(array $checks): array
+    /**
+     * @param array $checks
+     * @return Check[]
+     */
+    private static function getGroupTitles(array $checks): array
     {
-        return array_unique(array_column($checks, 'group_title'));
+        $names = [];
+        foreach ($checks as $check) {
+            $names[] = $check->getGroupTitle();
+        }
+
+        return array_unique($names);
     }
 
     private static function generateUrl(string $type): string
