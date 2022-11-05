@@ -29,7 +29,7 @@ class Telegram
     public function sendMessageWithInlineButtons(string $message, array $buttons): array
     {
         return $this->request($message, [
-            'reply_markup' => json_encode(['inline_keyboard' => [$buttons]])
+            'reply_markup' => json_encode(['inline_keyboard' => [$buttons], 'parse_mode' => 'html'])
         ]);
     }
 
