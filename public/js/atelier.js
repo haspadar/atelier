@@ -4,6 +4,14 @@ $(function () {
 
         return url.split('#')[1];
     }
+
+    function goBack() {
+        window.history.go(-1);
+        setTimeout(() => {
+            location.reload();
+        }, 0);
+    }
+
     (function handleTabs(callback) {
         // Javascript to enable link to tab
         var url = document.location.toString();
@@ -191,8 +199,7 @@ $(function () {
             type: 'DELETE',
             data: {},
             success: function (response) {
-                // document.location = '/projects';
-                window.history.back();
+                goBack();
             }
         });
     });
