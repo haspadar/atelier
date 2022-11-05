@@ -55,7 +55,7 @@ class Notifications
         $subject = self::generateSummarySubject($type, $checks);
         $url = sprintf('<a href="%s">Перейти на сайт</a>', self::generateUrl($type));
         $groupTitles = self::getGroupTitles($checks);
-        $list = implode(', ', array_map(
+        $list = implode('', array_map(
             fn($name) => '– ' . $name . PHP_EOL,
             array_slice($groupTitles, 0, 20)
         ));
