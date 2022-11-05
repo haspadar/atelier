@@ -2,10 +2,15 @@
 
 namespace Atelier;
 
+use Atelier\Check\Type;
 use DateTime;
 
 class Subscribers
 {
+    const CRITICAL_TITLE = 'Срочные';
+    const WARNING_TITLE = 'Важные';
+    const ALL_TITLE = 'Все';
+
     public static function remove(int $chatId)
     {
         $model = new Model\Subscribers();
@@ -34,5 +39,27 @@ class Subscribers
     public static function getAll(): array
     {
         return (new Model\Subscribers())->getAll();
+    }
+
+    public static function getByChatId(string $chatId)
+    {
+        return (new Model\Subscribers())->getBy('chat_id', $chatId);
+    }
+
+    public static function getCheckTypesTitle(string $checkTypes): string
+    {
+        if ($checkTypes == Type::CRITICAL->name) {
+            return self::CRITICAL_TITLE;
+        }
+
+        if ($checkTypes == Type::WARNING->name) {
+            return self::WARNING_TITLE;
+        }
+
+        if ($checkTypes == Type::INFO->name) {
+            return self::ALL_TITLE;
+        }
+
+        return '';
     }
 }

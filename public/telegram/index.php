@@ -35,11 +35,18 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
 } elseif ($bot->isUnsubscribe($bot->getChatId())) {
     Subscribers::remove($bot->getChatId());
 } elseif ($bot->isMessage()) {
+    $exists = Subscribers::getByChatId($bot->getChatId());
     $bot->sendMessageWithInlineButtons(
-        'Привет, ' . $bot->getFromFirstName() . '. Какие уведомления хочешь получать?', [
-            ['text'=> '🔴 Срочные', 'callback_data' => Type::CRITICAL->name],
-            ['text'=> '🔵 Важные', 'callback_data' => Type::WARNING->name],
-            ['text'=> '⚪ Все', 'callback_data' => Type::INFO->name],
+        'Привет, '
+        . $bot->getFromFirstName()
+        . '. Какие уведомления хочешь получать?'
+        . ($exists
+            ? ' Сейчас ты получаешь <strong>' .  Subscribers::getCheckTypesTitle($exists['check_types']) . '</strong>'
+            : 'Пока ты не получаешь никакие.'
+        ), [
+            ['text'=> '🔴 ' . Subscribers::CRITICAL_TITLE, 'callback_data' => Type::CRITICAL->name],
+            ['text'=> '🔵 ' . Subscribers::WARNING_TITLE, 'callback_data' => Type::WARNING->name],
+            ['text'=> '⚪ ' . Subscribers::ALL_TITLE, 'callback_data' => Type::INFO->name],
         ]
     );
 }
