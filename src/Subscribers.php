@@ -52,11 +52,11 @@ class Subscribers
             return self::CRITICAL_TITLE;
         }
 
-        if ($checkTypes == Type::WARNING->name) {
+        if ($checkTypes == implode(',', [Type::CRITICAL->name, Type::WARNING->name])) {
             return self::WARNING_TITLE;
         }
 
-        if ($checkTypes == Type::INFO->name) {
+        if ($checkTypes == implode(',', [Type::CRITICAL->name, Type::WARNING->name, Type::INFO->name])) {
             return self::ALL_TITLE;
         }
 

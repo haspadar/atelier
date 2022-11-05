@@ -37,11 +37,9 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
 } elseif ($bot->isMessage()) {
     $exists = Subscribers::getByChatId($bot->getChatId());
     $bot->sendMessageWithInlineButtons(
-        'Привет, '
-        . $bot->getFromFirstName()
-        . '. Какие уведомления хочешь получать?'
+        'Какие уведомления хочешь получать?'
         . ($exists
-            ? ' Сейчас ты получаешь <strong>' .  Subscribers::getCheckTypesTitle($exists['check_types']) . '</strong>'
+            ? ' Сейчас ты получаешь <b>' .  Subscribers::getCheckTypesTitle($exists['check_types']) . '</b>'
             : 'Пока ты не получаешь никакие.'
         ), [
             ['text'=> '🔴 ' . Subscribers::CRITICAL_TITLE, 'callback_data' => Type::CRITICAL->name],
