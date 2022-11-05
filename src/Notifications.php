@@ -60,7 +60,7 @@ class Notifications
             array_slice($groupTitles, 0, 20)
         ));
 
-        return $subject . ": " . PHP_EOL . PHP_EOL . $list . (count($groupTitles) > 1 ? PHP_EOL . 'и др.' : '') . PHP_EOL . $url;
+        return $subject . ": " . PHP_EOL . PHP_EOL . $list . (count($groupTitles) > 1 ? 'и др.' . PHP_EOL : '') . PHP_EOL . $url;
     }
 
     /**
