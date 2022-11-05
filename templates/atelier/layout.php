@@ -177,7 +177,6 @@
     <script src="<?=$this->asset('/bootstrap/js/bootstrap.bundle.js')?>"></script>
     <script src="<?=$this->asset('/js/menu.js')?>"></script>
     <script src="<?=$this->asset('/js/atelier.js')?>"></script>
-    <script src="/js/menu.js"></script>
     <!--https://www.cssscript.com/responsive-sidebar-bootstrap-offcanvas/-->
 </body>
 </html>

@@ -26,6 +26,7 @@ try {
     $router->get('/reports/{id}', '\Atelier\Controller\Atelier@showReport');
     $router->get('/commands', '\Atelier\Controller\Atelier@showCommands');
     $router->get('/commands/{id}', '\Atelier\Controller\Atelier@showCommand');
+    $router->put('/command-project-types/{id}', '\Atelier\Controller\Atelier@updateCommandProjectTypes');
     $router->delete('/machines/{id}', '\Atelier\Controller\Atelier@deleteMachineProjects');
     $router->put('/scan-projects/{id}', '\Atelier\Controller\Atelier@scanProjects');
     $router->post('/auth/{id}', '\Atelier\Controller\Atelier@auth');

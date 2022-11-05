@@ -4,6 +4,8 @@ namespace Atelier;
 
 use Atelier\Command\Exception;
 use Atelier\Command\ExtractGit;
+use Atelier\Model\CommandTypes;
+use Atelier\Model\ProjectTypes;
 use Atelier\Model\Reports;
 use Atelier\Project\Type;
 
@@ -51,5 +53,29 @@ class Commands
         $className = 'Atelier\\Command\\' . ucfirst($command['name']);
 
         return new $className($command);
+    }
+
+    public static function getCommandProjectTypes(Command $command): array
+    {
+        return array_map(
+            fn($commandType) => Projects::getTypeByName($commandType['name']),
+            (new CommandTypes())->getCommandTypes($command->getId())
+        );
+    }
+
+    public static function updateCommandTypes(int $commandId, array $projectTypeIds): void
+    {
+        (new CommandTypes())->removeCommand($commandId);
+        self::addCommandTypes($commandId, $projectTypeIds);
+    }
+
+    public static function addCommandTypes(int $commandId, array $projectTypeIds): void
+    {
+        foreach ($projectTypeIds as $projectTypeId) {
+            (new CommandTypes())->add([
+                'command_id' => $commandId,
+                'project_type_id' => $projectTypeId
+            ]);
+        }
     }
 }

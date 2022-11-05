@@ -91,29 +91,34 @@ class Projects
         );
     }
 
+    public static function getTypeByName(string $name): ProjectType
+    {
+        return new ProjectType((new ProjectTypes())->getByName(strtolower($name)));
+    }
+
     private static function getPaltoType(): ProjectType
     {
-        return new ProjectType((new ProjectTypes())->getByName(strtolower(Type::PALTO->name)));
+        return self::getTypeByName(Type::PALTO->name);
     }
 
     private static function getAutodeType(): ProjectType
     {
-        return new ProjectType((new ProjectTypes())->getByName(strtolower(Type::AUTODE->name)));
+        return self::getTypeByName(Type::AUTODE->name);
     }
 
     private static function getIndexusType(): ProjectType
     {
-        return new ProjectType((new ProjectTypes())->getByName(strtolower(Type::INDEXUS->name)));
+        return self::getTypeByName(Type::INDEXUS->name);
     }
 
     private static function getRotatorType(): ProjectType
     {
-        return new ProjectType((new ProjectTypes())->getByName(strtolower(Type::ROTATOR->name)));
+        return self::getTypeByName(Type::ROTATOR->name);
     }
 
     private static function getUndefinedType(): ProjectType
     {
-        return new ProjectType((new ProjectTypes())->getByName(strtolower(Type::UNDEFINED->name)));
+        return self::getTypeByName(Type::UNDEFINED->name);
     }
 
     public static function getRotatorProject(): Project

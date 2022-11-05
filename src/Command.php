@@ -142,12 +142,13 @@ abstract class Command
                 ->green()
                 ->checkboxes("Выберите типы проектов для " . $this->command['name'] . ':', $allTypeNames)
                 ->prompt();
-            foreach ($typeNames as $typeName) {
-                (new CommandTypes())->add([
-                    'command_id' => $this->command['id'],
-                    'project_type_id' => (new ProjectTypes())->getByName($typeName)['id']
-                ]);
-            }
+            Commands::addCommandTypes(
+                $this->command['id'],
+                array_map(
+                    fn($typeName) => (new ProjectTypes())->getByName($typeName)['id'],
+                    $typeNames
+                )
+            );
         }
     }
 }

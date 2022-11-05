@@ -14,6 +14,20 @@ $command = $this->data['command'];
     <dd><?=$command->getComment()?></dd>
 </dl>
 
+<h2 class=" mt-2">Типы программ</h2>
+<div class="btn-group  command-project-types" role="group" aria-label="Basic checkbox toggle button group">
+    <?php /** @var \Atelier\ProjectType $projectType */?>
+    <?php foreach ($this->data['project_types'] as $projectType) :?>
+        <?php $isChecked = in_array($projectType, $this->data['command_project_types'])?>
+        <input type="checkbox" class="btn-check command-project-type" value="<?=$projectType->getId()?>" id="type<?=$projectType->getId()?>" autocomplete="off" <?php if ($isChecked) :?>checked<?php endif;?>>
+        <label class="btn btn-outline-primary" for="type<?=$projectType->getId()?>"><?=$projectType->getName()?></label>
+    <?php endforeach;?>
+</div>
+<div class="mt-2 mb-4">
+    <button class="btn btn-primary save-command-project-types" data-command-id="<?=$this->data['command']->getId()?>">
+        Сохранить
+    </button>
+</div>
 
 <h2>Репорты</h2>
 <table class="table">

@@ -12,6 +12,7 @@ use Atelier\Flash;
 use Atelier\Machines;
 use Atelier\Check\Type;
 use Atelier\Checks;
+use Atelier\Project;
 use Atelier\ProjectCommand;
 use Atelier\Projects;
 use Atelier\Reports;
@@ -265,9 +266,19 @@ class Atelier
         $this->templatesEngine->addData([
             'title' => 'Команда "' . $command->getName() . '"',
             'command' => $command,
-            'reports' => Reports::getCommandReports($command->getId(), $limit, $offset)
+            'reports' => Reports::getCommandReports($command->getId(), $limit, $offset),
+            'project_types' => Projects::getTypes(),
+            'command_project_types' => Commands::getCommandProjectTypes($command)
         ]);
         echo $this->templatesEngine->make('command');
+    }
+
+    public function updateCommandProjectTypes(int $id): void
+    {
+        $typeIds = Filter::getIntArray($this->getPutParam('type_ids'));
+        Commands::updateCommandTypes($id, $typeIds);
+        Flash::addSuccess('Типы программ обновлены');
+        $this->showJsonResponse(['success' => true]);
     }
 
     public function showReport(int $id)
@@ -370,7 +381,7 @@ class Atelier
         echo json_encode($data);
     }
 
-    private function getPutParam(string $name): string
+    private function getPutParam(string $name): mixed
     {
         return $this->getPutParams()[$name] ?? '';
     }

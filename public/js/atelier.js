@@ -203,6 +203,25 @@ $(function () {
             }
         });
     });
+    $('.save-command-project-types').off('click').on('click', function () {
+        let commandId = $(this).data('commandId');
+        let typeIds = [];
+        $('.command-project-types input:checked').each(function (key, value) {
+            return typeIds.push($(this).val());
+        });
+        $.ajax({
+            url: '/command-project-types/' + commandId,
+            dataType: "json",
+            type: 'PUT',
+            data: {
+                type_ids: typeIds
+            },
+            success: function (response) {
+                document.location.reload();
+            }
+        });
+    });
+
     $('.scan-projects').off('click').on('click', function () {
         let machineId = $(this).data('id');
         auth(machineId, function (login, password) {
