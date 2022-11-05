@@ -19,7 +19,10 @@ class ExtractNewProjects extends MachineCommand
 {
     public function run(Machine $machine): string
     {
-        $directories = $machine->scanProjectDirectories();
+        $directories = array_filter(
+            $machine->scanProjectDirectories(),
+            fn ($directory) => count(explode('.', $directory)) > 1
+        );
         if ($newDirectories = $machine->getNewDirectories($directories)) {
             $machine->addProjects($newDirectories);
             $report = count($newDirectories) > 1

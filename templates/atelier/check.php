@@ -29,14 +29,17 @@ endif;
     <dd>
         <?=$check->getText()?>
     </dd>
-    <dt>Проект</dt>
-    <dd class="text-muted">
         <?php if ($check->getProjectId()) :?>
-            <a href="/projects/<?=$check->getProjectId()?>" target="_blank" class="text-decoration-none">
-                <?= $check->getProjectName()?>
-            </a>
+            <dt>Проект</dt>
+            <dd class="text-muted">
+                <a href="/projects/<?=$check->getProjectId()?>" target="_blank" class="text-decoration-none">
+                    <?= $check->getProjectName()?>
+                </a>
+
+                <button class="btn btn-danger btn-sm delete-project" data-id="<?=$check->getProjectId()?>">Удалить проект</button>
+            </dd>
         <?php endif;?>
-    </dd>
+
     <dt>Машина</dt>
     <dd class="text-muted">
         <a href="/machines/<?=$check->getMachineId()?>" target="_blank" class="text-decoration-none">

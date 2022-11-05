@@ -3,6 +3,18 @@
 namespace Atelier;
 
 use Atelier\Check\Type;
+use Atelier\Command\ExtractFreeSpace;
+use Atelier\Command\ExtractGit;
+use Atelier\Command\ExtractHttp;
+use Atelier\Command\ExtractLogNames;
+use Atelier\Command\ExtractMigration;
+use Atelier\Command\ExtractMysqlVersion;
+use Atelier\Command\ExtractNginxTraffic;
+use Atelier\Command\ExtractParserAds;
+use Atelier\Command\ExtractPhpFpmTraffic;
+use Atelier\Command\ExtractPhpVersion;
+use Atelier\Command\ExtractRotator;
+use Atelier\Command\ExtractSmoke;
 use Atelier\Model\CheckIgnores;
 use Atelier\Model\HttpInfo;
 use Atelier\Model\NginxTraffic;
@@ -100,7 +112,8 @@ class Checks
                     'text' => Plural::get($hoursCount, 'Остался ', 'Осталось ', 'Осталось ')
                         . $hoursCount
                         . 'ч для ' . $rotatorInfo['count']
-                        . ' прокси'
+                        . ' прокси',
+                    'command_id' => Commands::getCommandByName((new ExtractRotator())->getName())->getId(),
                 ], $type, $project);
             } else {
                 Logger::debug('Ignored expire time ' . $expireTime->format('Y-m-d H:i:s'));
@@ -150,6 +163,7 @@ class Checks
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ошибка: "' . $project->getSmokeLastReport() . '".',
+                'command_id' => Commands::getCommandByName((new ExtractSmoke())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Smoke is OK');
@@ -174,6 +188,7 @@ class Checks
                         ? 'Новые объявления были ' . Time::getDiffHours($now, new DateTime($withAdsLastTime)) . 'ч назад'
                         : ''
                     ),
+                'command_id' => Commands::getCommandByName((new ExtractParserAds())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Has parsed ads for last day');
@@ -201,6 +216,7 @@ class Checks
                     . $machine->getIp()
                     . ') проблемы. '
                     . $text,
+                'command_id' => Commands::getCommandByName((new ExtractPhpFpmTraffic())->getName())->getId(),
             ], $type, null, $machine);
         } else {
             Logger::debug('Nginx traffic is normal');
@@ -226,8 +242,9 @@ class Checks
                     $text,
                     'на сайте <a href="' . $project->getAddress() . '" target="_blank">'
                         . $project->getName()
-                        . '</a>'
+                        . '</a>',
                 ),
+                'command_id' => Commands::getCommandByName((new ExtractNginxTraffic())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Nginx traffic is normal');
@@ -250,6 +267,7 @@ class Checks
                     . ', '
                     . $project->getNginxErrorLog()
                     . ')',
+                'command_id' => Commands::getCommandByName((new ExtractLogNames())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Nginx log names is correct');
@@ -265,6 +283,7 @@ class Checks
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> закрыт паролем',
+                'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId()
             ], $type, $project);
         } else {
             Logger::debug('Site is open');
@@ -280,6 +299,7 @@ class Checks
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> не включён кэш',
+                'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Cache header exists');
@@ -298,6 +318,7 @@ class Checks
                     . $machine->getIp()
                     . ') старая версия Mysql: '
                     . $machine->getMysqlVersion(),
+                'command_id' => Commands::getCommandByName((new ExtractMysqlVersion())->getName())->getId(),
             ], $type, null, $machine);
         } else {
             Logger::debug('Mysql version is last');
@@ -316,6 +337,7 @@ class Checks
                     . $machine->getIp()
                     . ') старая версия Php: '
                     . $machine->getPhpVersion(),
+                'command_id' => Commands::getCommandByName((new ExtractPhpVersion())->getName())->getId()
             ], $type, null, $machine);
         } else {
             Logger::debug('Php version is last');
@@ -334,6 +356,7 @@ class Checks
                     . ') осталось '
                     . $machine->getFreeSpace()
                     . '% свободного места',
+                'command_id' => Commands::getCommandByName((new ExtractFreeSpace())->getName())->getId(),
             ], $type, null, $machine);
         } else {
             Logger::debug('Ignored free space ' . $machine->getFreeSpace());
@@ -349,6 +372,7 @@ class Checks
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> код отстаёт от последнего коммита',
+                'command_id' => Commands::getCommandByName((new ExtractGit())->getName())->getId()
             ], $type, $project);
         } else {
             Logger::debug('Last commit time is actual');
@@ -362,7 +386,8 @@ class Checks
                 'group_title' => 'Включена тестовая ветка',
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
-                    . '</a> ' . ($project->getLastBranchName() ? 'включена ветка ' . $project->getLastBranchName() : 'нету гита')
+                    . '</a> ' . ($project->getLastBranchName() ? 'включена ветка ' . $project->getLastBranchName() : 'нету гита'),
+                'command_id' => Commands::getCommandByName((new ExtractGit())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Branch is master');
@@ -378,6 +403,7 @@ class Checks
                 'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> загрузились не все миграции',
+                'command_id' => Commands::getCommandByName((new ExtractMigration())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Last migration is actual');
@@ -395,9 +421,10 @@ class Checks
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($isLongHttp
-                        ? ' тормозит прямо счас'
+                        ? ' тормозит прямо сейчас'
                         : ' тормозил ' . self::groupTimes(array_column($longHttps, 'create_time'))
                     ),
+                'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId(),
             ], $type, $project);
         } else {
             Logger::debug('Not found long http requests (more than ' . $seconds . ' seconds)');
@@ -415,9 +442,10 @@ class Checks
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($isOffline
-                        ? 'недоступен прямо счас'
+                        ? 'недоступен прямо сейчас'
                         : 'был недоступен ' . self::groupTimes(array_column($notSuccessHttps, 'create_time'))
                     ),
+                'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId()
             ], $type, $project);
         } else {
             Logger::debug('Not found not success http requests');

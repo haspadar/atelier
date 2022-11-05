@@ -191,7 +191,8 @@ $(function () {
             type: 'DELETE',
             data: {},
             success: function (response) {
-                document.location = '/projects';
+                // document.location = '/projects';
+                window.history.back();
             }
         });
     });

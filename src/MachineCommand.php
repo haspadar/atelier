@@ -70,7 +70,13 @@ abstract class MachineCommand extends Command
                 if (!$ssh->getError()) {
                     $report = Reports::add($this, null, $machine, $run);
                     Logger::debug('Run for ' . $machine->getHost() . '...');
-                    $response = $this->run($machine);
+                    try {
+                        $response = $this->run($machine);
+                    } catch (\phpseclib3\Exception\InvalidArgumentException $e) {
+                        $response = 'Can\'t connect to ' . $machine->getHost() . ' via ssh – ignored!';
+                        Logger::error($response);
+                    }
+
                     $report->finish($response);
                 } else {
                     Logger::error($machine->getHost() . ': ' . $ssh->getError());

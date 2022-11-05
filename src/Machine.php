@@ -157,7 +157,7 @@ class Machine
 
     private function isArchive(string $directory): bool
     {
-        $archives = ['.zip', '.tar.gz'];
+        $archives = ['.zip', '.gz'];
         foreach ($archives as $archive) {
             if (str_ends_with($directory, $archive)) {
                 return true;
