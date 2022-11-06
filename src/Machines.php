@@ -4,26 +4,6 @@ namespace Atelier;
 
 class Machines
 {
-    public const ROTATOR_MACHINES = 'ROTATOR_MACHINES';
-
-    public const PALTO_MACHINES = 'PALTO_MACHINES';
-
-    /**
-     * @var Machine[]
-     */
-    private array $machines;
-
-    private string $password;
-
-//    public function __construct(string $machinesOption, string $defaultOptionName = '')
-//    {
-//        $this->machines = self::generateMachines($this->parseMachinesOption($machinesOption ?: $defaultOptionName));
-//        $this->password = $this->promptMachineSudoPassword();
-//        foreach ($this->machines as $machine) {
-//            $machine->setPassword($this->password);
-//        }
-//    }
-
     /**
      * @return Machine[]
      */
@@ -31,14 +11,6 @@ class Machines
     {
         return array_map(fn($machine) => new Machine($machine), (new \Atelier\Model\Machines())->getAll($ids));
     }
-
-//    /**
-//     * @return Machine[]
-//     */
-//    public function getMachines(): array
-//    {
-//        return $this->machines;
-//    }
 
     /**
      * @param array $names
@@ -79,6 +51,44 @@ class Machines
         }
 
         return $machineNames;
+    }
+
+    public static function updateMachine(string $host, string $ip, int $id): void
+    {
+        (new \Atelier\Model\Machines())->update([
+            'host' => $host,
+            'ip' => $ip,
+        ], $id);
+    }
+
+    public static function delete(int $id): void
+    {
+        (new \Atelier\Model\Machines())->remove($id);
+    }
+
+    public static function addMachine(string $host, string $ip): Machine
+    {
+        $id = (new \Atelier\Model\Machines())->add([
+            'host' => $host,
+            'ip' => $ip,
+            'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
+        ]);
+
+        return self::getMachine($id);
+    }
+
+    public static function getMachineByHost(string $host): ?Machine
+    {
+        $machine = (new \Atelier\Model\Machines())->getBy('host', $host);
+
+        return $machine ? new Machine($machine) : null;
+    }
+
+    public static function getMachineByIp(string $ip): ?Machine
+    {
+        $machine = (new \Atelier\Model\Machines())->getBy('ip', $ip);
+
+        return $machine ? new Machine($machine) : null;
     }
 
     public static function getMachine(int $id): Machine

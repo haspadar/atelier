@@ -1,8 +1,12 @@
 <?php /** @var $this League\Plates\Template\Template */?>
 <?php $this->layout('layout');?>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#machinesBashModal">
-    Запустить bash-команду
+<button type="button" class="btn btn-primary add-machine" >
+    Добавить машину
+</button>
+
+<button type="button" class="btn btn-dark" data-bs-toggle="modal" title="Запустить команду на всех машинах">
+    Запустить общую bash-команду
 </button>
 
 <table class="table">
@@ -62,20 +66,32 @@
 </table>
 
 <!-- Modal -->
-<div class="modal fade" id="machinesMashModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addMachineModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Новая машина</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <form action="#" method="post">
+                    <div class="mb-1">
+                        <label for="host" class="col-form-label">Название</label>
+                        <input type="text" class="form-control" name="host" id="host">
+                        <div class="invalid-host invalid-feedback"></div>
+                    </div>
+                    <div class="mb-1">
+                        <label for="ip" class="col-form-label">IP</label>
+                        <input type="text" class="form-control is-invalid" id="ip" name="ip" >
+                        <div class="invalid-ip invalid-feedback"></div>
+                    </div>
+
+                    <div class=" d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+

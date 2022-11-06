@@ -180,7 +180,7 @@ $(function () {
     $('.delete-machine-projects').on('click', function () {
         let machineId = $(this).data('id');
         $.ajax({
-            url: '/machines/' + machineId,
+            url: '/machine-projects/' + machineId,
             dataType: "json",
             type: 'DELETE',
             data: {},
@@ -227,6 +227,47 @@ $(function () {
         });
     });
 
+    $('#deleteMachineModal .ok').on('click', function () {
+        let machineId = $('#deleteMachineModal [name=id]').val();
+        $.ajax({
+            url: '/machines/' + machineId,
+            dataType: "json",
+            type: 'DELETE',
+            success: function (response) {
+                document.location = '/machines';
+            }
+        });
+    });
+
+    $('.remove-machine').on('click', function () {
+        let id = $(this).data('id');
+        $('#deleteMachineModal [name=id]').val(id);
+        let deleteMachineModal = new bootstrap.Modal('#deleteMachineModal');
+        deleteMachineModal.show();
+    });
+
+    $('form.machine').on('submit', function () {
+        let $form = $(this);
+        let values = $form.serialize();
+        $.ajax({
+            url: '/machines/' + $form.find('[name=id]').val(),
+            dataType: "json",
+            type: 'PUT',
+            data: values,
+            success: function (response) {
+                if (response.errors) {
+                    $.each(response.errors, function (field, text) {
+                        $form.find('[name=' + field + ']').addClass('is-invalid')
+                        $form.find('.invalid-' + field).text(text)
+                    });
+                } else {
+                    document.location = '/machines';
+                }
+            }
+        });
+
+        return false;
+    });
     $('.scan-projects').off('click').on('click', function () {
         let machineId = $(this).data('id');
         auth(machineId, function (login, password) {
@@ -257,6 +298,40 @@ $(function () {
         });
     });
 
+    $('.add-machine').on('click', function () {
+        let $form = $('#addMachineModal form');
+        $form.find('input').removeClass('is-invalid');
+        $form.find('.invalid-feedback').text('');
+        let addMachineModal = new bootstrap.Modal('#addMachineModal');
+        addMachineModal.show();
+    });
+    $('#addMachineModal form').on('submit', function () {
+        let $form = $(this);
+        let values = $form.serialize();
+        $.ajax({
+            url: '/machines/',
+            dataType: "json",
+            type: 'POST',
+            data: values,
+            success: function (response) {
+                if (response.errors) {
+                    $.each(response.errors, function (field, text) {
+                        $form.find('[name=' + field + ']').addClass('is-invalid')
+                        $form.find('.invalid-' + field).text(text)
+                    });
+                //     $('#password').addClass('is-invalid');
+                //     $('#authError').text(response.error).removeClass('d-none');
+                //     $submit.removeClass('disabled');
+                } else {
+                    document.location.reload();
+                //     authModal.hide();
+                //     callback(login, password);
+                }
+            }
+        });
+
+        return false;
+    });
     function auth(machineId, callback) {
         $('#password').removeClass('is-invalid');
         $('#authError').addClass('d-none');

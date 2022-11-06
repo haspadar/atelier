@@ -24,4 +24,9 @@ class Machines extends Model
 
         return self::getDb()->queryFirstField('SELECT mysql_version FROM ' . $this->name . " WHERE id=%d", $id);
     }
+
+    public function getBy(string $field, string $value): array
+    {
+        return self::getDb()->queryFirstField('SELECT * FROM ' . $this->name . " WHERE %s=%s", $field, $value) ?: [];
+    }
 }

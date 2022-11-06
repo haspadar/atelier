@@ -22,12 +22,15 @@ try {
     $router->delete('/check-machines/{id}', '\Atelier\Controller\Atelier@ignoreCheckMachine');
     $router->get('/machines', '\Atelier\Controller\Atelier@showMachines');
     $router->get('/machines/{id}', '\Atelier\Controller\Atelier@showMachine');
+    $router->put('/machines/{id}', '\Atelier\Controller\Atelier@updateMachine');
+    $router->post('/machines', '\Atelier\Controller\Atelier@addMachine');
+    $router->delete('/machines/{id}', '\Atelier\Controller\Atelier@deleteMachine');
+    $router->delete('/machine-projects/{id}', '\Atelier\Controller\Atelier@deleteMachineProjects');
     $router->get('/reports', '\Atelier\Controller\Atelier@showReports');
     $router->get('/reports/{id}', '\Atelier\Controller\Atelier@showReport');
     $router->get('/commands', '\Atelier\Controller\Atelier@showCommands');
     $router->get('/commands/{id}', '\Atelier\Controller\Atelier@showCommand');
     $router->put('/command-project-types/{id}', '\Atelier\Controller\Atelier@updateCommandProjectTypes');
-    $router->delete('/machines/{id}', '\Atelier\Controller\Atelier@deleteMachineProjects');
     $router->put('/scan-projects/{id}', '\Atelier\Controller\Atelier@scanProjects');
     $router->post('/auth/{id}', '\Atelier\Controller\Atelier@auth');
     $router->put('/project-command/{id}/{command}', '\Atelier\Controller\Atelier@runProjectCommand');

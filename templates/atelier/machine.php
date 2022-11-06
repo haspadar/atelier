@@ -8,14 +8,17 @@
  */
 $machine = $this->data['machine'];
 ?>
-<form class="page" action="#" method="post">
+<form class="machine" action="#" method="post">
+    <input type="hidden" name="id" value="<?=$machine->getId()?>">
     <div class="mb-3">
         <label class="form-label">Название</label>
         <input type="text" name="host" class="form-control" value="<?=$machine->getHost()?>">
+        <div class="invalid-host invalid-feedback"></div>
     </div>
     <div class="mb-3">
         <label class="form-label">IP</label>
         <input type="text" class="form-control" name="ip" value="<?=$machine->getIp()?>">
+        <div class="invalid-ip invalid-feedback"></div>
     </div>
 
     <button class="btn btn-secondary btn-dark scan-projects"
@@ -25,6 +28,14 @@ $machine = $this->data['machine'];
         Сканировать
     </button>
     <button type="submit" class="btn btn-primary" data-id="<?= $machine->getId() ?>">Сохранить</button>
+    <button class="btn btn-secondary btn-danger remove-machine"
+            type="button"
+            data-id="<?=$machine->getId()?>"
+            data-projects-count="<?=count($machine->getProjects())?>"
+    >
+        Удалить
+    </button>
+
     <div class="alert alert-dark d-none col-6 scan-projects-report" role="alert" id="scan-projects-report-<?=$machine->getId()?>">
         <div class="loading">
             <span>Поиск...</span>
@@ -74,4 +85,21 @@ $machine = $this->data['machine'];
     <?php endif;?>
 
 </form>
+
+
+<div class="modal fade" id="deleteMachineModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <input type="hidden" name="id" value="">
+            <div class="modal-body">
+                <p>
+                    Удалить машину вместе с <?=count($machine->getProjects())?> <?=\Atelier\Plural::get(count($machine->getProjects()), 'проектом', 'проектами', 'проектами')?>
+                </p>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                <button type="button" class="btn btn-danger ok">Да</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 

@@ -19,6 +19,7 @@ use Atelier\CommandReports;
 use Atelier\CommandReport;
 use Atelier\RotatorFragments;
 use Atelier\RunLogs;
+use Atelier\Validator;
 use League\Plates\Engine;
 use Atelier\Url;
 use League\Plates\Extension\Asset;
@@ -138,6 +139,41 @@ class Atelier
             'info_pages_count' => ceil($infoChecksCount / $limit),
         ]);
         echo $this->templatesEngine->make('checks');
+    }
+
+    public function deleteMachine(int $id)
+    {
+        Machines::delete($id);
+        Flash::addSuccess('Машина удалена');
+        $this->showJsonResponse(['success' => true]);
+    }
+
+    public function updateMachine(int $id)
+    {
+        $host = Filter::get($this->getPutParam('host'));
+        $ip = Filter::get($this->getPutParam('ip'));
+        $errors = Validator::validateMachine($host, $ip, $id);
+        if (!$errors) {
+            Machines::updateMachine($host, $ip, $id);
+            Flash::addSuccess('Машина обновлена');
+            $this->showJsonResponse(['success' => true]);
+        }  else {
+            $this->showJsonResponse(['errors' => $errors]);
+        }
+    }
+
+    public function addMachine()
+    {
+        $host = Filter::get($this->getPostParam('host'));
+        $ip = Filter::get($this->getPostParam('ip'));
+        $errors = Validator::validateMachine($host, $ip);
+        if (!$errors) {
+            Machines::addMachine($host, $ip);
+            Flash::addSuccess('Машина добавлена');
+            $this->showJsonResponse(['success' => true]);
+        }  else {
+            $this->showJsonResponse(['errors' => $errors]);
+        }
     }
 
     public function showMachines()

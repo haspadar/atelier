@@ -49,7 +49,7 @@ class Machine
 
     public function getId(): int
     {
-        return $this->machine['id'];
+        return $this->machine['id'] ?? 0;
     }
 
     public function setFreeSpace(int $percent): void

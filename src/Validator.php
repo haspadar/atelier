@@ -46,4 +46,24 @@ class Validator
 
         return '';
     }
+
+    public static function validateMachine(string $host, string $ip, int $excludeId = 0): array
+    {
+        $errors = [];
+        if (!$host) {
+            $errors['host'] = 'Укажите название';
+        } elseif (($found = Machines::getMachineByHost($host)) && $found->getId() != $excludeId) {
+            $errors['host'] = 'Машина с таким названием уже есть';
+        }
+
+        if (!$ip) {
+            $errors['ip'] = 'Укажите ip';
+        } elseif (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            $errors['ip'] = 'Неверный формат ip';
+        } elseif (($found = Machines::getMachineByIp($host)) && $found->getId() != $excludeId) {
+            $errors['ip'] = 'Машина с таким ip уже есть';
+        }
+
+        return $errors;
+    }
 }
