@@ -199,7 +199,12 @@ $(function () {
             type: 'DELETE',
             data: {},
             success: function (response) {
-                goBack();
+                if (document.referrer !== "") {
+                    goBack();
+                } else {
+                    document.location = '/checks#CRITICAL'
+                }
+
             }
         });
     });
