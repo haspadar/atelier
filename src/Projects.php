@@ -2,6 +2,7 @@
 
 namespace Atelier;
 
+use Atelier\Model\ProjectIgnores;
 use Atelier\Model\ProjectTypes;
 use Atelier\Project\Type;
 
@@ -25,9 +26,19 @@ class Projects
         return new Project((new Model\Projects())->getById($id));
     }
 
-    public static function deleteProject(int $id): void
+    public static function deleteProject(Project $project): void
     {
-        (new Model\Projects())->remove($id);
+        (new Model\Projects())->remove($project->getId());
+        (new ProjectIgnores())->add([
+            'machine_id' => $project->getMachine()->getId(),
+            'project_path' => $project->getPath(),
+            'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    public static function isProjectIgnored(int $machineId, string $path): bool
+    {
+        return (new ProjectIgnores())->isExists($machineId, $path);
     }
 
     public static function getType(Ssh $ssh, string $directory): ProjectType

@@ -342,7 +342,7 @@ class Atelier
     public function deleteProject(int $id)
     {
         $project = Projects::getProject($id);
-        Projects::deleteProject($id);
+        Projects::deleteProject($project);
         Flash::addWarning('Проект "' . $project->getName() . '" удалён на машине <a href="/machines/' . $project->getMachine()->getId() . '">' . $project->getMachine()->getHost() . '</a>');
         $this->showJsonResponse(['success' => true]);
     }

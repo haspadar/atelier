@@ -101,13 +101,17 @@ class Machine
     public function addProjects($directories): void
     {
         foreach ($directories as $directory) {
-            (new Projects())->add([
-                'machine_id' => $this->getId(),
-                'type_id' => \Atelier\Projects::getType($this->ssh, $directory)->getId(),
-                'path' => $directory,
-                'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]);
-            Logger::info('Добавлен проект "' . $directory . '" для машины "' . $this->getHost() . '"');
+            if (!\Atelier\Projects::isProjectIgnored($this->getId(), $directory)) {
+                (new Projects())->add([
+                    'machine_id' => $this->getId(),
+                    'type_id' => \Atelier\Projects::getType($this->ssh, $directory)->getId(),
+                    'path' => $directory,
+                    'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
+                ]);
+                Logger::info('Добавлен проект "' . $directory . '" для машины "' . $this->getHost() . '"');
+            } else {
+                Logger::warning('Проект "' . $directory . '" проигнорирован для машины "' . $this->getHost() . '"');
+            }
         }
     }
 
