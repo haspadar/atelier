@@ -62,9 +62,9 @@ abstract class ProjectCommand extends Command
 
     /**
      * @param Machine[] $projects
-     * @return Report|null
+     * @return CommandReport|null
      */
-    public function runForAll(array $projects = []): ?Report
+    public function runForAll(array $projects = []): ?CommandReport
     {
         try {
             $time = new ExecutionTime();
@@ -153,7 +153,7 @@ abstract class ProjectCommand extends Command
     /**
      * @param Machine[] $projects
      */
-    private function runForProjects(array $projects): ?Report
+    private function runForProjects(array $projects): ?CommandReport
     {
         declare(ticks = 10) {
             $run = new Run();

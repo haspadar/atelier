@@ -16,6 +16,7 @@ use Atelier\Project;
 use Atelier\ProjectCommand;
 use Atelier\Projects;
 use Atelier\CommandReports;
+use Atelier\CommandReport;
 use Atelier\RotatorFragments;
 use Atelier\RunLogs;
 use League\Plates\Engine;
@@ -99,7 +100,10 @@ class Atelier
         $this->templatesEngine->addData([
             'title' => 'Проверка ' . $id,
             'check' => $check,
-            'command' => Commands::getCommand($check->getCommandId())
+            'command' => Commands::getCommand($check->getCommandId()),
+            'report' => $check->getProjectId()
+                ? CommandReports::getProjectLastReport($check->getCommandId(), $check->getProjectId())
+                : CommandReports::getMachineLastReport($check->getCommandId(), $check->getMachineId())
         ]);
         echo $this->templatesEngine->make('check');
     }

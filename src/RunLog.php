@@ -14,7 +14,7 @@ class RunLog
      */
     private array $commands;
     /**
-     * @var Report[]
+     * @var CommandReport[]
      */
     private array $reports;
 
@@ -29,7 +29,7 @@ class RunLog
             (new \Atelier\Model\CommandReports())->getRunLogCommands($this->runLog['id'])
         );
         $this->reports = array_map(
-            fn($report) => new Report($report),
+            fn($report) => new CommandReport($report),
             (new \Atelier\Model\CommandReports())->getRunLogReports($this->runLog['id'])
         );
     }

@@ -22,7 +22,7 @@ abstract class Command
         $this->clearDbCommands();
     }
 
-    abstract public function runForAll(): ?Report;
+    abstract public function runForAll(): ?CommandReport;
 
     public function getDescription(): array
     {

@@ -23,20 +23,20 @@ class CommandReports
 
     public static function getReport(int $id)
     {
-        return new Report((new Model\CommandReports())->getById($id));
+        return new CommandReport((new Model\CommandReports())->getById($id));
     }
 
     /**
      * @param Project $project
      * @param Command[] $commands
-     * @return Report[]
+     * @return CommandReport[]
      */
     public static function getProjectLastReports(Project $project, array $commands)
     {
         $reports = [];
         foreach ($commands as $command) {
-            if ($last = (new Model\CommandReports())->getLast($project->getId(), $command->getId())) {
-                $reports[$command->getId()] = new Report($last);
+            if ($last = (new Model\CommandReports())->getProjectLast($command->getId(), $project->getId())) {
+                $reports[$command->getId()] = new CommandReport($last);
             }
         }
 
@@ -51,12 +51,12 @@ class CommandReports
     /**
      * @param int $limit
      * @param int $offset
-     * @return Report[]
+     * @return CommandReport[]
      */
     public static function getReports(int $projectTypeId, string $period, int $limit, int $offset): array
     {
         return array_map(
-            fn(array $report) => new Report($report),
+            fn(array $report) => new CommandReport($report),
             (new \Atelier\Model\CommandReports())->getAll($projectTypeId, $period, $limit, $offset)
         );
     }
@@ -64,8 +64,22 @@ class CommandReports
     public static function getCommandReports(int $commandId, int $limit, int $offset): array
     {
         return array_map(
-            fn(array $report) => new Report($report),
+            fn(array $report) => new CommandReport($report),
             (new \Atelier\Model\CommandReports())->getCommandAll($commandId, $limit, $offset)
         );
+    }
+
+    public static function getProjectLastReport(int $commandId, int $projectId): ?CommandReport
+    {
+        $report = (new \Atelier\Model\CommandReports())->getProjectLast($commandId, $projectId);
+
+        return $report ? new CommandReport($report) : null;
+    }
+
+    public static function getMachineLastReport(int $commandId, int $machineId): ?CommandReport
+    {
+        $report = (new \Atelier\Model\CommandReports())->getMachineLast($commandId, $machineId);
+
+        return $report ? new CommandReport($report) : null;
     }
 }

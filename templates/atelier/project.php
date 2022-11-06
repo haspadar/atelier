@@ -2,7 +2,7 @@
 
 use Atelier\Machine;
 use Atelier\Project;
-use Atelier\Report;
+use Atelier\CommandReport;
 use Atelier\RotatorFragment;
 use Atelier\Time;
 
@@ -76,7 +76,7 @@ $project = $this->data['project'];
                     <div class="text-danger small error"></div>
                 </td>
                 <td><?=$command->getComment()?></td>
-                <?php /** @var $report ?Report */?>
+                <?php /** @var $report ?CommandReport */?>
                 <?php $report = $this->data['last_reports'][$command->getId()] ?? null;?>
                 <td class="small text-muted text-truncate" style="max-width: 200px;" title="<?=$report?->getTimeReportHtml()?>" data-bs-html="true" data-bs-toggle="tooltip">
                     <?=$report?->getShortResponse()?>

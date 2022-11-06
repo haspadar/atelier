@@ -31,9 +31,9 @@ abstract class MachineCommand extends Command
 
     /**
      * @param Machine[] $machines
-     * @return Report|null
+     * @return CommandReport|null
      */
-    public function runForAll(array $machines = []): ?Report
+    public function runForAll(array $machines = []): ?CommandReport
     {
         try {
             $time = new ExecutionTime();
@@ -60,7 +60,7 @@ abstract class MachineCommand extends Command
     /**
      * @param Machine[] $machines
      */
-    private function runForMachines(array $machines): ?Report
+    private function runForMachines(array $machines): ?CommandReport
     {
         declare(ticks = 10) {
             $run = new Run();

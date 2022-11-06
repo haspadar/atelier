@@ -61,6 +61,20 @@ endif;
             </dd>
         <?php endif?>
 
+        <?php /** @var \Atelier\CommandReport $report */?>
+        <?php if ($report = $this->data['report']) :?>
+            <dt>Репорт</dt>
+            <dd class="text-muted small">
+                <a href="/reports/<?=$report->getId()?>" target="_blank" class="text-decoration-none">
+                    <?= $report->getShortResponse()?>
+                </a>
+            </dd>
+            <dt>Время репорта</dt>
+            <dd class="text-muted small">
+                <?= Time::timeHuman($report->getStartTime())?>
+            </dd>
+        <?php endif?>
+
         <dt>Время проверки</dt>
         <dd class="text-muted">
             <?= Time::timeHuman($check->getCreateTime())?>

@@ -6,12 +6,21 @@ class CommandReports extends Model
 {
     protected string $name = 'command_reports';
 
-    public function getLast(int $projectId, int $commandId): array
+    public function getProjectLast(int $commandId, int $projectId): array
     {
         return self::getDb()->queryFirstRow(
             'SELECT * FROM ' . $this->name . ' WHERE command_id = %d AND project_id = %d ORDER BY id DESC LIMIT 1',
             $commandId,
             $projectId
+        ) ?: [];
+    }
+
+    public function getMachineLast(int $commandId, int $machineId): array
+    {
+        return self::getDb()->queryFirstRow(
+            'SELECT * FROM ' . $this->name . ' WHERE command_id = %d AND machine_id = %d ORDER BY id DESC LIMIT 1',
+            $commandId,
+            $machineId
         ) ?: [];
     }
 

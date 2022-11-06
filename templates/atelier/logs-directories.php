@@ -1,7 +1,7 @@
 <?php /** @var $this League\Plates\Template\Template */
 
 use Atelier\ProjectType;
-use Atelier\Report;
+use Atelier\CommandReport;
 use Atelier\Time;
 use Atelier\Url; ?>
 <?php $this->layout('layout');?>

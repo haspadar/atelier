@@ -6,7 +6,7 @@ use Atelier\Model\CommandReports;
 use Atelier\Project\Type;
 use DateTime;
 
-class Report
+class CommandReport
 {
 
     private ?Project $project;

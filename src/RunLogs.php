@@ -39,7 +39,7 @@ class RunLogs
      * @param Machine[] $projects
      * @return void
      */
-    public static function run(Command $command, array $projects): ?Report
+    public static function run(Command $command, array $projects): ?CommandReport
     {
         declare(ticks=10) {
             $run = new Run();

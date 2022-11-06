@@ -41,7 +41,7 @@ $command = $this->data['command'];
     <tbody>
         <?php
         /**
-         * @var $report \Atelier\Report
+         * @var $report \Atelier\CommandReport
          */
         ?>
         <?php foreach ($this->data['reports'] as $report) :?>

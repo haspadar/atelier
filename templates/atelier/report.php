@@ -4,7 +4,7 @@
 
 <?php
 /**
- * @var \Atelier\Report $report
+ * @var \Atelier\CommandReport $report
  */
 $report = $this->data['report'];
 ?>
