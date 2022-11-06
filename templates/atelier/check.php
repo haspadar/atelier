@@ -34,16 +34,16 @@ endif;
         <dd>
             <?=$check->getText()?>
         </dd>
-            <?php if ($check->getProjectId()) :?>
-                <dt>Проект</dt>
-                <dd class="text-muted">
-                    <a href="/projects/<?=$check->getProjectId()?>" target="_blank" class="text-decoration-none">
-                        <?= $check->getProjectName()?>
-                    </a>
+        <?php if ($check->getProjectId()) :?>
+            <dt>Проект</dt>
+            <dd class="text-muted">
+                <a href="/projects/<?=$check->getProjectId()?>" target="_blank" class="text-decoration-none">
+                    <?= $check->getProjectName()?>
+                </a>
 
-                    <button class="btn btn-danger btn-sm delete-project" data-id="<?=$check->getProjectId()?>">Удалить проект</button>
-                </dd>
-            <?php endif;?>
+                <button class="btn btn-danger btn-sm delete-project" data-id="<?=$check->getProjectId()?>">Удалить проект</button>
+            </dd>
+        <?php endif;?>
 
         <dt>Машина</dt>
         <dd class="text-muted">
@@ -51,6 +51,16 @@ endif;
                 <?= $check->getMachineHost()?>
             </a>
         </dd>
+        <?php /** @var \Atelier\Command $command */?>
+        <?php if ($command = $this->data['command']) :?>
+            <dt>Команда</dt>
+            <dd class="text-muted">
+                <a href="/commands/<?=$command->getId()?>" target="_blank" class="text-decoration-none">
+                    <?= $command->getName()?>
+                </a>
+            </dd>
+        <?php endif?>
+
         <dt>Время проверки</dt>
         <dd class="text-muted">
             <?= Time::timeHuman($check->getCreateTime())?>

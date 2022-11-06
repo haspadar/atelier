@@ -83,6 +83,11 @@ class Check
         }
     }
 
+    public function getCommandId(): int
+    {
+        return $this->check['command_id'];
+    }
+
     public function getCommandName(): string
     {
         return $this->check['name'];

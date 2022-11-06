@@ -98,7 +98,8 @@ class Atelier
         $check = Checks::getById($id);
         $this->templatesEngine->addData([
             'title' => 'Проверка ' . $id,
-            'check' => $check
+            'check' => $check,
+            'command' => Commands::getCommand($check->getCommandId())
         ]);
         echo $this->templatesEngine->make('check');
     }
