@@ -13,12 +13,12 @@ class Check
 
     public function getId(): int
     {
-        return $this->check['id'];
+        return $this->check['id'] ?? 0;
     }
 
     public function getProjectId(): ?int
     {
-        return $this->check['project_id'];
+        return $this->check['project_id'] ?? null;
     }
 
     public function getProjectName(): string
