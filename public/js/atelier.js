@@ -199,7 +199,9 @@ $(function () {
             type: 'DELETE',
             data: {},
             success: function (response) {
+                console.log(document.referrer, 'document.referrer')
                 if (document.referrer !== "") {
+                    console.log('goBack');
                     goBack();
                 } else {
                     document.location = '/checks#CRITICAL'
