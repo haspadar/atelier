@@ -91,7 +91,7 @@ class Machine
     }
 
     /**
-     * @return Machine[]
+     * @return Project[]
      */
     public function getProjects(array $typeIds = []): array
     {
@@ -119,7 +119,7 @@ class Machine
     {
         $existsNames = array_map(fn(Project $project) => $project->getPath(), $this->getProjects());
 
-        return array_diff($directories, $existsNames);
+        return array_values(array_diff($directories, $existsNames));
     }
 
     public function deleteProjects(int $machineId): void

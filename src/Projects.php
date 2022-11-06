@@ -26,6 +26,13 @@ class Projects
         return new Project((new Model\Projects())->getById($id));
     }
 
+    public static function deleteProjects(array $projects): void
+    {
+        foreach ($projects as $project) {
+            self::deleteProject($project);
+        }
+    }
+
     public static function deleteProject(Project $project): void
     {
         (new Model\Projects())->remove($project->getId());

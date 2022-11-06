@@ -25,13 +25,41 @@ class ExtractNewProjects extends MachineCommand
         );
         if ($newDirectories = $machine->getNewDirectories($directories)) {
             $machine->addProjects($newDirectories);
-            $report = count($newDirectories) > 1
+            $addReport = count($newDirectories) > 1
                 ? 'Добавлены проекты ' . implode(', ', $newDirectories)
                 : 'Добавлен проект ' . $newDirectories[0];
         } else {
-            $report = 'Новые проекты не найдены';
+            $addReport = 'Новые проекты не найдены';
         }
 
-        return $report;
+        Logger::warning($addReport);
+        $allProjects = $machine->getProjects();
+        $paths = array_map(fn(Project $project) => $project->getPath(), $allProjects);
+        if ($notFoundDirectories = array_diff($paths, $directories)) {
+            $forDeleteProjects = $this->filterProjectsByPaths($allProjects, $notFoundDirectories);
+            Projects::deleteProjects($forDeleteProjects);
+            $deleteReport = 'Удалены из базы проекты '
+                . implode(', ', array_map(fn(Project $project) => $project->getName(), $forDeleteProjects));
+            Logger::warning($deleteReport);
+        }
+
+        return $addReport . (isset($deleteReport) ? '. ' . $deleteReport : '');
+    }
+
+    /**
+     * @param Project[] $allProjects
+     * @param array $notFoundDirectories
+     * @return Project[]
+     */
+    private function filterProjectsByPaths(array $allProjects, array $notFoundDirectories): array
+    {
+        $forDeleteProjects = [];
+        foreach ($allProjects as $project) {
+            if (in_array($project->getPath(), $notFoundDirectories)) {
+                $forDeleteProjects[] = $project;
+            }
+        }
+
+        return $forDeleteProjects;
     }
 }
