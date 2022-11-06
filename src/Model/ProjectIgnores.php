@@ -12,7 +12,7 @@ class ProjectIgnores extends Model
     {
         return (bool)self::getDb()->queryFirstRow('SELECT * FROM '
             . $this->name
-            . ' WHERE machine_id = %d ANF project_path=%s',
+            . ' WHERE machine_id = %d AND project_path=%s',
             $machineId,
             $projectPath
         );
