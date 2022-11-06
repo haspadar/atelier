@@ -6,7 +6,7 @@ use Atelier\Debug;
 
 class ProjectIgnores extends Model
 {
-    protected string $name = 'projects_ignores';
+    protected string $name = 'project_ignores';
 
     public function isExists(int $machineId, string $projectPath): bool
     {
