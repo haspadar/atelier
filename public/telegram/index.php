@@ -43,8 +43,8 @@ if ($bot->getClickedInlineButton() == Type::CRITICAL->name) {
             : 'Пока ты не подписан ни на какие.'
         ), [
             ['text'=> '🔴 ' . Subscribers::CRITICAL_TITLE, 'callback_data' => Type::CRITICAL->name],
-            ['text'=> '🔵 ' . Subscribers::WARNING_TITLE, 'callback_data' => Type::WARNING->name],
-            ['text'=> '⚪ ' . Subscribers::ALL_TITLE, 'callback_data' => Type::INFO->name],
+            ['text'=> '🟡 ' . Subscribers::WARNING_TITLE, 'callback_data' => Type::WARNING->name],
+            ['text'=> '🔵 ' . Subscribers::ALL_TITLE, 'callback_data' => Type::INFO->name],
         ]
     );
 }
