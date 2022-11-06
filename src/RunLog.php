@@ -22,15 +22,15 @@ class RunLog
     {
         $this->projects = array_map(
             fn($project) => new Project($project),
-            (new \Atelier\Model\Reports())->getRunLogProjects($this->runLog['id'])
+            (new \Atelier\Model\CommandReports())->getRunLogProjects($this->runLog['id'])
         );
         $this->commands = array_map(
             fn($command) => Commands::createCommand($command),
-            (new \Atelier\Model\Reports())->getRunLogCommands($this->runLog['id'])
+            (new \Atelier\Model\CommandReports())->getRunLogCommands($this->runLog['id'])
         );
         $this->reports = array_map(
             fn($report) => new Report($report),
-            (new \Atelier\Model\Reports())->getRunLogReports($this->runLog['id'])
+            (new \Atelier\Model\CommandReports())->getRunLogReports($this->runLog['id'])
         );
     }
 

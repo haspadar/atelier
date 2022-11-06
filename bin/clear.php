@@ -27,7 +27,7 @@ Logger::warning('Clearing table run_logs...');
     (new DateTime())->modify('-3 MONTH')->format('Y-m-d H:i:s')
 );
 Logger::warning('Clearing table reports...');
-(new \Atelier\Model\Reports())->getDb()->delete(
+(new \Atelier\Model\CommandReports())->getDb()->delete(
     'reports',
     'run_log_id IS NULL'
 );

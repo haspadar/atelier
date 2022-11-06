@@ -3,7 +3,7 @@
 namespace Atelier;
 
 use Atelier\Command\ExtractGit;
-use Atelier\Model\Reports;
+use Atelier\Model\CommandReports;
 use Atelier\Project\Type;
 
 class RunLogs
@@ -47,7 +47,7 @@ class RunLogs
             foreach ($projects as $project) {
                 $ssh = $project->getMachine()->createSsh();
                 if (!$ssh->getError()) {
-                    $report = \Atelier\Reports::add($command, $project, null, $run);
+                    $report = \Atelier\CommandReports::add($command, $project, null, $run);
                     $response = $command->run($project);
                     $report->finish($response);
                 } else {

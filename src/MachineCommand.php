@@ -68,7 +68,7 @@ abstract class MachineCommand extends Command
             foreach ($machines as $machine) {
                 $ssh = $machine->createSsh();
                 if (!$ssh->getError()) {
-                    $report = Reports::add($this, null, $machine, $run);
+                    $report = CommandReports::add($this, null, $machine, $run);
                     Logger::debug('Run for ' . $machine->getHost() . '...');
                     try {
                         $response = $this->run($machine);

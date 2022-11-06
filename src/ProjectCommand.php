@@ -161,7 +161,7 @@ abstract class ProjectCommand extends Command
             foreach ($projects as $project) {
                 $ssh = $project->getMachine()->createSsh();
                 if (!$ssh->getError()) {
-                    $report = Reports::add($this, $project, null, $run);
+                    $report = CommandReports::add($this, $project, null, $run);
                     Logger::debug('Run for '
                         . $project->getMachine()->getHost()
                         . ':'

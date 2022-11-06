@@ -2,7 +2,7 @@
 
 namespace Atelier;
 
-use Atelier\Model\Reports;
+use Atelier\Model\CommandReports;
 use Atelier\Project\Type;
 use DateTime;
 
@@ -81,7 +81,7 @@ class Report
     {
         $this->report['response'] = $response;
         $this->report['finish_time'] = (new \DateTime())->format('Y-m-d H:i:s');
-        (new Reports())->update([
+        (new CommandReports())->update([
             'response' => $this->report['response'],
             'finish_time' => $this->report['finish_time']
         ], $this->report['id']);

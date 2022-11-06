@@ -2,9 +2,9 @@
 
 namespace Atelier\Model;
 
-class Reports extends Model
+class CommandReports extends Model
 {
-    protected string $name = 'reports';
+    protected string $name = 'command_reports';
 
     public function getLast(int $projectId, int $commandId): array
     {

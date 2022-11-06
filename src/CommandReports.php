@@ -6,11 +6,11 @@ use Atelier\Model\ProjectTypes;
 use Atelier\Project\Type;
 use DateTime;
 
-class Reports
+class CommandReports
 {
     public static function add(Command $command, ?Project $project, ?Machine $machine, Run $run)
     {
-        $reportId = (new Model\Reports())->add([
+        $reportId = (new Model\CommandReports())->add([
             'command_id' => $command->getId(),
             'project_id' => $project?->getId(),
             'machine_id' => $machine ? $machine->getId() : $project->getMachine()->getId(),
@@ -23,7 +23,7 @@ class Reports
 
     public static function getReport(int $id)
     {
-        return new Report((new Model\Reports())->getById($id));
+        return new Report((new Model\CommandReports())->getById($id));
     }
 
     /**
@@ -35,7 +35,7 @@ class Reports
     {
         $reports = [];
         foreach ($commands as $command) {
-            if ($last = (new Model\Reports())->getLast($project->getId(), $command->getId())) {
+            if ($last = (new Model\CommandReports())->getLast($project->getId(), $command->getId())) {
                 $reports[$command->getId()] = new Report($last);
             }
         }
@@ -45,7 +45,7 @@ class Reports
 
     public static function getReportsCount(int $projectTypeId, string $period): int
     {
-        return (new \Atelier\Model\Reports())->getAllCount($projectTypeId, $period);
+        return (new \Atelier\Model\CommandReports())->getAllCount($projectTypeId, $period);
     }
 
     /**
@@ -57,7 +57,7 @@ class Reports
     {
         return array_map(
             fn(array $report) => new Report($report),
-            (new \Atelier\Model\Reports())->getAll($projectTypeId, $period, $limit, $offset)
+            (new \Atelier\Model\CommandReports())->getAll($projectTypeId, $period, $limit, $offset)
         );
     }
 
@@ -65,7 +65,7 @@ class Reports
     {
         return array_map(
             fn(array $report) => new Report($report),
-            (new \Atelier\Model\Reports())->getCommandAll($commandId, $limit, $offset)
+            (new \Atelier\Model\CommandReports())->getCommandAll($commandId, $limit, $offset)
         );
     }
 }

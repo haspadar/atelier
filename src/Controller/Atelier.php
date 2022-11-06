@@ -15,7 +15,7 @@ use Atelier\Checks;
 use Atelier\Project;
 use Atelier\ProjectCommand;
 use Atelier\Projects;
-use Atelier\Reports;
+use Atelier\CommandReports;
 use Atelier\RotatorFragments;
 use Atelier\RunLogs;
 use League\Plates\Engine;
@@ -152,10 +152,10 @@ class Atelier
         $offset = ($pageNumber - 1) * $limit;
         $projectTypeId = intval($this->getQueryParam('project_type_id', 0));
         $period = $this->getQueryParam('period');
-        $reportsCount = Reports::getReportsCount($projectTypeId, $period);
+        $reportsCount = CommandReports::getReportsCount($projectTypeId, $period);
         $this->templatesEngine->addData([
             'title' => 'Репорты',
-            'reports' => Reports::getReports($projectTypeId, $period, $limit, $offset),
+            'reports' => CommandReports::getReports($projectTypeId, $period, $limit, $offset),
             'project_types' => Projects::getTypes(),
             'project_type_id' => $projectTypeId,
             'period' => $period,
@@ -267,7 +267,7 @@ class Atelier
         $this->templatesEngine->addData([
             'title' => 'Команда "' . $command->getName() . '"',
             'command' => $command,
-            'reports' => Reports::getCommandReports($command->getId(), $limit, $offset),
+            'reports' => CommandReports::getCommandReports($command->getId(), $limit, $offset),
             'project_types' => Projects::getTypes(),
             'command_project_types' => Commands::getCommandProjectTypes($command)
         ]);
@@ -284,7 +284,7 @@ class Atelier
 
     public function showReport(int $id)
     {
-        $report = Reports::getReport($id);
+        $report = CommandReports::getReport($id);
         $this->templatesEngine->addData([
             'title' => 'Репорт ' . $report->getId(),
             'report' => $report
@@ -356,7 +356,7 @@ class Atelier
             'title' => 'Проект "' . $project->getName() . '"',
             'project' => $project,
             'commands' => $commands,
-            'last_reports' => Reports::getProjectLastReports($project, $commands),
+            'last_reports' => CommandReports::getProjectLastReports($project, $commands),
             'rotator_fragments' => RotatorFragments::getByProject($project)
         ]);
         echo $this->templatesEngine->make('project');

@@ -6,7 +6,7 @@ use Atelier\Command\Exception;
 use Atelier\Command\ExtractGit;
 use Atelier\Model\CommandTypes;
 use Atelier\Model\ProjectTypes;
-use Atelier\Model\Reports;
+use Atelier\Model\CommandReports;
 use Atelier\Project\Type;
 
 class Commands
