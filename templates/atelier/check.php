@@ -11,6 +11,7 @@ use Atelier\Time; ?>
  */
 
 $check = $this->data['check'];
+\Atelier\Debug::dump($check);exit;
 if (!$check) :?>
     <div class="alert alert-danger alert-dismissible mt-2 fade show" role="alert">
         Сообщение удалено
