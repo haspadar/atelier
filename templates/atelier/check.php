@@ -11,8 +11,7 @@ use Atelier\Time; ?>
  */
 
 $check = $this->data['check'];
-\Atelier\Debug::dump($check);exit;
-if (!$check) :?>
+if (!$check->getId()) :?>
     <div class="alert alert-danger alert-dismissible mt-2 fade show" role="alert">
         Сообщение удалено
     </div>
@@ -25,7 +24,7 @@ if (!$check) :?>
 endif;
 ?>
 
-<?php if ($check) :?>
+<?php if ($check->getId()) :?>
     <dl>
         <dt>Заголовок</dt>
         <dd>
