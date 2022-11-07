@@ -30,9 +30,9 @@ class ExtractNewProjects extends MachineCommand
                 : 'Добавлен проект ' . $newDirectories[0];
         } else {
             $addReport = 'Новые проекты не найдены';
+            Logger::warning($addReport);
         }
 
-        Logger::warning($addReport);
         $allProjects = $machine->getProjects();
         $paths = array_map(fn(Project $project) => $project->getPath(), $allProjects);
         if ($notFoundDirectories = array_diff($paths, $directories)) {

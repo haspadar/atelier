@@ -79,7 +79,7 @@ class Machine
         $response = $this->ssh->exec("ls -d /var/www/*") ?? '';
         $directories = [];
         foreach (explode(PHP_EOL, $response) as $directory) {
-            if (!in_array($directory, ['', '/var/www/html'])
+            if (!in_array($directory, ['', '/var/www/html', '/var/www/status'])
                 && !$this->isArchive($directory)
                 && !$this->isFile($directory)
             ) {

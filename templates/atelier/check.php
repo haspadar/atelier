@@ -64,14 +64,11 @@ endif;
         <?php /** @var \Atelier\CommandReport $report */?>
         <?php if ($report = $this->data['report']) :?>
             <dt>Репорт</dt>
-            <dd class="text-muted small">
+            <dd>
+                <div class="text-muted small">(<?= Time::timeHuman($report->getStartTime())?>)</div>
                 <a href="/reports/<?=$report->getId()?>" target="_blank" class="text-decoration-none">
                     <?= $report->getShortResponse()?>
                 </a>
-            </dd>
-            <dt>Время репорта</dt>
-            <dd class="text-muted small">
-                <?= Time::timeHuman($report->getStartTime())?>
             </dd>
         <?php endif?>
 
