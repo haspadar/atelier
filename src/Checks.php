@@ -420,9 +420,10 @@ class Checks
     private static function checkHttpCode(Project $project, DateTime $fromTime, Type $type): void
     {
         $https = (new HttpInfo())->getForPeriod($project->getId(), $fromTime->format('Y-m-d H:i:s'));
-        $notSuccessHttps = array_values(array_unique(array_filter($https, fn($http) => $http['http_code'] != 200)));
+        $successCodes = [200, 301, 403];
+        $notSuccessHttps = array_values(array_unique(array_filter($https, fn($http) => !in_array($http['http_code'], $successCodes))));
         if ($notSuccessHttps) {
-            $isOffline = !in_array($https[count($https) - 1]['http_code'], ['200', '403', '301']);
+            $isOffline = !in_array($https[count($https) - 1]['http_code'], $successCodes);
             self::add([
                 'group_title' => 'Проблемы с открытием',
                 'text' => 'Сайт <a href="' . $project->getWwwAddress() . '" target="_blank">'
