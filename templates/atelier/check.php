@@ -52,7 +52,7 @@ endif;
             </a>
         </dd>
         <dt>Проверка</dt>
-        <dd class="text-muted">
+        <dd>
             <?= $check->getName()?>
         </dd>
         <?php /** @var \Atelier\Command $command */?>

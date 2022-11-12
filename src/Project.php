@@ -65,7 +65,12 @@ class Project
         return $this->project['path'];
     }
 
-    public function getAddress(): string
+    public function getWithoutWwwAddress(): string
+    {
+        return str_replace('www.', '', $this->getWwwAddress());
+    }
+
+    public function getWwwAddress(): string
     {
         $hasSubDomain = count(explode('.', $this->getName())) > 2;
 

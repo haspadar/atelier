@@ -15,13 +15,13 @@ class ExtractHttp extends ProjectCommand
 {
     public function run(Project $project): string
     {
-        list($response, $info) = $this->downloadHeaders($project->getAddress());
+        list($response, $info) = $this->downloadHeaders($project->getWwwAddress());
         if ($info['http_code'] == 200) {
             $responseHeaders = substr($response, 0, $info['header_size']);
             $nginxCacheHeader = $this->parseCacheHeader($responseHeaders);
         }
 
-        list($response, $info) = $this->download($project->getAddress() . '?hash=' . md5(time()));
+        list($response, $info) = $this->download($project->getWwwAddress() . '?hash=' . md5(time()));
         $project->addHttp($info['total_time'], $info['http_code'], $nginxCacheHeader ?? '');
         Logger::info('Updated "' . $this->getName() . '" headers');
 

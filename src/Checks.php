@@ -146,7 +146,7 @@ class Checks
         if ($project->getSmokeLastReport() != 'OK') {
             self::add([
                 'group_title' => 'Тесты отработали с ошибкой',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ошибка: "' . $project->getSmokeLastReport() . '".',
                 'command_id' => Commands::getCommandByName((new ExtractSmoke())->getName())->getId(),
@@ -165,7 +165,7 @@ class Checks
             $now = new DateTime();
             self::add([
                 'group_title' => 'Не парсятся объявления',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> за последние '
                     . Time::getDiffHours($now, $fromTime)
@@ -226,7 +226,7 @@ class Checks
                 'group_title' => 'Вырос nginx-трафик',
                 'text' => sprintf(
                     $text,
-                    'на сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                    'на сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                         . $project->getName()
                         . '</a>',
                 ),
@@ -246,7 +246,7 @@ class Checks
         ) {
             self::add([
                 'group_title' => 'Неправильные имена nginx-логов',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> неправильные имена логов ('
                     . $project->getNginxAccessLog()
@@ -266,7 +266,7 @@ class Checks
         if (!($http['http_code'] ?? []) == 403) {
             self::add([
                 'group_title' => 'Включён http-пароль',
-                'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'Сайт <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> закрыт паролем',
                 'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId()
@@ -282,7 +282,7 @@ class Checks
         if (!($http['cache_header'] ?? [])) {
             self::add([
                 'group_title' => 'Не включён кэш',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> не включён кэш',
                 'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId(),
@@ -355,7 +355,7 @@ class Checks
         if ($project->getLastCommitTime() != $lastCommitTime) {
             self::add([
                 'group_title' => 'Не обновился код',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> код отстаёт от последнего коммита',
                 'command_id' => Commands::getCommandByName((new ExtractGit())->getName())->getId()
@@ -370,7 +370,7 @@ class Checks
         if (!in_array($project->getLastBranchName(), ['master', 'main'])) {
             self::add([
                 'group_title' => 'Включена тестовая ветка',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($project->getLastBranchName() ? 'включена ветка ' . $project->getLastBranchName() : 'нету гита'),
                 'command_id' => Commands::getCommandByName((new ExtractGit())->getName())->getId(),
@@ -386,7 +386,7 @@ class Checks
         if ($project->getLastMigrationName() != $lastMigrationName) {
             self::add([
                 'group_title' => 'Не загрузилась последняя миграция',
-                'text' => 'На сайте <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'На сайте <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> загрузились не все миграции',
                 'command_id' => Commands::getCommandByName((new ExtractMigration())->getName())->getId(),
@@ -404,7 +404,7 @@ class Checks
             $isLongHttp = $https[count($https) - 1]['seconds'] >= $seconds;
             self::add([
                 'group_title' => 'Проблемы с производительностью',
-                'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'Сайт <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($isLongHttp
                         ? ' тормозит'
@@ -422,10 +422,10 @@ class Checks
         $https = (new HttpInfo())->getForPeriod($project->getId(), $fromTime->format('Y-m-d H:i:s'));
         $notSuccessHttps = array_filter($https, fn($http) => $http['http_code'] != 200);
         if ($notSuccessHttps) {
-            $isOffline = $https[count($https) - 1]['http_code'] != 200;
+            $isOffline = !in_array($https[count($https) - 1]['http_code'], [200, 403, 301]);
             self::add([
                 'group_title' => 'Проблемы с открытием',
-                'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
+                'text' => 'Сайт <a href="' . $project->getWwwAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($isOffline
                         ? 'недоступен'
