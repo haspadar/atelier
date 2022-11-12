@@ -131,27 +131,13 @@ class Checks
             . ($project ? $project->getName() : $machine->getHost());
         $check['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         $check['type'] = $type->name;
-        $now = new DateTime();
-        if (self::isIgnored($check)) {
+        if (self::isExists($check)) {
+            Logger::warning('Check exists: ' . var_export($check, true));
+        } elseif (self::isIgnored($check)) {
             Logger::warning('Check ignored: ' . var_export($check, true));
-        } elseif (!(new Model\Checks())->getBetween(
-            ($type == Type::CRITICAL
-                ? $now->modify('-1 DAY')
-                : ($type == Type::WARNING
-                    ? $now->modify('-1 WEEK')
-                    : $now->modify('-1 MONTH')
-                )
-            )->format('Y-m-d H:i:s'),
-            $now->format('Y-m-d H:i:s'),
-            $check['machine_id'] ?? null,
-            $check['project_id'] ?? null,
-            $check['type'],
-            $check['title']
-        )) {
+        } else {
             (new Model\Checks())->add($check);
             Logger::info('Added ' . $type->name . ' check "' . $check['title'] . '"');
-        } else {
-            Logger::warning('Ignored exists ' . $type->name . ' check "' . $check['title'] . '"');
         }
     }
 
@@ -498,12 +484,24 @@ class Checks
 
     public static function getById(int $id): Check
     {
-        return new Check((new \Atelier\Model\Checks())->getById($id));
+        return new Check((new Model\Checks())->getById($id));
     }
 
     private static function isIgnored(array $check): bool
     {
         return (new CheckIgnores())->find($check['name'], $check['project_id'], null)
             || (new CheckIgnores())->find($check['name'], null, $check['machine_id']);
+    }
+
+    private static function isExists(array $check): bool
+    {
+        $found = (new Model\Checks())->find(
+            $check['machine_id'],
+            $check['project_id'],
+            $check['type'],
+            $check['group_title']
+        );
+
+        return (bool)$found;
     }
 }

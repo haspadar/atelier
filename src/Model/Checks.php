@@ -6,6 +6,21 @@ class Checks extends Model
 {
     protected string $name = 'checks';
 
+    public function find(?int $machineId, ?int $projectId, string $type, string $groupTitle): array
+    {
+        $sql = 'SELECT * FROM '
+            . $this->name
+            . ' WHERE ' . ($machineId ? "machine_id = $machineId" : 'machine_id IS NULL')
+            . ' AND ' . ($projectId ? "project_id = $projectId" : 'project_id IS NULL')
+            . ' AND type = %s AND group_title = %s';
+
+        return self::getDb()->query(
+            $sql,
+            $type,
+            $groupTitle,
+        ) ?: [];
+    }
+
     public function getBetween(string $from, string $to, ?int $machineId, ?int $projectId, string $type, string $title): array
     {
         $sql = 'SELECT * FROM '
