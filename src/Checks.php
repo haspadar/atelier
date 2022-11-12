@@ -407,7 +407,7 @@ class Checks
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($isLongHttp
-                        ? ' тормозит прямо сейчас'
+                        ? ' тормозит'
                         : ' тормозил ' . self::groupTimes(array_column($longHttps, 'create_time'))
                     ),
                 'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId(),
@@ -428,7 +428,7 @@ class Checks
                 'text' => 'Сайт <a href="' . $project->getAddress() . '" target="_blank">'
                     . $project->getName()
                     . '</a> ' . ($isOffline
-                        ? 'недоступен прямо сейчас'
+                        ? 'недоступен'
                         : 'был недоступен ' . self::groupTimes(array_column($notSuccessHttps, 'create_time'))
                     ),
                 'command_id' => Commands::getCommandByName((new ExtractHttp())->getName())->getId()
@@ -462,7 +462,7 @@ class Checks
         if ($yesterdayTraffic['max_traffic'] > 0
             && $lastTraffic / $yesterdayTraffic['max_traffic'] >= 2
         ) {
-            $text = 'Прямо сейчас %s трафик вырос в '
+            $text = '%s трафик вырос в '
                 . bcdiv($lastTraffic, $yesterdayTraffic['max_traffic'], 2)
                 . ' по сравнению с максимальным вчерашним';
         } elseif ($yesterdayTraffic['max_traffic'] > 0

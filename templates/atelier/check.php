@@ -51,6 +51,10 @@ endif;
                 <?= $check->getMachineHost()?>
             </a>
         </dd>
+        <dt>Проверка</dt>
+        <dd class="text-muted">
+            <?= $check->getName()?>
+        </dd>
         <?php /** @var \Atelier\Command $command */?>
         <?php if ($command = $this->data['command']) :?>
             <dt>Команда</dt>

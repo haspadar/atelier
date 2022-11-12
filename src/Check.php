@@ -109,4 +109,9 @@ class Check
     {
         return $this->check['type'];
     }
+
+    public function getName(): string
+    {
+        return $this->check['name'];
+    }
 }
