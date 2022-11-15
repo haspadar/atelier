@@ -258,10 +258,10 @@ $(function () {
                         type: 'spline'
                     },
                     title: {
-                        text: 'Snow depth at Vikjafjellet, Norway'
+                        text: 'Nginx traffic'
                     },
                     subtitle: {
-                        text: 'Irregular time data in Highcharts JS'
+                        text: 'Посещаемость на основе access log'
                     },
                     xAxis: {
                         type: 'datetime',
@@ -275,13 +275,13 @@ $(function () {
                     },
                     yAxis: {
                         title: {
-                            text: 'Snow depth (m)'
+                            text: 'Запросы'
                         },
                         min: 0
                     },
                     tooltip: {
                         headerFormat: '<b>{series.name}</b><br>',
-                        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+                        pointFormat: '{point.x:%e. %b}: {point.y:.d}'
                     },
 
                     plotOptions: {
