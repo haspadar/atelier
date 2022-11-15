@@ -281,7 +281,7 @@ $(function () {
                     },
                     tooltip: {
                         headerFormat: '<b>{series.name}</b><br>',
-                        pointFormat: '{point.x:%e. %b}: {point.y:.d}'
+                        pointFormat: '{point.x:%e. %b}: {point.y:.2f}'
                     },
 
                     plotOptions: {
@@ -293,7 +293,7 @@ $(function () {
                         }
                     },
 
-                    colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+                    // colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
 
                     // Define the data points. All series have a year of 1970/71 in order
                     // to be compared on the same x axis. Note that in JavaScript, months start
