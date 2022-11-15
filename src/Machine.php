@@ -132,7 +132,7 @@ class Machine
             $traffic[$project->getName()] = $summaryByDate;
         }
 
-        return $this->groupForChart($traffic);
+        return $traffic;
     }
 
     public function deleteProjects(int $machineId): void

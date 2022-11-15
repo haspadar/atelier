@@ -227,6 +227,21 @@ $(function () {
         });
     });
 
+    function formatDatesValuesForChart(notFormatted) {
+        let formatted = [];
+        $.each(notFormatted, function (projectName, projectTraffic) {
+            let projectFormattedTraffic = [];
+            $.each(projectTraffic, function (date, dateTraffic) {
+                let dateParts = date.split('-');
+                console.log(dateParts, 'dateParts for date ' + date);
+                projectFormattedTraffic.push([Date.UTC(dateParts[0], dateParts[1],  dateParts[2]), dateTraffic]);
+            });
+            formatted.push({name: projectName, data: projectFormattedTraffic});
+        });
+
+        return formatted;
+    }
+
     function loadMachineNginxTraffic(machineId, chartId) {
         $.ajax({
             url: '/get-machine-access-log-traffic/' + machineId,
@@ -234,16 +249,7 @@ $(function () {
             type: 'GET',
             data: [],
             success: function (response) {
-                let formatted = [];
-                $.each(response.traffic, function (projectName, projectTraffic) {
-                    let projectFormattedTraffic = [];
-                    $.each(projectTraffic, function (date, dateTraffic) {
-                        let dateParts = date.split('-');
-                        console.log(dateParts, 'dateParts for date ' + date);
-                        projectFormattedTraffic.push([Date.UTC(dateParts[0], dateParts[1],  dateParts[2]), dateTraffic]);
-                    });
-                    formatted.push({name: projectName, data: projectFormattedTraffic});
-                });
+                let formatted = formatDatesValuesForChart(response.traffic);
                 console.log(formatted, 'formatted');
                 Highcharts.chart(chartId, {
                     chart: {
