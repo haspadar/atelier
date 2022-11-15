@@ -196,7 +196,7 @@ class Machine
         foreach ($values as $projectName => $projectValues) {
             $projectData = [];
             foreach ($keys as $key) {
-                $projectData[$key] = $projectValues[$key] ?? 0;
+                $projectData[$key] = intval($projectValues[$key]) ?? 0;
             }
 
             $grouped[] = [
