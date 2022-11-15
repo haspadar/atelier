@@ -234,11 +234,11 @@ $(function () {
             $.each(projectTraffic, function (date, dateTraffic) {
                 let dateParts = date.split('-');
                 console.log(dateParts, 'dateParts for date ' + date);
-                projectFormattedTraffic.push([Date.UTC(dateParts[0], dateParts[1],  dateParts[2]), dateTraffic]);
+                projectFormattedTraffic.push([Date.UTC(dateParts[0], parseInt(dateParts[1]),  parseInt(dateParts[2])), dateTraffic]);
             });
             formatted.push({name: projectName, data: projectFormattedTraffic});
         });
-
+console.log(formatted, 'formatted');
         return formatted;
     }
 
