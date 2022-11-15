@@ -2,6 +2,7 @@
 
 namespace Atelier;
 
+use Atelier\Model\NginxTraffic;
 use Atelier\Model\PhpFpmTraffic;
 use Atelier\Model\Projects;
 use phpseclib3\Crypt\Common\AsymmetricKey;
@@ -122,6 +123,18 @@ class Machine
         return array_values(array_diff($directories, $existsNames));
     }
 
+    public function getNginxTraffic(): array
+    {
+        $projects = $this->getProjects();
+        $traffic = [];
+        foreach ($projects as $project) {
+            $summaryByDate = (new NginxTraffic())->getSummaryByDate($project->getId());
+            $traffic[$project->getName()] = $summaryByDate;
+        }
+
+        return $this->groupForChart($traffic);
+    }
+
     public function deleteProjects(int $machineId): void
     {
         (new Projects())->removeMachineProjects($machineId);
@@ -169,5 +182,29 @@ class Machine
         }
 
         return false;
+    }
+
+    private function groupForChart(array $values): array
+    {
+        $keys = [];
+        foreach ($values as $projectValues) {
+            $keys = array_unique(array_merge($keys, array_keys($projectValues)));
+        }
+
+        $grouped = [];
+        sort($keys);
+        foreach ($values as $projectName => $projectValues) {
+            $projectData = [];
+            foreach ($keys as $key) {
+                $projectData[$key] = $projectValues[$key] ?? 0;
+            }
+
+            $grouped[] = [
+                'name' => $projectName,
+                'data' => $projectData
+            ];
+        }
+
+        return $grouped;
     }
 }

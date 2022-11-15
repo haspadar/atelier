@@ -55,6 +55,14 @@ class Atelier
         echo $this->templatesEngine->make('machine');
     }
 
+    public function getMachineAccessLogTraffic(int $machineId)
+    {
+        $machine = Machines::getMachine($machineId);
+        $this->showJsonResponse([
+            'traffic' => $machine->getNginxTraffic()
+        ]);
+    }
+
     public function getAccessLogTraffic(int $projectId)
     {
         $project = Projects::getProject($projectId);

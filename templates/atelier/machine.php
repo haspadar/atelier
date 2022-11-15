@@ -86,6 +86,8 @@ $machine = $this->data['machine'];
 
 </form>
 
+<div id="machine-nginx-visits" data-machine-id="<?=$machine->getId()?>"></div>
+
 
 <div class="modal fade" id="deleteMachineModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">

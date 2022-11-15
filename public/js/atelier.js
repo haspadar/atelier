@@ -227,6 +227,80 @@ $(function () {
         });
     });
 
+    function loadMachineNginxTraffic(machineId, chartId) {
+        $.ajax({
+            url: '/get-machine-access-log-traffic/' + machineId,
+            dataType: "json",
+            type: 'GET',
+            data: [],
+            success: function (response) {
+                Highcharts.chart(chartId, {
+                    title: {
+                        text: 'Nginx Traffic'
+                    },
+
+                    subtitle: {
+                        text: ' '
+                    },
+
+                    yAxis: {
+                        title: {
+                            text: 'Посещения'
+                        }
+                    },
+
+                    xAxis: {
+                        accessibility: {
+                            rangeDescription: 'Дни'
+                        },
+                        tickInterval: 24 * 3600 * 1000, // one day
+                        // tickInterval: 7 * 24 * 3600 * 1000, // one week
+                        tickWidth: 0,
+                        gridLineWidth: 1
+                    },
+
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
+                    },
+
+                    plotOptions: {
+                        series: {
+                            label: {
+                                connectorAllowed: false
+                            },
+                            pointStart: 2010
+                        }
+                    },
+
+                    series: [response.traffic],
+
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 500
+                            },
+                            chartOptions: {
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom'
+                                }
+                            }
+                        }]
+                    }
+
+                });
+            }
+        });
+    }
+
+    if ($('#machine-nginx-visits')) {
+        let machineId = $('#machine-nginx-visits').data('machineId');
+        loadMachineNginxTraffic(machineId, 'machine-nginx-visits');
+    }
+
     $('#deleteMachineModal .ok').on('click', function () {
         let machineId = $('#deleteMachineModal [name=id]').val();
         $.ajax({

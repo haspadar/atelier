@@ -43,6 +43,7 @@ try {
     $router->get("/error-logs/{name}", '\Atelier\Controller\Atelier@showErrorLogs');
     $router->get("/get-logs/{name}/{type}", '\Atelier\Controller\Atelier@getLogs');
     $router->get("/get-access-log-traffic/{projectId}", '\Atelier\Controller\Atelier@getAccessLogTraffic');
+    $router->get("/get-machine-access-log-traffic/{machineId}", '\Atelier\Controller\Atelier@getMachineAccessLogTraffic');
 
     $router->run();
 

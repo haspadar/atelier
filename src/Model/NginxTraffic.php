@@ -36,4 +36,16 @@ class NginxTraffic extends Model
             $date . ' 23:59:59',
         ) ?? [];
     }
+
+    public function getSummaryByDate(int $projectId): array
+    {
+        return array_column(
+            self::getDb()->query(
+                'SELECT date(log_time) as `date`, max(traffic) as traffic FROM nginx_traffic WHERE project_id=%d group by date(log_time) ',
+                $projectId
+            ),
+            'traffic',
+            'date'
+        );
+    }
 }
