@@ -234,64 +234,63 @@ $(function () {
             type: 'GET',
             data: [],
             success: function (response) {
+                let formatted = [];
+                $.each(response.traffic, function (projectName, projectTraffic) {
+                    let projectFormattedTraffic = [];
+                    $.each(projectTraffic, function (date, dateTraffic) {
+                        let dateParts = date.split('-');
+                        projectFormattedTraffic.push([Date.UTC(dateParts[0], dateParts[1],  dateParts[2]), dateTraffic]);
+                    });
+                    formatted.push({name: projectName, data: projectFormattedTraffic});
+                });
                 Highcharts.chart(chartId, {
+                    chart: {
+                        type: 'spline'
+                    },
                     title: {
-                        text: 'Nginx Traffic'
+                        text: 'Snow depth at Vikjafjellet, Norway'
                     },
-
                     subtitle: {
-                        text: ' '
+                        text: 'Irregular time data in Highcharts JS'
                     },
-
-                    yAxis: {
+                    xAxis: {
+                        type: 'datetime',
+                        dateTimeLabelFormats: { // don't display the year
+                            month: '%e. %b',
+                            year: '%b'
+                        },
                         title: {
-                            text: 'Посещения'
+                            text: 'Date'
                         }
                     },
-
-                    xAxis: {
-                        accessibility: {
-                            rangeDescription: 'Дни'
+                    yAxis: {
+                        title: {
+                            text: 'Snow depth (m)'
                         },
-                        tickInterval: 24 * 3600 * 1000, // one day
-                        // tickInterval: 7 * 24 * 3600 * 1000, // one week
-                        tickWidth: 0,
-                        gridLineWidth: 1
+                        min: 0
                     },
-
-                    legend: {
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle'
+                    tooltip: {
+                        headerFormat: '<b>{series.name}</b><br>',
+                        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
                     },
 
                     plotOptions: {
                         series: {
-                            label: {
-                                connectorAllowed: false
-                            },
-                            pointStart: 2010
+                            marker: {
+                                enabled: true,
+                                radius: 2.5
+                            }
                         }
                     },
 
-                    series: [response.traffic],
+                    colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
 
-                    responsive: {
-                        rules: [{
-                            condition: {
-                                maxWidth: 500
-                            },
-                            chartOptions: {
-                                legend: {
-                                    layout: 'horizontal',
-                                    align: 'center',
-                                    verticalAlign: 'bottom'
-                                }
-                            }
-                        }]
-                    }
-
+                    // Define the data points. All series have a year of 1970/71 in order
+                    // to be compared on the same x axis. Note that in JavaScript, months start
+                    // at 0 for January, 1 for February etc.
+                    series: formatted
                 });
+
             }
         });
     }
