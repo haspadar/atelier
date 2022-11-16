@@ -372,19 +372,19 @@ $(function () {
     }
 
     let $nginxTrafficChart = $('#machine-nginx-traffic');
-    if ($nginxTrafficChart) {
+    if ($nginxTrafficChart.length) {
         let machineId = $nginxTrafficChart.data('machineId');
         loadMachineNginxTraffic(machineId, $nginxTrafficChart.attr('id'));
     }
 
     let $phpFpmTrafficChart = $('#machine-php-fpm-traffic');
-    if ($phpFpmTrafficChart) {
+    if ($phpFpmTrafficChart.length) {
         let machineId = $phpFpmTrafficChart.data('machineId');
         loadMachinePhpFpmTraffic(machineId, $phpFpmTrafficChart.attr('id'));
     }
 
     let $projectNginxTrafficChart = $('#project-nginx-traffic');
-    if ($projectNginxTrafficChart) {
+    if ($projectNginxTrafficChart.length) {
         let projectId = $projectNginxTrafficChart.data('projectId');
         console.log(projectId, 'projectId');
         console.log($projectNginxTrafficChart, '$projectNginxTrafficChart');
