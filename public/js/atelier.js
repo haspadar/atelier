@@ -261,7 +261,7 @@ $(function () {
                         ]);
                     });
                     formatted.push({name: 'project', data: projectFormattedTraffic, type: 'area'});
-                    
+
                     return formatted;
                 })(response.traffic);
                 loadZoomChart(chartId, formatted, 'Nginx traffic');
@@ -386,6 +386,8 @@ $(function () {
     let $projectNginxTrafficChart = $('#project-nginx-traffic');
     if ($projectNginxTrafficChart) {
         let projectId = $projectNginxTrafficChart.data('projectId');
+        console.log(projectId, 'projectId');
+        console.log($projectNginxTrafficChart, '$projectNginxTrafficChart');
         loadProjectNginxTraffic(projectId, $projectNginxTrafficChart.attr('id'));
     }
 
