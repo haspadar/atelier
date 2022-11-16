@@ -336,10 +336,16 @@ $(function () {
         });
     }
 
-    if ($('#machine-nginx-traffic')) {
-        let machineId = $('#machine-nginx-traffic').data('machineId');
-        loadMachineNginxTraffic(machineId, 'machine-nginx-traffic');
-        loadMachinePhpFpmTraffic(machineId, 'machine-php-fpm-traffic');
+    let $nginxTrafficChart = $('#machine-nginx-traffic');
+    if ($nginxTrafficChart) {
+        let machineId = $nginxTrafficChart.data('machineId');
+        loadMachineNginxTraffic(machineId, $nginxTrafficChart.attr('id'));
+    }
+
+    let $machinePhpFpmTrafficChart = $('#machine-php-fpm-traffic');
+    if ($machinePhpFpmTrafficChart) {
+        let machineId = $machinePhpFpmTrafficChart.data('machineId');
+        loadMachinePhpFpmTraffic(machineId, $machinePhpFpmTrafficChart.attr('id'));
     }
 
     $('#deleteMachineModal .ok').on('click', function () {
