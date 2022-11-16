@@ -276,7 +276,7 @@ $(function () {
                 $.each(projectTraffic, function (dateTime, dateTraffic) {
                     projectFormattedTraffic.push([
                         new Date(dateTime).valueOf(),
-                        parseInt(dateTraffic)
+                        dateTraffic.includes('.') ? parseFloat(dateTraffic) : parseInt(dateTraffic)
                     ]);
                 });
                 formatted.push({name: projectName, data: projectFormattedTraffic, type: 'area'});
@@ -342,10 +342,10 @@ $(function () {
         loadMachineNginxTraffic(machineId, $nginxTrafficChart.attr('id'));
     }
 
-    let $machinePhpFpmTrafficChart = $('#machine-php-fpm-traffic');
-    if ($machinePhpFpmTrafficChart) {
-        let machineId = $machinePhpFpmTrafficChart.data('machineId');
-        loadMachinePhpFpmTraffic(machineId, $machinePhpFpmTrafficChart.attr('id'));
+    let $phpFpmTrafficChart = $('#machine-php-fpm-traffic');
+    if ($phpFpmTrafficChart) {
+        let machineId = $phpFpmTrafficChart.data('machineId');
+        loadMachinePhpFpmTraffic(machineId, $phpFpmTrafficChart.attr('id'));
     }
 
     $('#deleteMachineModal .ok').on('click', function () {
