@@ -36,6 +36,8 @@ $project = $this->data['project'];
 
 </dl>
 
+<div id="project-nginx-traffic" data-project-id="<?=$project->getId()?>"></div>
+
 <h2>Последние репорты</h2>
 <table class="table table-striped">
     <thead>

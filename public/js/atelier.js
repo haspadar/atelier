@@ -244,6 +244,33 @@ $(function () {
         return formatted;
     }
 
+    function loadProjectNginxTraffic(projectId, chartId) {
+        $.ajax({
+            url: '/get-project-access-log-traffic/' + projectId,
+            dataType: "json",
+            type: 'GET',
+            data: [],
+            success: function (response) {
+                let formatted = (function formatTimestampsValues(notFormatted) {
+                    let formatted = [];
+                    $.each(notFormatted, function (projectName, projectTraffic) {
+                        let projectFormattedTraffic = [];
+                        $.each(projectTraffic, function (dateTime, dateTraffic) {
+                            projectFormattedTraffic.push([
+                                new Date(dateTime).valueOf(),
+                                parseInt(dateTraffic)
+                            ]);
+                        });
+                        formatted.push({name: projectName, data: projectFormattedTraffic, type: 'area'});
+                    });
+
+                    return formatted;
+                })(response.traffic);
+                loadZoomChart(chartId, formatted, 'Nginx traffic');
+            }
+        });
+    }
+
     function loadMachineNginxTraffic(machineId, chartId) {
         $.ajax({
             url: '/get-machine-access-log-traffic/' + machineId,
@@ -356,6 +383,12 @@ $(function () {
     if ($phpFpmTrafficChart) {
         let machineId = $phpFpmTrafficChart.data('machineId');
         loadMachinePhpFpmTraffic(machineId, $phpFpmTrafficChart.attr('id'));
+    }
+
+    let $projectNginxTrafficChart = $('#project-nginx-traffic');
+    if ($projectNginxTrafficChart) {
+        let projectId = $projectNginxTrafficChart.data('projectId');
+        loadProjectNginxTraffic(projectId, $projectNginxTrafficChart.attr('id'));
     }
 
     $('#deleteMachineModal .ok').on('click', function () {

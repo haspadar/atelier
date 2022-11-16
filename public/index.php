@@ -45,6 +45,7 @@ try {
     $router->get("/get-access-log-traffic/{projectId}", '\Atelier\Controller\Atelier@getAccessLogTraffic');
     $router->get("/get-machine-access-log-traffic/{machineId}", '\Atelier\Controller\Atelier@getMachineAccessLogTraffic');
     $router->get("/get-machine-php-fpm-traffic/{machineId}", '\Atelier\Controller\Atelier@getMachinePhpFpmTraffic');
+    $router->get("/get-project-access-log-traffic/{machineId}", '\Atelier\Controller\Atelier@getProjectAccessLogTraffic');
 
     $router->run();
 

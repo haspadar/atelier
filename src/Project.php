@@ -251,4 +251,9 @@ class Project
             'create_time' => (new DateTime())->format('Y-m-d H:i:s')
         ]);
     }
+
+    public function getNginxTraffic(): array
+    {
+        return (new NginxTraffic())->getAll($this->getId());
+    }
 }

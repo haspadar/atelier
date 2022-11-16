@@ -21,7 +21,6 @@ class Machine
     public function getPhpFpmTraffic(): array
     {
         return (new PhpFpmTraffic())->getAll($this->getId());
-//        return $this->machine['php_fpm_traffic'];
     }
 
     public function getMysqlVersion(): string
@@ -129,7 +128,7 @@ class Machine
         $projects = $this->getProjects();
         $traffic = [];
         foreach ($projects as $project) {
-            $traffic[$project->getName()] = (new NginxTraffic())->getAll($project->getId());
+            $traffic[$project->getName()] = $project->getNginxTraffic();
         }
 
         return $traffic;

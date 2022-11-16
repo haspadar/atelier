@@ -63,6 +63,14 @@ class Atelier
         ]);
     }
 
+    public function getProjectAccessLogTraffic(int $projectId)
+    {
+        $project = Projects::getProject($projectId);
+        $this->showJsonResponse([
+            'traffic' => $project->getNginxTraffic()
+        ]);
+    }
+
     public function getMachinePhpFpmTraffic(int $machineId)
     {
         $machine = Machines::getMachine($machineId);
@@ -82,6 +90,8 @@ class Atelier
             ))
         ]);
     }
+
+
 
     public function ignoreCheckProject(int $checkId)
     {
