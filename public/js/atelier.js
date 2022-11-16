@@ -253,17 +253,15 @@ $(function () {
             success: function (response) {
                 let formatted = (function formatTimestampsValues(notFormatted) {
                     let formatted = [];
-                    $.each(notFormatted, function (projectName, projectTraffic) {
-                        let projectFormattedTraffic = [];
-                        $.each(projectTraffic, function (dateTime, dateTraffic) {
-                            projectFormattedTraffic.push([
-                                new Date(dateTime).valueOf(),
-                                parseInt(dateTraffic)
-                            ]);
-                        });
-                        formatted.push({name: projectName, data: projectFormattedTraffic, type: 'area'});
+                    let projectFormattedTraffic = [];
+                    $.each(notFormatted, function (dateTime, dateTraffic) {
+                        projectFormattedTraffic.push([
+                            new Date(dateTime).valueOf(),
+                            parseInt(dateTraffic)
+                        ]);
                     });
-
+                    formatted.push({name: 'project', data: projectFormattedTraffic, type: 'area'});
+                    
                     return formatted;
                 })(response.traffic);
                 loadZoomChart(chartId, formatted, 'Nginx traffic');
