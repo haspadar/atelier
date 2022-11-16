@@ -251,12 +251,24 @@ $(function () {
             type: 'GET',
             data: [],
             success: function (response) {
-                loadZoomChart(chartId, response.traffic);
+                loadZoomChart(chartId, response.traffic, 'Nginx traffic');
             }
         });
     }
 
-    function loadZoomChart(chartId, response) {
+    function loadMachinePhpFpmTraffic(machineId, chartId) {
+        $.ajax({
+            url: '/get-machine-php-fpm-traffic/' + machineId,
+            dataType: "json",
+            type: 'GET',
+            data: [],
+            success: function (response) {
+                loadZoomChart(chartId, response.traffic, 'PHP-FPM traffic');
+            }
+        });
+    }
+
+    function loadZoomChart(chartId, response, title) {
         let formatted = (function formatTimestampsValues(notFormatted) {
             let formatted = [];
             $.each(notFormatted, function (projectName, projectTraffic) {
@@ -278,7 +290,7 @@ $(function () {
                 zoomType: 'x'
             },
             title: {
-                text: 'Nginx traffic'
+                text: title
             },
             subtitle: {
                 text: 'С поддержкой zoom'
@@ -324,9 +336,10 @@ $(function () {
         });
     }
 
-    if ($('#machine-nginx-visits')) {
-        let machineId = $('#machine-nginx-visits').data('machineId');
-        loadMachineNginxTraffic(machineId, 'machine-nginx-visits');
+    if ($('#machine-nginx-traffic')) {
+        let machineId = $('#machine-nginx-traffic').data('machineId');
+        loadMachineNginxTraffic(machineId, 'machine-nginx-traffic');
+        loadMachinePhpFpmTraffic(machineId, 'machine-php-fpm-traffic');
     }
 
     $('#deleteMachineModal .ok').on('click', function () {

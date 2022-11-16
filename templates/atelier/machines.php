@@ -14,7 +14,6 @@
     <tr>
         <th>Машина</th>
         <th>IP</th>
-        <th>Php-Fpm</th>
         <th>Проекты</th>
     </tr>
     </thead>
@@ -55,9 +54,6 @@
                         <?=$type?>
                     </span>
                 <?php endforeach;?>
-            </td>
-            <td class="text-muted">
-                <?=$machine->getPhpFpmTraffic()?> запр./сек.
             </td>
         </tr>
 

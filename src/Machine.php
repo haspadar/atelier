@@ -18,9 +18,10 @@ class Machine
     {
     }
 
-    public function getPhpFpmTraffic(): float
+    public function getPhpFpmTraffic(): array
     {
-        return $this->machine['php_fpm_traffic'];
+        return (new PhpFpmTraffic())->getAll($this->getId());
+//        return $this->machine['php_fpm_traffic'];
     }
 
     public function getMysqlVersion(): string

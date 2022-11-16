@@ -29,4 +29,16 @@ class PhpFpmTraffic extends Model
             $date . ' 23:59:59',
         ) ?: [];
     }
+
+    public function getAll(int $machineId): array
+    {
+        return array_column(
+            self::getDb()->query(
+                'SELECT create_time, traffic as traffic FROM ' . $this->name . ' WHERE machine_id=%d',
+                $machineId
+            ),
+            'traffic',
+            'create_time'
+        );
+    }
 }
