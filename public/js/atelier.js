@@ -251,7 +251,22 @@ $(function () {
             type: 'GET',
             data: [],
             success: function (response) {
-                loadZoomChart(chartId, response.traffic, 'Nginx traffic');
+                let formatted = (function formatTimestampsValues(notFormatted) {
+                    let formatted = [];
+                    $.each(notFormatted, function (projectName, projectTraffic) {
+                        let projectFormattedTraffic = [];
+                        $.each(projectTraffic, function (dateTime, dateTraffic) {
+                            projectFormattedTraffic.push([
+                                new Date(dateTime).valueOf(),
+                                parseInt(dateTraffic)
+                            ]);
+                        });
+                        formatted.push({name: projectName, data: projectFormattedTraffic, type: 'area'});
+                    });
+
+                    return formatted;
+                })(response.traffic);
+                loadZoomChart(chartId, formatted, 'Nginx traffic');
             }
         });
     }
@@ -263,28 +278,23 @@ $(function () {
             type: 'GET',
             data: [],
             success: function (response) {
-                loadZoomChart(chartId, response.traffic, 'PHP-FPM traffic');
+                let formatted = (function formatTimestampsValues(notFormatted) {
+                    let formatted = [];
+                    $.each(notFormatted, function (dateTime, dateTraffic) {
+                        formatted.push([
+                            new Date(dateTime).valueOf(),
+                            parseFloat(dateTraffic)
+                        ]);
+                    });
+
+                    return [{name: 'PhpFpm', data: formatted, type: 'area'}];
+                })(response.traffic);
+                loadZoomChart(chartId, formatted, 'PHP-FPM traffic');
             }
         });
     }
 
-    function loadZoomChart(chartId, response, title) {
-        let formatted = (function formatTimestampsValues(notFormatted) {
-            let formatted = [];
-            $.each(notFormatted, function (projectName, projectTraffic) {
-                let projectFormattedTraffic = [];
-                $.each(projectTraffic, function (dateTime, dateTraffic) {
-                    projectFormattedTraffic.push([
-                        new Date(dateTime).valueOf(),
-                        dateTraffic.includes('.') ? parseFloat(dateTraffic) : parseInt(dateTraffic)
-                    ]);
-                });
-                formatted.push({name: projectName, data: projectFormattedTraffic, type: 'area'});
-            });
-
-            return formatted;
-        })(response);
-
+    function loadZoomChart(chartId, formattedData, title) {
         Highcharts.chart(chartId, {
             chart: {
                 zoomType: 'x'
@@ -332,7 +342,7 @@ $(function () {
                     threshold: null
                 }
             },
-            series: formatted
+            series: formattedData
         });
     }
 
