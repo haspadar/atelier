@@ -37,6 +37,18 @@ class NginxTraffic extends Model
         ) ?? [];
     }
 
+    public function getAll(int $projectId): array
+    {
+        return array_column(
+            self::getDb()->query(
+                'SELECT log_time, traffic as traffic FROM nginx_traffic WHERE project_id=%d',
+                $projectId
+            ),
+            'traffic',
+            'log_time'
+        );
+    }
+
     public function getSummaryByDate(int $projectId): array
     {
         return array_column(

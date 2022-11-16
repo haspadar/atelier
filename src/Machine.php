@@ -128,8 +128,7 @@ class Machine
         $projects = $this->getProjects();
         $traffic = [];
         foreach ($projects as $project) {
-            $summaryByDate = (new NginxTraffic())->getSummaryByDate($project->getId());
-            $traffic[$project->getName()] = $summaryByDate;
+            $traffic[$project->getName()] = (new NginxTraffic())->getAll($project->getId());
         }
 
         return $traffic;

@@ -227,6 +227,22 @@ $(function () {
         });
     });
 
+    function formatTimestampesValuesForChart(notFormatted) {
+        let formatted = [];
+        $.each(notFormatted, function (projectName, projectTraffic) {
+            let projectFormattedTraffic = [];
+            $.each(projectTraffic, function (dateTime, dateTraffic) {
+                projectFormattedTraffic.push([
+                    new Date(dateTime).valueOf(),
+                    parseInt(dateTraffic)
+                ]);
+            });
+            formatted.push({name: projectName, data: projectFormattedTraffic, type: 'area'});
+        });
+
+        return formatted;
+    }
+
     function formatDatesValuesForChart(notFormatted) {
         let formatted = [];
         $.each(notFormatted, function (projectName, projectTraffic) {
@@ -251,55 +267,112 @@ $(function () {
             type: 'GET',
             data: [],
             success: function (response) {
-                let formatted = formatDatesValuesForChart(response.traffic);
-                console.log(formatted, 'formatted');
-                Highcharts.chart(chartId, {
-                    chart: {
-                        type: 'spline'
-                    },
-                    title: {
-                        text: 'Nginx traffic'
-                    },
-                    subtitle: {
-                        text: 'Посещаемость на основе access log'
-                    },
-                    xAxis: {
-                        type: 'datetime',
-                        dateTimeLabelFormats: { // don't display the year
-                            month: '%e. %b',
-                            year: '%b'
+                let formatted = formatTimestampesValuesForChart(response.traffic);
+                    Highcharts.chart(chartId, {
+                        chart: {
+                            zoomType: 'x'
                         },
                         title: {
-                            text: 'Date'
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Запросы'
+                            text: 'USD to EUR exchange rate over time'
                         },
-                        min: 0
-                    },
-                    tooltip: {
-                        headerFormat: '<b>{series.name}</b><br>',
-                        pointFormat: '{point.x:%e. %b}: {point.y:.2f}'
-                    },
-
-                    plotOptions: {
-                        series: {
-                            marker: {
-                                enabled: true,
-                                radius: 2.5
+                        subtitle: {
+                            text: document.ontouchstart === undefined ?
+                                'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                        },
+                        xAxis: {
+                            type: 'datetime'
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Nginx traffic'
                             }
-                        }
-                    },
-
-                    // colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
-
-                    // Define the data points. All series have a year of 1970/71 in order
-                    // to be compared on the same x axis. Note that in JavaScript, months start
-                    // at 0 for January, 1 for February etc.
-                    series: formatted
-                });
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            area: {
+                                fillColor: {
+                                    linearGradient: {
+                                        x1: 0,
+                                        y1: 0,
+                                        x2: 0,
+                                        y2: 1
+                                    },
+                                    stops: [
+                                        [0, Highcharts.getOptions().colors[0]],
+                                        [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                    ]
+                                },
+                                marker: {
+                                    radius: 2
+                                },
+                                lineWidth: 1,
+                                states: {
+                                    hover: {
+                                        lineWidth: 1
+                                    }
+                                },
+                                threshold: null
+                            }
+                        },
+                        series: formatted
+                    });
+                // });
+                // Highcharts.chart(chartId, {
+                //     chart: {
+                //         type: 'spline'
+                //     },
+                //     title: {
+                //         text: 'Nginx traffic'
+                //     },
+                //     subtitle: {
+                //         text: 'Посещаемость на основе access log'
+                //     },
+                //     xAxis: {
+                //         type: 'datetime',
+                //         dateTimeLabelFormats: { // don't display the year
+                //             month: '%e. %b',
+                //             year: '%b'
+                //         },
+                //         title: {
+                //             text: 'Date'
+                //         }
+                //     },
+                //     yAxis: {
+                //         title: {
+                //             text: 'Запросы'
+                //         },
+                //         min: 0
+                //     },
+                //     tooltip: {
+                //         headerFormat: '<b>{series.name}</b><br>',
+                //         pointFormat: '{point.x:%e. %b}: {point.y:.2f}'
+                //     },
+                //
+                //     plotOptions: {
+                //         series: {
+                //             marker: {
+                //                 enabled: true,
+                //                 radius: 2.5
+                //             }
+                //         }
+                //     },
+                //
+                //     // colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+                //
+                //     // Define the data points. All series have a year of 1970/71 in order
+                //     // to be compared on the same x axis. Note that in JavaScript, months start
+                //     // at 0 for January, 1 for February etc.
+                //     series: formatted
+                // });
+                // Highcharts.getJSON(
+                //     'https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/usdeur.json',
+                //     function (data) {
+                //
+                //
+                //     }
+                // );
 
             }
         });
