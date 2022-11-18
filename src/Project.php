@@ -38,14 +38,21 @@ class Project
     public function addNginxTraffic(array $countsWithDates)
     {
         $nginxTraffic = new NginxTraffic();
-        foreach ($countsWithDates as $visitsCount => $logDateTime) {
-            if (!$nginxTraffic->has($this->getId(), $logDateTime)) {
+        foreach ($countsWithDates as $logDateTime => $visitsCount) {
+            if (!($found = $nginxTraffic->get($this->getId(), new \DateTime($logDateTime)))) {
                 $nginxTraffic->add([
                     'project_id' => $this->getId(),
-                    'log_time' => $logDateTime->format('Y-m-d H:i:s'),
+                    'log_time' => $logDateTime,
                     'traffic' => $visitsCount,
                     'create_time' => (new DateTime())->format('Y-m-d H:i:s')
                 ]);
+            } else {
+                $nginxTraffic->update([
+                    'project_id' => $this->getId(),
+                    'log_time' => $logDateTime,
+                    'traffic' => $visitsCount,
+                    'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+                ], $found['id']);
             }
         }
     }

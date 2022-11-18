@@ -8,7 +8,7 @@ $command = new \Atelier\Command\ExtractNginxTraffic();
 $schedule = new Schedule();
 $task = $schedule->run(PHP_BINARY . ' bin/' . $command->getScript());
 $task
-    ->everyTenMinutes()
+    ->everyMinute()
     ->description($command->getComment())
     ->preventOverlapping(new FlockStore(__DIR__ . '/locks'));
 

@@ -17,12 +17,19 @@ class ExtractNginxTraffic extends ProjectCommand
     {
         $accessLog = $project->getAccessLog();
         if ($accessLog) {
-            $response = $project->getMachine()->getSsh()->exec("cat $accessLog | awk '{print $4}' | uniq -c | sort -rn | head -3");
+            $lastMinute = (new \DateTime())->modify('-1 MINUTE');
+            $response = $project->getMachine()->getSsh()->exec("cat $accessLog | grep '"
+                . $lastMinute->format('d/M/Y:H:i')
+                . "' | awk '{print $4}' | uniq -c"
+            );
             $parsed = $this->parse($response);
-            $project->addNginxTraffic($parsed);
+            $emptyValues = $this->generateEmptyValues($lastMinute);
+            $fullHour = array_merge($emptyValues, $parsed);
+            $project->addNginxTraffic($fullHour);
             if ($parsed) {
-                $lastTraffic = array_keys($parsed)[0];
-                Logger::info('Updated "' . $this->getName() . '" nginx_traffic to ' . array_keys($parsed)[0] . 'req/sec');
+                $lastTraffic = array_keys($fullHour)[0];
+                $traffic = bcdiv(array_sum(array_values($fullHour)), 60, 2);
+                Logger::info('Updated "' . $this->getName() . '" nginx_traffic to ' . $traffic . 'req/sec');
             } else {
                 Logger::warning('Ignored response for ' . $project->getName());
             }
@@ -42,14 +49,36 @@ class ExtractNginxTraffic extends ProjectCommand
             if (str_contains($line, '[')) {
                 $parts = explode('[', $line);
                 $parserDateTime = date_parse_from_format('d/M/Y:H:i:s', trim($parts[1]));
-                $response[trim($parts[0])] = new \DateTime(
-                    implode('-', [$parserDateTime['year'], $parserDateTime['month'], $parserDateTime['day']])
+                $dateTime = implode('-', [$parserDateTime['year'], $parserDateTime['month'], $parserDateTime['day']])
                     . ' '
-                    . implode(':', [$parserDateTime['hour'], $parserDateTime['minute'], $parserDateTime['second']])
-                );
+                    . implode(':', [
+                        $this->addZero($parserDateTime['hour']),
+                        $this->addZero($parserDateTime['minute']),
+                        $this->addZero($parserDateTime['second'])
+                    ]);
+                $response[$dateTime] = trim($parts[0]);
             }
         }
 
         return $response;
+    }
+
+    private function addZero(string $number): string
+    {
+        if ($number < 10) {
+            return '0' . intval($number);
+        }
+
+        return $number;
+    }
+
+    private function generateEmptyValues(\DateTime $lastMinute): array
+    {
+        $emptyValues = [];
+        for ($seconds = 0; $seconds <= 59; $seconds++) {
+            $emptyValues[$lastMinute->format('Y-m-d H:i') . ':' . $this->addZero($seconds)] = 0;
+        }
+
+        return $emptyValues;
     }
 }
