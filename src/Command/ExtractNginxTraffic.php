@@ -17,7 +17,7 @@ class ExtractNginxTraffic extends ProjectCommand
     {
         $accessLog = $project->getAccessLog();
         if ($accessLog) {
-            $lastMinute = (new \DateTime());
+            $lastMinute = (new \DateTime())->modify('-1 MINUTE');
             $response = $project->getMachine()->getSsh()->exec("cat $accessLog | grep '"
                 . $lastMinute->format('d/M/Y:H:i')
                 . "' | awk '{print $4}' | uniq -c"
