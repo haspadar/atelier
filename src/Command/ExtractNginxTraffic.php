@@ -23,12 +23,12 @@ class ExtractNginxTraffic extends ProjectCommand
                 . "' | awk '{print $4}' | uniq -c"
             );
             $parsed = $this->parse($response);
-            $emptyValues = $this->generateEmptyValues($lastMinute);
-            $fullHour = array_merge($emptyValues, $parsed);
-            $project->addNginxTraffic($fullHour);
+//            $emptyValues = $this->generateEmptyValues($lastMinute);
+//            $fullHour = array_merge($emptyValues, $parsed);
+            $project->addNginxTraffic($parsed);
             if ($parsed) {
-                $lastTraffic = array_keys($fullHour)[0];
-                $traffic = bcdiv(array_sum(array_values($fullHour)), 60, 2);
+                $lastTraffic = array_keys($parsed)[0];
+                $traffic = bcdiv(array_sum(array_values($parsed)), 60, 2);
                 Logger::info('Updated "' . $this->getName() . '" nginx_traffic to ' . $traffic . 'req/sec');
             } else {
                 Logger::warning('Ignored response for ' . $project->getName());
