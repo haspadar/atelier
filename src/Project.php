@@ -263,4 +263,23 @@ class Project
     {
         return (new NginxTraffic())->getAll($this->getId());
     }
+
+    public function generateNginxAccessLogFile(): string
+    {
+        return $this->generateNginxLogFile('access.log');
+    }
+
+    public function generateNginxErrorLogFile(): string
+    {
+        return $this->generateNginxLogFile('error.log');
+    }
+
+    private function generateNginxLogFile(string $lastPart): string
+    {
+        return '/var/log/nginx/'
+            . str_replace('.', '_', $this->getName())
+            . strtr($this->getName(), ['.' => '_', '-' => '_'])
+            . '_'
+            . $lastPart;
+    }
 }

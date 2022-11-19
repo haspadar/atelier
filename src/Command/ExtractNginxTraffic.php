@@ -10,6 +10,7 @@ use Atelier\Machine;
 use Atelier\MachineCommand;
 use Atelier\Project;
 use Atelier\ProjectCommand;
+use Atelier\Projects;
 
 class ExtractNginxTraffic extends ProjectCommand
 {
@@ -18,23 +19,22 @@ class ExtractNginxTraffic extends ProjectCommand
         $accessLog = $project->getAccessLog();
         if ($accessLog) {
             $lastMinute = (new \DateTime())->modify('-1 MINUTE');
-            $response = $project->getMachine()->getSsh()->exec("cat $accessLog | grep '"
+            $command = "cat $accessLog | grep '"
                 . $lastMinute->format('d/M/Y:H:i')
-                . "' | awk '{print $4}' | uniq -c"
-            );
+                . "' | awk '{print $4}' | uniq -c";
+            $response = $project->getMachine()->getSsh()->exec($command);
             $parsed = $this->parse($response);
 //            $emptyValues = $this->generateEmptyValues($lastMinute);
 //            $fullHour = array_merge($emptyValues, $parsed);
             $project->addNginxTraffic($parsed);
             if ($parsed) {
-                $lastTraffic = array_keys($parsed)[0];
                 $traffic = bcdiv(array_sum(array_values($parsed)), 60, 2);
-                Logger::info('Updated "' . $this->getName() . '" nginx_traffic to ' . $traffic . 'req/sec');
+                Logger::info('Added "' . $this->getName() . '" nginx_traffic: ' . $traffic . 'req/sec');
             } else {
-                Logger::warning('Ignored response for ' . $project->getName());
+                Logger::warning('Ignored response for ' . $project->getName() . ', command: "' . $command . '"');
             }
 
-            return $lastTraffic ?? $response;
+            return $traffic ?? $response;
         } else {
             Logger::warning('Ignored empty access_log for project ' . $this->getName());
 

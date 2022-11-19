@@ -239,8 +239,8 @@ class Checks
 
     private static function checkNginxLogs(Project $project, Type $type): void
     {
-        $generatedAccessLog = '/var/log/nginx/' . str_replace('.', '_', $project->getName()) . '_access.log';
-        $generatedErrorLog = '/var/log/nginx/' . str_replace('.', '_', $project->getName()) . '_error.log';
+        $generatedAccessLog = $project->generateNginxAccessLogFile();
+        $generatedErrorLog = $project->generateNginxErrorLogFile();
         if ($project->getNginxAccessLog() != $generatedAccessLog
             || $project->getNginxErrorLog() != $generatedErrorLog
         ) {
