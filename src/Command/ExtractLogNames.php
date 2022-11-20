@@ -32,8 +32,8 @@ class ExtractLogNames extends ProjectCommand
             $accessLog = $this->parse($response, 'access_log') ?: '/var/log/nginx/access.log';
             $project->setAccessLog($accessLog);
             Logger::info('Set "' . $this->getName() . '" access_log to ' . $accessLog);
-            $errorLog = $this->parse($response, 'error_log') ?: '/var/log/nginx/access.log';
-            $project->setErrorLog($accessLog);
+            $errorLog = $this->parse($response, 'error_log') ?: '/var/log/nginx/error.log';
+            $project->setErrorLog($errorLog);
             Logger::info('Set "' . $this->getName() . '" error_log to ' . $errorLog);
         } else {
             Logger::warning('Domain nginx file not found for project ' . $project->getName());

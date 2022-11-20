@@ -277,7 +277,6 @@ class Project
     private function generateNginxLogFile(string $lastPart): string
     {
         return '/var/log/nginx/'
-            . str_replace('.', '_', $this->getName())
             . strtr($this->getName(), ['.' => '_', '-' => '_'])
             . '_'
             . $lastPart;
