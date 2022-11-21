@@ -23,13 +23,11 @@ class ExtractNginxTraffic extends ProjectCommand
                 . $lastMinute->format('d/M/Y:H:i')
                 . "' | awk '{print $4}' | uniq -c";
             $response = $project->getMachine()->getSsh()->exec($command);
-            $parsed = $this->parse($response);
-//            $emptyValues = $this->generateEmptyValues($lastMinute);
-//            $fullHour = array_merge($emptyValues, $parsed);
+            $parsed = [$lastMinute->format('Y-m-d H:i') => array_sum($this->parse($response))];
             $project->addNginxTraffic($parsed);
             if ($parsed) {
                 $traffic = bcdiv(array_sum(array_values($parsed)), 60, 2);
-                Logger::info('Added "' . $this->getName() . '" nginx_traffic: ' . $traffic . 'req/sec');
+                Logger::info('Added "' . $this->getName() . '" nginx_traffic: ' . $traffic . ' req/sec');
             } else {
                 Logger::warning('Ignored response for ' . $project->getName() . ', command: "' . $command . '"');
             }
@@ -81,4 +79,5 @@ class ExtractNginxTraffic extends ProjectCommand
 
         return $emptyValues;
     }
+
 }

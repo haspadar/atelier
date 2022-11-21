@@ -49,8 +49,8 @@ class Checks
 
     public static function generate(): void
     {
-//        self::generateCritical();
-//        self::generateWarning();
+        self::generateCritical();
+        self::generateWarning();
         self::generateInfo();
     }
 
@@ -88,15 +88,15 @@ class Checks
 
     private static function generateInfo(): void
     {
-//        foreach (Machines::getMachines() as $machine) {
-//            self::checkPhp($machine, Type::INFO);
-//            self::checkMysql($machine, Type::INFO);
-//        }
+        foreach (Machines::getMachines() as $machine) {
+            self::checkPhp($machine, Type::INFO);
+            self::checkMysql($machine, Type::INFO);
+        }
 
         foreach (Projects::getProjects() as $project) {
-//            self::checkCache($project, Type::INFO);
+            self::checkCache($project, Type::INFO);
             self::checkNginxLogs($project, Type::INFO);
-//            self::checkHttpAccess($project, Type::INFO);
+            self::checkHttpAccess($project, Type::INFO);
         }
     }
 
